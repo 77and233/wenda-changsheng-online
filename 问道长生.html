@@ -191,6 +191,82 @@ const ROM={
  沉静:{hold:'他默然伸手，掌心老茧，却稳如山。',emb:'他少有的动容，将你轻拢入怀，如护稚子。',kiss:'他落吻你眉心，是无声的渡与护。',duet:'他引太上忘情中一缕温柔，与你同参。',pillow:'他盘坐榻边为你守夜，如古松，静默千年。'},
 };
 
+/* 情缘路线：先循线相识，再以好感推进个人章；高阶人物可在恶战中助阵 */
+const BOND_ROUTES={
+ '顾清玄':{where:'青云宗洗剑台',needChapter:1,needRealm:0,realm:'金丹',elem:'金',role:'剑阵助战',route:'推进第一章，在洗剑台替他寻回被人调换的本命剑穗。'},
+ '云栖':{where:'中州天机坊市',needChapter:2,needRealm:0,realm:'具灵',elem:'水',role:'奇宝与情报',route:'主线进入血月客栈后，到天机坊市替她完成一笔“不收灵石”的交易。'},
+ '谢无咎':{where:'血月客栈屋脊',needChapter:2,needRealm:0,realm:'元婴',elem:'火',role:'血河破阵',route:'第二章赴血月客栈，在正邪抉择中留下他的性命并接受夜谈。'},
+ '白凝霜':{where:'北原寒渊',needChapter:3,needRealm:1,realm:'化神',elem:'冰',role:'冰封强敌',route:'筑基后前往北原，在暴雪中救下受伤雪灵并归还冰魄珠。'},
+ '墨尘':{where:'古妖山猎场',needChapter:3,needRealm:1,realm:'金丹',elem:'木',role:'妖身护主',route:'筑基后游历古妖山，不猎幼兽，并在妖族围猎中替他解围。'},
+ '洛浅浅':{where:'南疆花月渡',needChapter:2,needRealm:0,realm:'金丹',elem:'火',role:'魅术控场',route:'第二章后游历南疆，识破花月渡幻境却不羞辱设阵之人。'},
+ '叶知秋':{where:'天衍宗问道崖',needChapter:3,needRealm:1,realm:'悟道',elem:'土',role:'一言定法',route:'筑基并取得一页剑谱残章后，到问道崖答出“为何执剑”。'},
+ '苏沐':{where:'青云宗药庐',needChapter:1,needRealm:0,realm:'筑基',elem:'木',role:'疗伤续气',route:'调查失踪案时主动分担药庐夜值，与她共同救治受伤同门。'},
+ '姬无夜':{where:'古妖山王庭',needChapter:5,needRealm:2,realm:'羽化',elem:'土',role:'妖王法相',route:'结晶且侠名初成后入古妖山王庭，接下妖王三招而不屈膝。'},
+ '萧景行':{where:'中州帝京',needChapter:5,needRealm:1,realm:'化神',elem:'金',role:'龙气镇敌',route:'第五章名动九州后入帝京，破获刺驾案并拒绝用无辜者顶罪。'},
+ '沈墨卿':{where:'江南听雨楼',needChapter:2,needRealm:0,realm:'筑基',elem:'水',role:'诗剑合击',route:'第二章后在听雨楼对出他的残句，再陪他查一宗陈年冤案。'},
+ '阿绾':{where:'青岳灵谷',needChapter:1,needRealm:0,realm:'筑基',elem:'木',role:'灵蝶引路',route:'在青岳救助被困灵蝶，顺着蝶群进入只有有缘人能见的灵谷。'},
+ '月姬':{where:'南疆望月台',needChapter:4,needRealm:1,realm:'元婴',elem:'水',role:'月华回生',route:'筑基后于朔月登望月台，吹响古箫并替她寻回遗失的名字。'},
+ '红芍':{where:'青狼岭镖道',needChapter:1,needRealm:0,realm:'筑基',elem:'火',role:'横刀援阵',route:'接取护送委托，在青狼岭与她背靠背守住最后一辆镖车。'},
+ '小满':{where:'青云宗药庐',needChapter:1,needRealm:0,realm:'炼气',elem:'木',role:'灵药急救',route:'第一章调查药庐空瓶时选择安抚她，并替她保守无关案情的小秘密。'},
+ '玄机子':{where:'无名棋亭',needChapter:5,needRealm:2,realm:'登仙',elem:'雷',role:'落子改命',route:'结晶且仙缘达到十二后，在九州游历中找到没有出现在地图上的棋亭。'},
+};
+const BOND_STORIES={
+ '顾清玄':[
+  '暮雨洗过青云山，洗剑台上只余松声。顾清玄的本命剑被人动过手脚，你没有声张，陪他从断裂的剑穗查到执事堂暗柜。天将亮时，他把重新系好的剑递到你面前，却没有先接剑，只低声说：“这一夜你替我守的不是剑，是我在宗门里最后一点可以相信的东西。”自此，你在他眼中不再只是同门。',
+  '外门大比前夕，有人以你的出身为由逼你退赛。顾清玄素来温和，那日却横剑挡在长阶中央，一人压得满堂噤声。他没有替你决定，只陪你把每一式剑招重新拆开。月落时，你累得靠在他肩上，他仍握着你的手腕教你运气，声音轻得像怕惊散这场难得的亲近。',
+  '剑冢罡风中，你为护他被残剑贯肩。顾清玄第一次失了从容，抱着你冲出剑阵，掌心的血与落雪混在一起。他替你缝合伤口时一言不发，直到你笑着说还活着，他才低下头，将额头抵住你的手背：“以后生死之局，至少让我与你并肩，不许再把我留在身后。”',
+  '山门夜战后的清晨，万峰皆是残雪与硝烟。顾清玄带你回到初见的洗剑台，将本命剑横放于膝，又把另一枚同样的剑穗系在你剑上。他说天下辽阔，仙途又长，可他想要的并非独自登顶，而是每次回首时都能看见你。你们在万顷云海前相拥，剑鸣如群鹤，替这场无声誓言作证。'
+ ],
+ '云栖':[
+  '天机坊市灯火如昼，云栖故意把一枚假玉简卖给你，又笑吟吟等你拆穿。你没有掀她的摊子，反而借假玉简钓出了追查她的黑市杀手。收市后，她请你坐在堆满账册的小阁楼里，第一次收起商人的笑：“人人都想从我这里买答案，只有你先问我怕不怕。”那夜她送你的不是宝物，而是一枚只对你发亮的传音铜钱。',
+  '你替云栖追回被劫的商队，却发现货箱中藏着她多年搜集的失踪修士名册。她承认自己一直在用逐利的外表掩护救人。雨打窗纸，她靠在桌边看你，一遍遍确认你不会因此离开。你替她合上账册，说她算尽天下人心，却可以不必算你。她笑了很久，眼尾却悄悄红了。',
+  '帝京拍卖会设下杀局，你与云栖被困在焚金阵中。她把价值连城的护命奇宝毫不犹豫按进你心口，自己却被火浪吞没。你逆阵将她抱出时，她仍有力气调笑：“这笔买卖亏大了，你拿什么赔？”你回答用余生。她怔住，随即攥紧你的衣襟，把那枚铜钱贴在你唇边，落下一个带泪的吻。',
+  '后来天机坊市开遍九州，最高处却永远留着一间不对外营业的小楼。云栖在窗边替你温酒，将天下情报推到一旁，只问今日可曾受伤。她仍爱算账，唯独你们之间从不计得失。夜深时万城灯火落进她眼里，她靠着你说：“我这一生做过最好的买卖，是拿全部身家与真心，换你每一次平安归来。”'
+ ],
+ '谢无咎':[
+  '血月客栈屋脊上，谢无咎浑身是伤，却仍用玩世不恭的口吻问你为何不补最后一剑。你说正邪应由所行之事来定，不由出身。风吹动他染血的黑衣，他沉默许久，将血魔宗追杀令撕成两半：“那便看看，你能不能让我做一次不负你的人。”从此他在暗处替你截下了许多你从不知道的杀机。',
+  '你被正道误认为血魔同党，昔日同门纷纷拔剑。谢无咎原可置身事外，却独自闯进审剑台，将所有罪名揽到自己身上。你与他杀出重围后，他在荒寺里替你包扎，笑说自己本就是恶人，不在乎多背几口黑锅。你按住他的手告诉他，你在乎。那一瞬，他眼底惯有的戏谑彻底碎了。',
+  '血河暴涨时，谢无咎体内魔功失控，求你趁他清醒杀了他。你却踏进血河，一遍遍叫他的名字，以自身灵台替他承受反噬。他醒来时把你抱得几乎窒息，声音颤得不像他：“我这一世从未怕死，方才却怕极了——怕睁眼以后，世上再没有一个肯信我的人。”',
+  '最终决战前，谢无咎把少主令烧成灰，斩断血魔宗留给他的最后一条退路。他在漫天火星里吻住你，霸道之中带着从未有过的小心。此后江湖仍有人骂他邪魔，可每当你陷入绝境，血河都会先一步横贯长空。他不求天下原谅，只守着你给他的那句“可以重新做人”。'
+ ],
+ '白凝霜':[
+  '北原暴雪封路，你在冰窟里找到白凝霜时，她正用最后的灵力护着一只幼小雪灵。你把唯一的火种推给她，自己守在风口一夜。天亮后，她没有道谢，只把冰魄珠放入你掌心：“雪族不轻易欠人。此珠在，你若遇险，我会知道。”她转身走入风雪，却在百步之外第一次回头。',
+  '寒渊祭典上，族人逼白凝霜斩断尘缘。她站在万丈冰台上仍旧清冷，直到看见你独自穿过雪族剑阵。你没有要求她离开族群，只说愿意陪她承担选择的代价。冰台崩裂时，她握住你的手，指尖依旧冰凉，却再也没有松开。',
+  '玄冰雪魇吞噬神识，你被困在最痛苦的旧梦里。白凝霜以本命冰莲闯入梦境，一寸寸替你冻结心魔。她因此修为大损，却只在你醒来时淡淡说了一句“无妨”。你看见她雪白长发间新生的霜色，终于明白这两个字背后，是她几乎押上了全部性命。',
+  '北原极夜，万里冰川映着星河。白凝霜摘下圣女冠，任长发落在你肩头。她说自己从前以为道心应当无情，后来才知道，真正的强大是有了牵挂仍敢迎向天劫。她主动吻你，冰雪在脚下开出一线春花。从此寒渊有两位主人，也有了一盏永远为你亮着的灯。'
+ ],
+ '叶知秋':[
+  '问道崖上，叶知秋问你为何执剑。你没有答苍生大义，只说弱小时曾无人替你出头，所以想成为后来者身前的那个人。他听罢久久不语，最终将自己的旧剑借给你三日。那柄剑曾斩过化神妖王，而他真正交给你的，是一位玄门长老罕见的信任。',
+  '你在论道会上被诸宗天骄围攻，叶知秋没有出手替你取胜，只在你最狼狈时传来一句：“不必像任何人。”你因此悟出自己的剑意，反败为胜。散场后他在无人处替你擦去脸侧血迹，端方神色里藏着压不住的欣慰：“我教过许多人，唯有你让我想陪着看得更远。”',
+  '天衍宗要他以你为祭推演大劫，叶知秋当众毁去宗门至宝天机盘。反噬令他一夜白发，他却仍平静地护你下山。你问是否值得，他望着远山说，修道千年若连想护之人都护不住，所谓天机不过是笑话。那是他第一次牵你的手，也是第一次违逆整个天下。',
+  '悟道花开之日，叶知秋在崖边摆了两盏茶。他不谈师徒名分，不谈天地纲常，只问你愿不愿与他共同写一部没有结局的道经。你答应后，他低头吻过你的眉心，漫天道纹化作金雨。往后每逢你出剑，都会有一道古老而温柔的玄光护在身后。'
+ ],
+ '姬无夜':[
+  '古妖山王庭前，你接下姬无夜三招，膝骨几乎碎裂也不肯跪。他本在王座上冷眼旁观，第三招落下时却亲自收了力。群妖都以为你必死，他却俯身将你抱起，宣告你是古妖山的贵客。只有你看见，那位傲视天下的妖王眼中第一次出现了欣赏之外的东西。',
+  '妖族诸王反叛，姬无夜被困万妖噬魂阵。你明知境界悬殊仍闯阵，将自己的血抹在他眉心，替他唤回神智。他破阵后杀意滔天，却先把披风裹在你身上。面对跪伏群妖，他只说：“今日之后，见此人如见本王。”那不是赏赐，而是他能给出的最高承认。',
+  '天劫降临古妖山，姬无夜本可独自飞升，却为护你硬生生折断一角妖王真身。你在雷海中抱住他，说若不能同行，长生也无趣。他仰天大笑，第一次放弃帝王威仪，低头与你额心相抵。万妖看见他们的王为一人红了眼，却无人敢出声。',
+  '九州平定后，姬无夜将半座王庭改成你喜欢的模样。朝会散去，他会卸下冠冕，把头枕在你膝上，任你触碰无人敢近的妖角。他仍号令天下、威压万族，却会在你远行时亲自撕开虚空来接。所谓妖王法旨，最常说的一句竟成了：“谁敢动你，本王便让这一界换个主人。”'
+ ],
+ '萧景行':[
+  '帝京长街刺客暴起，你与萧景行隔着人海同时拔剑。事后他没有拿无辜侍卫顶罪，反而顶着朝臣压力彻查幕后。你因此答应暂入王府相助。他给你最高规格的客卿令，却在无人处问：“若我不是皇子，只是萧景行，你还愿不愿与我喝一杯？”',
+  '夺嫡风波中，萧景行被逼在江山与你之间选择。他当着满朝文武烧掉能置你于死地的伪证，也因此失去最稳妥的登基之路。深夜宫墙上，他笑得仍旧英锐，说王位可以再争，真正并肩的人失去便不会再有。你替他披上风氅时，他握住你的手，久久未放。',
+  '敌国仙师压境，萧景行以龙气强行迎战，重伤坠下城楼。你在万军之前接住他，他醒来的第一句话不是战况，而是问你有没有受伤。后来你们共守孤城七日，他将背后交给你，也把最不容人窥见的恐惧与疲惫一并交给了你。',
+  '新朝立国那日，萧景行没有把你困在后宫或王座旁。他在百官面前赐你与帝王并行之权，又在夜里独自捧来一枚没有刻凤纹龙纹的素戒。他说天下是责任，你才是归处。宫灯万盏，他吻你时不再是皇子或帝王，只是那个终于得偿所愿的萧景行。'
+ ],
+ '玄机子':[
+  '无名棋亭不在地图上，你循着一片逆风而飞的落叶找到那里。玄机子与你下了三日残局，每一步都能看见自己不同的死法。你最终没有落在唯一的生门，而是替棋盘外受劫的村庄挡下一灾。他第一次抬眼认真看你：“能舍天命而取本心，才配与我再下一局。”',
+  '玄机子带你行走在被抹去的时间支流，看见你若从未修道，本可平安终老。你没有后悔，只问那些与你相识的人是否仍会孤独。他沉静千年的心湖因此起了波澜。归来时，他把一枚棋子放进你掌心，允许你在任何生死时刻唤他一次。',
+  '域外天魔以众生未来逼玄机子回归无情大道，他几乎抹去与你有关的全部记忆。你在棋亭等了七年，每年都摆同一盘棋。第八年雪落时，他终于回来，明明不记得你，却在看见残局的一刻落下泪来。原来有些情意比轮回更深，连天道也删不干净。',
+  '最终他替你落下一枚逆天之子，改去必死命数，也因此失去窥见未来的能力。你问可曾后悔，玄机子只是握住你的手，说从前看遍万世却从未真正活过，如今前路一片未知，反而觉得欢喜。棋亭外春山如笑，他俯身吻你眉心，从此不再算你们的结局。'
+ ]
+};
+const GENERIC_BOND_STORY=[
+ '你循着缘分留下的细小线索找到那个人。起初只是并肩处理一桩江湖麻烦，后来却在归途中谈到各自不愿示人的旧事。夜风吹过长街，你们第一次意识到，彼此已经不再是擦肩而过的陌生人。',
+ '一场突如其来的追杀让你们困在荒山破庙。你守前半夜，对方守后半夜，天亮时谁也没有提昨夜偷偷替彼此盖上的外衣。江湖险恶，可从这一日起，你知道至少有一个人会在你转身时守住背后。',
+ '你重伤时，那个人放下原本最重要的事情赶来，守了整整三日。醒来后你们没有说太多，只在檐下看了一场漫长的雨。手指相触时谁都没有避开，许多未说出口的话便有了答案。',
+ '大劫之前，你们回到最初相识之地，把一路争吵、错过与生死都重新说了一遍。最后对方将信物交到你手中，承诺无论此战之后是人间白首还是仙路万年，都愿与你共享。'
+];
+
 /* ============ 妖兽图鉴 ============ */
 const BESTIARY={
   '青翼妖狼':{realm:'筑基',elem:'木',atk:14,hp:140,drop:'妖丹',lore:'青岳山野常见妖狼，性群居，畏火。'},
@@ -278,6 +354,8 @@ function realmLabel(){return `${S.realm}·${S.sub}`;}
 function ensureGameState(){
   if(!S)return;
   S.flags=S.flags||{};S.qstep=S.qstep||{};S.codex=S.codex||{};S.aff=S.aff||{};S.wudao=S.wudao||{};S.daoban=S.daoban||[];
+  S.bonds=S.bonds||{};S.fortunes=S.fortunes||[];
+  Object.keys(NPCS).forEach(n=>{const oldAff=S.aff[n]||0;S.bonds[n]=S.bonds[n]||{met:oldAff>0,chapter:oldAff>=80?3:oldAff>=60?2:oldAff>=40?1:0,rescues:0};if(S.daoban.includes(n))S.bonds[n].met=true;});
   S.jianghu=S.jianghu||{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''};
   const j=S.jianghu;
   if(!Number.isFinite(j.chapter))j.chapter=1;if(!Number.isFinite(j.clue))j.clue=0;if(!Number.isFinite(j.xia))j.xia=0;
@@ -440,7 +518,7 @@ function finishCreate(lingen,lingType,tizhi,six,talents){
     lingen,lingType,tizhi,six:sixC,hp,hpMax:hp,mp,mpMax:mp,xiu:0,lingShi:stone,merit,karma,
     status:'无',loc:'青岳·青云宗',daoTu:t.daoTu,fashu,gongfa:[{n:'青云心法',grade:'黄阶'}],
     bag:[{n:'聚气丹',num:3},{n:'灵药·玉髓',num:1}],aff:{},wudao:{},qi:null,
-    dongfu:{qi:'普通',fac:['静室']},talents:talList,_juan:juan0||juanExtra,_炼丹:lianDan,_桃花:taohua,codex:{},
+    dongfu:{qi:'普通',fac:['静室']},talents:talList,_juan:juan0||juanExtra,_炼丹:lianDan,_桃花:taohua,codex:{},bonds:{},fortunes:[],
     mainLine:'第一章·青云疑云：查明外门弟子失踪真相',qstep:{},flags:{},daoban:[],
     jianghu:{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''},
   };
@@ -459,6 +537,7 @@ function statusCard(){
   const lc=lp<0.33?'#C05F55':'#5C8C6E';
   const aff=Object.keys(NPCS).filter(n=>(S.aff||{})[n]).map(n=>`${n} ${(S.aff||{})[n]}`).join('｜')||'无';
   const wd=Object.keys(S.wudao||{}).filter(k=>(S.wudao||{})[k]).map(k=>`${k}${(S.wudao||{})[k]}`).join(' ')||'无';
+  const fate=(S.fortunes||[]).slice(-3).join('、')||'尚未得天命奇缘';
   const sx=S.six||{};
   const body=`
   <div class="row"><span class="em">状态卡 · ${timeLine()}</span></div><hr class="sep">
@@ -474,6 +553,7 @@ function statusCard(){
   <div class="row sm">所在地 ${S.loc}；主线：${S.mainLine}</div>
   <div class="row sm">个人道途：${S.personalLine||S.daoTu}</div>
   <div class="row sm">悟道：${wd}　好感：${aff}${(S.daoban&&S.daoban.length)?'　道侣：'+S.daoban.join('、'):''}</div>
+  <div class="row sm">大机缘：${fate}</div>
   <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 帮助</div>`;
   return panel('',`状态卡 · ${S.name}`,body);
 }
@@ -517,14 +597,53 @@ function doCultivate(close){
   const mc=S.six.道心>=need+4?1.2:(S.six.道心>=need?1.0:0.5);
   const rate=BASE[S.realm]*k*lc*gc*qc*mc*(close?2:1);
   S.xiu=clamp(S.xiu+rate,0,100); S.mp=clamp(S.mp-5,0,S.mpMax);
-  let msg=`打坐${close?'闭关':''}一月，修为 +${rate.toFixed(1)}（${S.xiu.toFixed(0)}/100）。`;
+  const scenes=close?[
+    '你封闭洞府，以青石压住门缝，只留一线天光。最初十日心猿如野马，旧敌、旧情与未竟之愿轮番叩问；待到第二十一日，呼吸终于与山中灵脉同起同落，丹田里那一点微光渐成星河。',
+    '聚灵阵一层层亮起，你将功法运转三十六周天。经脉如被烈火重新锻打，疼痛几乎令人昏厥，可每熬过一轮，灵力便精纯一分。出关前一夜，你听见体内传来潮汐般的轰鸣，知道旧日根基已被彻底洗炼。',
+    '闭关无岁月，唯有剑横膝前。你在识海中与自己交手千百次，斩去浮躁、畏惧与侥幸。最后一剑落下时，心湖平如明镜，窗外恰有第一枝春花破雪而开。'
+  ]:[
+    '晨钟未响，你已在悬崖松下吐纳。云海从脚边漫过，灵气沿周身窍穴徐徐入体；一套心法走完，汗水浸透衣背，剑锋却比昨日更稳。',
+    '你在瀑布下负石运气，让万钧水势一遍遍击散护体灵光，再重新凝聚。直到暮色降临，灵力终于能在压力下自行护主，根基也因此扎实许多。',
+    '你将今日所学拆成最笨拙的基本功：挥剑三千次、步法一千遍、吐纳十二周天。没有天降异象，只有掌心磨出的新茧；可真正的强者，往往就是从这些无人喝彩的时刻长成。'
+  ];
+  let msg=`${scenes[Math.floor(Math.random()*scenes.length)]}<br><br>修为 +${rate.toFixed(1)}（${S.xiu.toFixed(0)}/100）。`;
+  if(d100()<=28){const insight=Math.max(1,Math.round(S.six.悟性/7));S.xiu=clamp(S.xiu+insight,0,100);S.six.道心=clamp(S.six.道心+.2,1,20);msg+=` 修至忘我处，你忽然贯通一处旧日疑难，额外修为+${insight}，道心微涨。`;}
+  const lover=bestBondAlly(null,40);
+  if(lover&&d100()<=24){const n=lover.name;S.mp=clamp(S.mp+12,0,S.mpMax);S.aff[n]=(S.aff[n]||0)+3;msg+=` 夜深时，${n}没有打扰，只在洞府外替你守住风雪与来客。你出定睁眼，看见那盏始终未灭的灯，心境安稳下来；${n}好感+3、灵力恢复。`;}
   if(S.xiu>=100)msg+=' 修为圆满，可「突破」。';
   log(timeLine(),msg);
   advanceTime(1); maybeEvent(); renderPlay();
 }
 
 /* ============ 奇遇 ============ */
-function maybeEvent(){if(d100()<=20)triggerRandomEvent();}
+function maybeEvent(){
+  if(curEvent||CB||SEC)return;
+  const fortuneChance=clamp(4+Math.floor((S.six.仙缘||0)/2),5,16);
+  if(d100()<=fortuneChance&&triggerFortuneEvent())return;
+  if(d100()<=24)triggerRandomEvent();
+}
+function triggerFortuneEvent(){
+  S.fortunes=S.fortunes||[];
+  const fs=[];
+  if(!S.flags.fortuneRing)fs.push({t:'悬崖古戒 · 残魂传法',n:'暴雨中你跌入无底崖，醒来时身在一座被藤蔓封死的石洞。枯骨指间戴着一枚乌黑古戒，戒中老人自称三千年前的剑道魁首。他没有立刻收徒，而是让你在幻境中死了九十九次。第一百次，你终于在绝境里悟出向死而生的一剑。',opts:[
+    {k:'A',tag:'逆天机缘',c:'#A98FD9',tx:'叩首承道，继承《太虚斩天经》',f:()=>{S.flags.fortuneRing=true;S.fortunes.push('太虚古戒');S.gongfa.push({n:'太虚斩天经',grade:'天阶'});S.fashu.push({n:'一剑开天',elem:'金',power:38,mp:20,系:'剑'});S.wudao['剑道']=(S.wudao['剑道']||0)+3;log('大机缘','你得天阶功法《太虚斩天经》与绝学“一剑开天”。古戒残魂只留一句：“去把这天地，斩出一个配得上你的答案。”');}},
+    {k:'B',tag:'稳固根基',c:'#6FA698',tx:'不受传承，借百世幻境磨炼道心',f:()=>{S.flags.fortuneRing=true;S.fortunes.push('百世剑心');S.six.道心=clamp(S.six.道心+3,1,20);S.six.悟性=clamp(S.six.悟性+2,1,20);log('大机缘','你没有照搬前人之道，却借百世死亡磨出自己的剑心。道心+3、悟性+2。');}}
+  ]});
+  if(!S.flags.fortuneMarrow)fs.push({t:'龙脉洗髓 · 脱胎换骨',n:'地底龙脉因灵潮翻身，万丈金光冲破山河。诸宗强者尚在争夺入口，你却被一缕龙气直接卷入核心。龙髓如熔金灌入四肢百骸，若能熬过碎骨重生之痛，凡体亦可蜕成绝世根骨。',opts:[
+    {k:'A',tag:'爽文机缘',c:'#C9A45C',tx:'以肉身硬承龙髓，重铸经脉',f:()=>{S.flags.fortuneMarrow=true;S.fortunes.push('祖龙道骨');S.hpMax+=120;S.hp=S.hpMax;S.mpMax+=80;S.mp=S.mpMax;S.six.资质=clamp(S.six.资质+3,1,20);log('大机缘','你在龙吟中碎骨重生，铸成祖龙道骨。气血上限+120、灵力上限+80、资质+3，伤势尽复。');}},
+    {k:'B',tag:'分润众生',c:'#6FA698',tx:'引龙气滋养方圆百里，再取一缕洗髓',f:()=>{S.flags.fortuneMarrow=true;S.fortunes.push('龙脉功德');S.hpMax+=60;S.hp=S.hpMax;S.merit+=5;S.jianghu.xia+=5;log('大机缘','你将大半龙气还于山河，枯田生泉、病者自愈。气血上限+60、功德+5、侠义+5。');}}
+  ]});
+  if(!S.flags.fortuneTower&&idxOf(S.realm)>=1)fs.push({t:'岁月神塔 · 一日百年',n:'你在秘境废墟里发现一座只有掌心大小的青铜塔。神识触碰的瞬间，天地倒转——塔内一日，外界仅过一月，却可让心神经历百年修行。代价是必须独自面对一百年孤寂，任何心魔都会被放大千倍。',opts:[
+    {k:'A',tag:'闭关百年',c:'#A98FD9',tx:'入塔苦修，冲击当前境界圆满',f:()=>{S.flags.fortuneTower=true;S.fortunes.push('岁月神塔');S.xiu=100;S.six.悟性=clamp(S.six.悟性+2,1,20);S.six.道心=clamp(S.six.道心+2,1,20);log('大机缘','塔中百年，你将每一式功法磨至近乎本能。外界一月后你白衣出塔，眸中已有岁月沉淀：修为圆满、悟性+2、道心+2。');}},
+    {k:'B',tag:'携手同修',c:'#D88FA5',tx:'邀请最亲近之人共同入塔',f:()=>{const a=bestBondAlly(null,40);if(!a){S.xiu=clamp(S.xiu+25,0,100);log('岁月神塔','无人能与你共入此局，你独修数十载后提前出塔，修为+25。');return;}S.flags.fortuneTower=true;S.fortunes.push('百年同心');S.xiu=100;S.aff[a.name]=(S.aff[a.name]||0)+25;S.daoban=S.daoban||[];log('百年同心',`你与${a.name}携手入塔。百年孤寂因彼此相伴不再漫长：你们看过九十九次花开花落，也争吵、和好、并肩斩过心魔。出塔时外界只过一月，你们对视一笑，情意却已沉淀百年。修为圆满，${a.name}好感+25。`);}}
+  ]});
+  if(!S.flags.fortuneSeed&&S.jianghu.xia>=8)fs.push({t:'仙王道种 · 天命认主',n:'你救下的无名老乞丐在临别前化作万丈法相，原来竟是一缕仙王执念。他将诸宗争抢万年的“世界道种”送到你面前。道种入体，可令每次破境都生出远胜同阶的底蕴，也会引来真正的天骄与古老势力。',opts:[
+    {k:'A',tag:'天命加身',c:'#C9A45C',tx:'收下道种，从此同阶称尊',f:()=>{S.flags.fortuneSeed=true;S.fortunes.push('世界道种');S.six.仙缘=clamp(S.six.仙缘+4,1,20);S.six.资质=clamp(S.six.资质+2,1,20);S.reputation+=30;log('大机缘','世界道种扎根丹田，混沌气洗过经脉。仙缘+4、资质+2、声望+30；从今往后，你的名字将被真正的大人物看见。');}},
+    {k:'B',tag:'护道苍生',c:'#6FA698',tx:'将道种种入故乡山河',f:()=>{S.flags.fortuneSeed=true;S.fortunes.push('一界福泽');S.merit+=10;S.jianghu.xia+=10;S.dongfu.qi='洞天';log('大机缘','你没有独吞造化，而是令一方贫瘠山河化作洞天福地。功德+10、侠义+10，洞府灵气升至洞天。天下散修皆记住了你的名字。');}}
+  ]});
+  if(!fs.length)return false;
+  curEvent=fs[Math.floor(Math.random()*fs.length)];curEvent.kind='天命大机缘';log('天命大机缘 · '+curEvent.t,curEvent.n);return true;
+}
 function triggerRandomEvent(){
   const evs=[
     {t:'神秘老者',n:'山门外跛足老者含笑递来丹药：「小友有缘。」',opts:[
@@ -536,11 +655,11 @@ function triggerRandomEvent(){
       {k:'B',tag:'平和',c:'#6FA698',tx:'记下方位，回报宗门',f:()=>{S.contribution+=5;log('平和','宗门记你一功，贡献+5。');}},
     ]},
     {t:'传音符',n:'腰间传音符轻响，似故人相邀。',opts:[
-      {k:'A',tag:'情缘',c:'#D88FA5',tx:'赴约（随机好感+）',f:()=>{const ns=Object.keys(NPCS);const n=ns[Math.floor(Math.random()*ns.length)];S.aff[n]=(S.aff[n]||0)+8;log('情缘',n+'与你把酒言欢，好感微增。');}},
+      {k:'A',tag:'情缘',c:'#D88FA5',tx:'赴约（已相识之人好感+）',f:()=>{const ns=Object.keys(NPCS).filter(n=>bondState(n).met);if(!ns.length){log('情缘','传音符最终没有亮起名字。先在“情缘”中循线结识有缘人，往后才会收到真正写给你的邀约。');return;}const n=ns[Math.floor(Math.random()*ns.length)];S.aff[n]=(S.aff[n]||0)+8;log('情缘',`${n}邀你在灯火将尽的酒肆相见。你们从一壶酒谈到天明，谁也没有先说告辞。好感+8。`);}},
       {k:'B',tag:'平和',c:'#6FA698',tx:'暂不赴约，专心修炼',f:()=>log('平和','你按下心境，继续苦修。')},
     ]},
     {t:'月下相逢',n:'一弯月照轩窗，旧人入梦来，心头忽地软了。',opts:[
-      {k:'A',tag:'情缘',c:'#D88FA5',tx:'觅那人而去（情意绵长）',f:()=>{const db=S.daoban||[];const ks=db.length?db:Object.keys(NPCS).filter(n=>(S.aff[n]||0)>=40);const n=ks.length?ks[Math.floor(Math.random()*ks.length)]:Object.keys(NPCS)[0];const v=(S.aff[n]||0)+10;S.aff[n]=v;log('情缘',`月色里你寻到${n}，相对无言，情意却比往日更浓（好感${v}·${lvName(v)}）。`);}},
+      {k:'A',tag:'情缘',c:'#D88FA5',tx:'觅那人而去（情意绵长）',f:()=>{const db=S.daoban||[];const met=Object.keys(NPCS).filter(n=>bondState(n).met);const ks=db.length?db:met.filter(n=>(S.aff[n]||0)>=40);if(!ks.length){log('月下独行','你沿月色走了很久，却尚没有一个可以不问缘由便去相见的人。先在情缘面板开启一条相识路线。');return;}const n=ks[Math.floor(Math.random()*ks.length)],v=(S.aff[n]||0)+10;S.aff[n]=v;log('情缘',`月色里你寻到${n}。那个人没有问你为何深夜到来，只默默让出身边的位置。你们并肩坐到天光微亮，话很少，彼此的影子却始终靠在一起。好感${v}·${lvName(v)}。`);}},
       {k:'B',tag:'平和',c:'#6FA698',tx:'独酌望月，静心养性',f:()=>{S.six.道心=clamp(S.six.道心+1,1,20);log('平和','你独对清辉，道心微涨。');}},
     ]},
     {t:'心魔暗生',n:'夜半心头一冷，似旧憾化影来袭。',opts:[
@@ -648,11 +767,43 @@ function mkEnemy(name,realm,sub,elem,atk,hp,spirit,key){
 }
 function outMul(a,d){const diff=a-d;if(diff>=2)return 2.2;if(diff===1)return 1.6;if(diff===-1)return 0.4;if(diff<=-2)return 0.12;return 1.0;}
 function keMul(a,d){if(!a||!d)return 1;if(KE[a]===d)return 1.3;if(KE[d]===a)return 0.8;return 1.0;}
+function bestBondAlly(enemy,minAff){
+  if(!S)return null;ensureGameState();minAff=minAff||40;
+  const list=Object.keys(BOND_ROUTES).filter(n=>S.bonds[n]&&S.bonds[n].met&&(S.aff[n]||0)>=minAff).map(n=>{
+    const r=BOND_ROUTES[n],aff=S.aff[n]||0,power=idxOf(r.realm)*18+aff+(S.daoban||[]).includes(n)*35;
+    const counter=enemy&&keMul(r.elem,enemy.elem)>1?18:0;return {name:n,route:r,aff,power:power+counter};
+  }).sort((a,b)=>b.power-a.power);
+  return list[0]||null;
+}
+function bondRescueText(n,e){
+  const map={
+   '顾清玄':`你气血将尽时，一道青冥剑光横跨战场。顾清玄踏剑而来，白衣染着一路杀出的血。他没有问你为何逞强，只把你护到身后：“余下的剑，我与你一起接。”万千剑影随他抬手而鸣，硬生生把${e.name}逼退百丈。`,
+   '云栖':`杀招落下前，四周忽然亮起云栖早已埋好的天机符。她从破碎虚空中跌出，脸上仍带着笑，手却在发抖：“我算了三百六十七卦，没有一卦准你死在这里。”她捏碎压箱底的护命奇宝，金色阵轮将${e.name}困在中央。`,
+   '谢无咎':`血河先于声音贯穿长空。谢无咎从滔天血焰里走来，一手接住你，一手扼住${e.name}的杀招。他眼底再无半分玩笑：“我答应过让你看见我做个好人——所以在那之前，阎王也带不走你。”`,
+   '白凝霜':`天地骤然寂静，连飞溅的血都凝成冰晶。白凝霜自暴雪中走出，把你轻轻抱住，冰莲在脚下层层盛放。“你说过会回北原看雪。”她抬眸望向${e.name}，声音冷得令山河冻结，“约定未完，谁准你伤他？”`,
+   '叶知秋':`一道古老法旨从天而降，${e.name}的杀招竟被定在你眉前三寸。叶知秋跨过虚空裂缝，平日端方的眸中第一次有了怒意：“天地规矩护不了我想护的人，那便由我重写规矩。”`,
+   '姬无夜':`妖王法相遮蔽日月，姬无夜一掌撕开战场结界，将你从死亡边缘夺回。他把你按在怀里，回首时万妖俯首、群山震颤：“本王的人也敢动？很好——今日这一界，便拿来给你赔罪。”`,
+   '萧景行':`金龙长吟，帝王气运化作城墙挡住绝杀。萧景行率玄甲卫破阵而来，却亲自跪地扶起你：“江山可以再夺，你只有一个。”他将传国剑递到你手中，与你并肩指向${e.name}。`,
+   '玄机子':`棋子落下，时间在这一刻倒退三息。你本已熄灭的气息重新燃起，玄机子从岁月尽头缓步而来。他折断那枚珍藏千年的白子，平静道：“这一局，天道判你输。我不同意。”`
+  };
+  return map[n]||`生死一线，${n}循着你们之间的同心印赶到。那个人挡在你身前，衣袂被杀气撕裂也没有后退：“你可以输这一战，却不能独自死在这里。因为你答应过，往后的路要一起走。”`;
+}
+function callBondAid(lethal){
+  if(!CB||CB.bondCalled)return false;const e=CB.enemy,a=bestBondAlly(e,40);if(!a)return false;
+  const bonded=(S.daoban||[]).includes(a.name),chance=lethal?(bonded?100:clamp(35+a.aff*.65,55,95)):clamp(30+a.aff*.55,45,92);
+  CB.bondCalled=true;
+  if(d100()>chance){log('情缘求援',`你捏碎与${a.name}的传音信物，远方灵光剧烈闪烁。${a.name}正在另一场杀局中脱不开身，却将一缕护体真元隔空送来。你气血恢复少许，仍需靠自己结束此战。`);S.hp=Math.max(S.hp,Math.round(S.hpMax*.18));return false;}
+  const route=a.route,realmGap=Math.max(0,idxOf(route.realm)-e.idx),dmg=Math.round(e.hpMax*(bonded?.72:.48)+a.aff*.45+realmGap*28);
+  S.hp=Math.max(S.hp,Math.round(S.hpMax*(bonded?.55:.36)));S.mp=clamp(S.mp+25,0,S.mpMax);e.hp-=dmg;
+  S.aff[a.name]=a.aff+Math.max(2,lethal?8:4);S.bonds[a.name].rescues=(S.bonds[a.name].rescues||0)+1;
+  log(lethal?'生死救场':'有缘人助战',`${bondRescueText(a.name,e)}<br><br>${a.name}以「${route.role}」重创${e.name} ${dmg}，并替你稳住伤势。好感升至${S.aff[a.name]}（${lvName(S.aff[a.name])}）。`);
+  if(e.hp<=0){winCombat();return true;}return true;
+}
 function genQi(){const pool={金:1,木:1,水:1,火:1,土:1};(S.lingen||[]).forEach(t=>{if(pool[t]!==undefined)pool[t]+=2;});Object.keys(pool).forEach(k=>pool[k]+=Math.floor(Math.random()*2));S.qi=pool;}
 function rollEnemyIntent(){const r=d100();return r<=25?'heavy':r<=48?'guard':r<=72?'feint':'attack';}
 function intentText(i){return {heavy:'敌人正在蓄势：下回合重击，防御或强攻打断更稳妥。',guard:'敌人架势收紧：本回合伤害降低，交涉或观察更有利。',feint:'敌人步法诡异：可能虚招扰乱，观察可识破。',attack:'敌人杀意直逼：将发动常规攻势。'}[i]||'敌意难辨。';}
 function startCombat(enemy,afterWin){
-  CB={enemy,charging:false,observed:false,def:false,round:1,intent:rollEnemyIntent(),afterWin:afterWin||null};
+  CB={enemy,charging:false,observed:false,def:false,round:1,intent:rollEnemyIntent(),afterWin:afterWin||null,bondCalled:false};
   if(enemy.key||enemy.name){const k=enemy.key||enemy.name;(S.codex[k]=S.codex[k]||{}).seen=true;}
   genQi();
   const diff=enemy.idx-idxOf(S.realm);
@@ -662,6 +813,7 @@ function startCombat(enemy,afterWin){
 }
 function renderCombat(){
   const e=CB.enemy;
+  const ally=bestBondAlly(e,40);
   const qiHtml=Object.keys(S.qi||{}).map(k=>`<span class="qi">${k} ${S.qi[k]}</span>`).join('');
   const spHtml=S.fashu.map((s,i)=>s.power>0?`<button class="opt" data-act="cSpell" data-arg="${i}"><span class="optkey">${'①②③'[i]||i}</span><span class="opttext">${s.n}（${s.elem||'无'}系·威${s.power}·灵力${s.mp}）</span></button>`:'').join('');
   const body=`<div class="row em">敌 · ${e.name}　${e.realm}·${e.sub}</div>
@@ -679,6 +831,7 @@ function renderCombat(){
     <button class="opt" data-act="cAct" data-arg="dan"><span class="optkey">丹</span><span class="opttext">服丹（回血）</span></button>
     <button class="opt" data-act="cAct" data-arg="talk"><span class="optkey">言</span><span class="opttext">说话（降敌战意/周旋）</span></button>
     <button class="opt" data-act="cAct" data-arg="observe"><span class="optkey">察</span><span class="opttext">冷静观察（下回合必中）</span></button>
+    ${ally&&!CB.bondCalled?`<button class="opt" data-act="cAct" data-arg="bond"><span class="optkey">援</span><span class="opttag" style="background:#D88FA5">情缘</span><span class="opttext">召唤${ally.name}助战（${ally.route.realm}·${ally.route.role}，每战一次）</span></button>`:''}
   </div>
   <div id="spMenu" style="display:none"><div class="opts">${spHtml}<button class="opt" data-act="cMenu" data-arg="close"><span class="optkey">×</span><span class="opttext">收起</span></button></div></div>`;
   return panel('fight',`战斗 · 第${CB.round}回合`,body);
@@ -691,7 +844,7 @@ function enemyTurn(){
   let dmg=Math.round(e.atk*mul*intentMul*(CB.def?0.45:1)*(0.85+Math.random()*0.3));
   S.hp=clamp(S.hp-dmg,0,S.hpMax);
   log('战斗',`${e.name}反击，伤你 ${dmg}。${S.hp<=0?'':''}`);
-  if(S.hp<=0){return combatLose();}
+  if(S.hp<=0){if(callBondAid(true))return;if(S.hp<=0)return combatLose();}
   CB.def=false;CB.round++;CB.intent=rollEnemyIntent();genQi();
 }
 function combatAct(a){
@@ -699,6 +852,10 @@ function combatAct(a){
   const e=CB.enemy;
   if(a==='observe'){CB.observed=true;log('战斗','你凝神观察，觅得破绽。');enemyTurn();renderPlay();return;}
   if(a==='def'){CB.def=true;log('战斗','你凝罡防御。');enemyTurn();renderPlay();return;}
+  if(a==='bond'){
+    const before=CB&&CB.enemy;if(!bestBondAlly(before,40)){log('情缘求援','尚无达到知己阶段的有缘人可以响应。先在情缘路线中相识并提升好感。');renderPlay();return;}
+    const helped=callBondAid(false);if(!CB)return;if(helped&&CB.enemy.hp>0){enemyTurn();if(CB)renderPlay();}else if(CB){enemyTurn();if(CB)renderPlay();}return;
+  }
   if(a==='attack'){
     if(S.mp<5){log('战斗','灵力不足，无法攻击。');renderPlay();return;}
     S.mp-=5;let dmg=Math.round((8+S.six.资质*0.6)*outMul(idxOf(S.realm),e.idx)*keMul('金',e.elem)*(CB.observed?1.5:1)*(CB.intent==='guard'?0.55:1));
@@ -884,9 +1041,12 @@ function jianghuQuest(){
     2:{title:'第二章 · 血月客栈',objective:'线索指向山下的血月客栈。蒙面人正在等你赴约，真相与杀局只隔一扇门。',progress:'准备妥当后前往客栈对质'},
     3:{title:'第三章 · 剑冢遗书',objective:'蒙面人留下半枚剑令，牵出青云宗二十年前的灭门旧案。寻找三页剑谱残章。',progress:`残章 ${j.clue}/3 · ${idxOf(S.realm)>=1?'境界足以入剑冢':'需先达到筑基'}`},
     4:{title:'第四章 · 山门夜战',objective:'血魔宗借灵潮围攻青云山。守山、救人或趁乱夺权，将决定你在江湖中的名声。',progress:'决战已至'},
-    5:{title:'第五章 · 九州行者',objective:'青云之变告一段落。你的选择已传遍九州，新的门派、宿敌与奇案正在等待。',progress:`侠义 ${j.xia} · 恶名 ${j.evil} · 已办委托 ${j.contracts}`},
+    5:{title:'第五章 · 天命古碑',objective:'山门大战后，一块刻有你姓名的远古天碑从东海升起。各大圣地断言你身怀“被夺走的天命”，帝京与古族都派人来抢。查清三块碑文，夺回本该属于你的命数。',progress:`天碑线索 ${j.clue}/3 · 侠义 ${j.xia} · 可结识帝京、古妖山等高阶人物`},
+    6:{title:'第六章 · 帝京风云',objective:'天碑指出大夏国师以万民气运豢养仙胎。你将入帝京、登天牢、闯皇城，在王朝与苍生之间作出选择。',progress:`帝京证据 ${j.clue}/3 · ${idxOf(S.realm)>=2?'境界足以直面国师':'建议先至结晶'}`},
+    7:{title:'第七章 · 天外剑门',objective:'国师背后站着上界道统“太一剑门”。他们降下法旨，要你献出道种、古戒与所有机缘。九州无人敢应，你却要以人间一剑问上界有没有资格。',progress:`破界准备 ${j.clue}/3 · ${idxOf(S.realm)>=3?'可登天门':'建议先至金丹'}`},
+    8:{title:'第八章 · 人间至尊',objective:'天门已碎，你的名字传遍诸天。古族圣子、上界仙使与沉睡禁区将陆续苏醒；从此主线进入开放篇章，你可游历九州、经营情缘、追寻飞升，继续书写属于自己的无敌路。',progress:`侠义 ${j.xia} · 恶名 ${j.evil} · 主线胜战 ${j.storyWins} · 大机缘 ${(S.fortunes||[]).length}`},
   };
-  return qs[j.chapter]||qs[5];
+  return qs[j.chapter]||qs[8];
 }
 function showJianghu(){
   ensureGameState();const j=S.jianghu,q=jianghuQuest();
@@ -895,7 +1055,10 @@ function showJianghu(){
   else if(j.chapter===2)story=opt('赴','决断','#C4675C','赴血月客栈，与蒙面人对质','jhStory','advance');
   else if(j.chapter===3)story=(idxOf(S.realm)<1?`<div class="row danger">剑冢威压非炼气修士可承，请先突破至筑基。</div>`:(j.clue>=3?opt('悟','传承','#A98FD9','残章齐全：入剑冢参悟遗书','jhStory','advance'):opt('寻','主线','#C9A45C','追寻剑谱残章','jhInvestigate','main')));
   else if(j.chapter===4)story=opt('战','决战','#C4675C','血魔攻山：选择你的立场','jhStory','advance');
-  else story=opt('游','奇闻','#7FA8C9','游历九州，触发地方奇闻','jhInvestigate','wander');
+  else if(j.chapter===5)story=j.clue>=3?opt('夺','天命','#A98FD9','三碑合一：闯东海归墟，夺回天命','jhStory','advance'):opt('碑','主线','#C9A45C','追查天命古碑与幕后夺运者','jhInvestigate','main');
+  else if(j.chapter===6)story=j.clue>=3?opt('宫','决战','#C4675C','证据齐全：夜闯皇城斩国师','jhStory','advance'):opt('京','主线','#C9A45C','潜入帝京，收集国师罪证','jhInvestigate','main');
+  else if(j.chapter===7)story=j.clue>=3?opt('天','逆伐','#C4675C','万事俱备：登天梯、斩仙使','jhStory','advance'):opt('界','主线','#C9A45C','联合九州强者准备破界之战','jhInvestigate','main');
+  else story=opt('游','奇闻','#7FA8C9','游历九州，触发地方奇闻与禁区挑战','jhInvestigate','wander');
   const body=`<div class="questbox"><div class="chapter">${q.title}</div><div>${q.objective}</div><div class="sm">${q.progress}</div></div>
   <div class="opts">${story}
     ${opt('榜','委托','#6FA698','查看侠义榜：护送、缉凶、寻药','jhContract','open')}
@@ -929,6 +1092,54 @@ function investigateJianghu(mode){
         {k:'B',tag:'稳妥',c:'#6FA698',tx:'通知长老，合围搜查',f:()=>{j.clue++;S.contribution+=5;log('线索','黑影遁走，却留下血色符灰。线索+1、贡献+5。');}}]},
     ];const e=pool[j.clue%pool.length];setJianghuEvent(e.t,e.n,e.opts);return;
   }
+  if(j.chapter===5){
+    const pool=[
+      {t:'东海碑影',n:'潮退之后，海底露出一座倒悬古城。城门石碑上刻着你的道号，旁边却有一道被人强行剜去的命格。数十名圣地弟子正在封锁现场，声称凡人不得靠近。',opts:[
+        {k:'A',tag:'霸道破局',c:'#C4675C',tx:'当众踏碎封锁阵，取回碑文',f:()=>{j.clue++;S.reputation+=8;S.xiu=clamp(S.xiu+8,0,100);log('天碑线索','你一步踏入禁阵，阵纹如琉璃寸寸崩裂。众天骄无人敢拦，第一块碑文认主飞入识海：天碑线索+1、声望+8、修为+8。');}},
+        {k:'B',tag:'联手情缘',c:'#D88FA5',tx:'请一位知己以其身份带你入城',f:()=>{const a=bestBondAlly(null,40);if(!a){log('东海碑影','尚无知己可以替你打开圣地封锁。你记下阵眼，待结识有缘人后再来。');return;}j.clue++;S.aff[a.name]=(S.aff[a.name]||0)+6;log('天碑线索',`${a.name}与你并肩穿过重重盘查，在古城最深处替你守住追兵。第二块碑文照见你们相识以来的所有生死瞬间。线索+1，${a.name}好感+6。`);}}
+      ]},
+      {t:'守墓老兵',n:'荒原尽头，一名瞎眼老兵守着半截石碑。他自称曾替你的前世守关三百年，只等把一封没有寄出的战书交给今生的你。远处古族骑兵已踏碎地平线。',opts:[
+        {k:'A',tag:'一人挡军',c:'#C9A45C',tx:'接过战书，独守荒原一炷香',f:()=>{j.clue++;j.xia+=4;S.six.道心=clamp(S.six.道心+1,1,20);log('天碑线索','你一人一剑立在老兵身前，一炷香内连败十八骑。最后无人再敢冲阵。老兵含笑坐化，碑文落入你手：线索+1、侠义+4、道心+1。');}},
+        {k:'B',tag:'唤友助阵',c:'#D88FA5',tx:'传讯有缘人，共守前世旧诺',f:()=>{const a=bestBondAlly(null,40);if(a){j.clue++;S.aff[a.name]=(S.aff[a.name]||0)+5;S.lingShi+=80;log('天碑线索',`${a.name}收到传讯后跨越千里赶来。你们背靠背守住荒原，老兵看着你们，像终于等到前世未曾等来的援军。线索+1、灵石+80、${a.name}好感+5。`);}else{j.clue++;S.hp=clamp(S.hp-20,1,S.hpMax);log('天碑线索','无人回应传讯，你仍独自守到最后。虽负伤，却得到碑文。线索+1。');}}}
+      ]},
+      {t:'夺运祭坛',n:'第三块碑文藏在一座吸取众生命数的祭坛里。祭坛上浮现你幼年时本应拥有的天赋、家族与荣光——原来有人在你出生时便夺走一切，用来供养所谓圣子。',opts:[
+        {k:'A',tag:'夺回一切',c:'#A98FD9',tx:'斩断祭坛，把被夺天命全部收回',f:()=>{j.clue++;S.six.资质=clamp(S.six.资质+1,1,20);S.six.仙缘=clamp(S.six.仙缘+1,1,20);log('天碑线索','你挥剑斩断气运锁链，漫天金雨归入己身。资质+1、仙缘+1、线索+1。昔日夺你命格之人，将在归墟等你。');}},
+        {k:'B',tag:'泽被无辜',c:'#6FA698',tx:'只取自身命格，释放其余气运',f:()=>{j.clue++;S.merit+=3;j.xia+=3;log('天碑线索','万千被夺命数化作流星回归众生。你只取回属于自己的名字：线索+1、功德+3、侠义+3。');}}
+      ]}
+    ];const e=pool[j.clue%pool.length];setJianghuEvent(e.t,e.n,e.opts);return;
+  }
+  if(j.chapter===6){
+    const pool=[
+      {t:'天牢第九层',n:'国师将反对炼制仙胎的大臣与修士囚在天牢最深处。牢门由皇朝龙气镇压，强闯会惊动整座帝京。',opts:[
+        {k:'A',tag:'潜入',c:'#7FA8C9',tx:'借夜色潜入，救出证人',f:()=>{j.clue++;S.six.遁速=clamp(S.six.遁速+.5,1,20);log('帝京证据','你在万名禁军眼皮下破开第九层，以一根锁链带出十二名证人。证据+1、遁速微涨。');}},
+        {k:'B',tag:'皇权路线',c:'#D88FA5',tx:'寻找萧景行，从宫门正面提人',f:()=>{if(!bondState('萧景行').met){log('帝京风云','你尚未结识萧景行。情缘面板会写明帝京相识路线。');return;}j.clue++;S.aff['萧景行']=(S.aff['萧景行']||0)+8;log('帝京证据','萧景行以皇子金令压住禁军，你在满城注视下带走证人。那一刻你们不只是在查案，也在共同选择这个王朝的未来。证据+1、萧景行好感+8。');}}
+      ]},
+      {t:'万民魂灯',n:'城南贫民窟地下藏着数万盏魂灯，每一盏都在缓慢抽取百姓寿元。守灯者是一具金丹傀儡，而孩子们就在阵眼上方沉睡。',opts:[
+        {k:'A',tag:'救人',c:'#6FA698',tx:'先护住百姓，再拆魂灯阵',f:()=>{j.clue++;j.xia+=5;S.merit+=3;log('帝京证据','你以自身灵力托住整片街区，硬受阵法反噬也没有让一盏民灯熄灭。证据+1、侠义+5、功德+3。');}},
+        {k:'B',tag:'强势镇压',c:'#C4675C',tx:'一剑斩傀儡，夺取国师印记',f:()=>{j.clue++;S.reputation+=10;S.xiu=clamp(S.xiu+6,0,100);log('帝京证据','金丹傀儡被你隔阶斩碎，国师印记成为铁证。证据+1、声望+10、修为+6。');}}
+      ]},
+      {t:'朝堂对质',n:'最后一份证据就在国师袖中。百官早朝之际，他反咬你为妖邪，满殿强者同时锁定你的气机。',opts:[
+        {k:'A',tag:'舌战群臣',c:'#C9A45C',tx:'当殿陈证，让天下人听见',f:()=>{j.clue++;S.reputation+=15;S.six.道心=clamp(S.six.道心+1,1,20);log('帝京证据','你逐条拆穿国师谎言，满朝从呵斥到死寂。最后一枚罪印自行显形：证据+1、声望+15、道心+1。');}},
+        {k:'B',tag:'掀桌',c:'#C4675C',tx:'不与他们争辩，拔剑逼国师现形',f:()=>{j.clue++;j.evil+=2;S.reputation+=18;log('帝京证据','你一剑劈开金殿，逼得国师仙胎现形。证据确凿，天下震动；证据+1、声望+18、恶名+2。');}}
+      ]}
+    ];const e=pool[j.clue%pool.length];setJianghuEvent(e.t,e.n,e.opts);return;
+  }
+  if(j.chapter===7){
+    const pool=[
+      {t:'九州盟誓',n:'正魔妖三道因旧怨互不相让，而天外剑门只给人间七日。你站上盟台，必须决定以何种方式让他们并肩。',opts:[
+        {k:'A',tag:'以德服众',c:'#6FA698',tx:'以过往侠名担保，化解旧怨',f:()=>{if(j.xia<12){log('九州盟誓','你的侠名尚不足以压住诸宗争端。先完成委托或行侠积累侠义。');return;}j.clue++;S.reputation+=12;log('破界准备','曾受你恩惠的人一个个走上盟台。最终九州共签血誓：线索+1、声望+12。');}},
+        {k:'B',tag:'以力镇世',c:'#C4675C',tx:'一掌压服各宗天骄',f:()=>{j.clue++;S.xiu=clamp(S.xiu+8,0,100);S.reputation+=15;log('破界准备','你以一己威压令群雄低头，再把主位让给众生。无人再质疑你有没有资格领军：准备+1、修为+8、声望+15。');}}
+      ]},
+      {t:'故人护道',n:'上界仙使提前降临，点名要在大战前斩断你的情缘与因果。他认为有牵挂的人不配执掌天命。',opts:[
+        {k:'A',tag:'情缘',c:'#D88FA5',tx:'与最亲近之人并肩应劫',f:()=>{const a=bestBondAlly(null,40);if(!a){log('故人护道','你尚无达到知己阶段的有缘人。可先完成情缘路线，再来证明有情亦可问道。');return;}j.clue++;S.aff[a.name]=(S.aff[a.name]||0)+10;S.wudao['有情道']=(S.wudao['有情道']||0)+2;log('破界准备',`${a.name}站到你身边，与你共同接下仙使法旨。你们以事实告诉上界：牵挂不是弱点，而是人在绝境中仍愿拔剑的理由。准备+1、有情道+2、${a.name}好感+10。`);}},
+        {k:'B',tag:'孤勇',c:'#A98FD9',tx:'独自承劫，不令任何人涉险',f:()=>{j.clue++;S.six.道心=clamp(S.six.道心+2,1,20);log('破界准备','你独坐山巅承受三日天火，却始终没有低头。准备+1、道心+2。远方仍有人守了你整整三日。');}}
+      ]},
+      {t:'铸人间剑',n:'要斩断天门，需要一柄汇聚九州众生愿力的剑。名匠说还缺最后一样材料：你最珍贵之物。',opts:[
+        {k:'A',tag:'舍宝',c:'#C9A45C',tx:'熔掉最强机缘信物铸剑',f:()=>{j.clue++;S.fashu.push({n:'人间一剑',elem:'金',power:55,mp:26,系:'剑'});log('破界准备','你将一件珍贵信物投入炉中，铸成绝学“人间一剑”。它不属于仙门，只属于每一个不愿跪下的人。准备+1。');}},
+        {k:'B',tag:'万民愿力',c:'#6FA698',tx:'以功德与侠义请众生共铸',f:()=>{j.clue++;S.merit+=2;S.fashu.push({n:'众生剑潮',elem:'金',power:50,mp:22,系:'剑'});log('破界准备','千万凡人、散修与旧友送来一缕愿力，剑炉亮彻七日。你悟得“众生剑潮”：准备+1、功德+2。');}}
+      ]}
+    ];const e=pool[j.clue%pool.length];setJianghuEvent(e.t,e.n,e.opts);return;
+  }
   if(j.chapter===3){
     const scenes=[
       ['盲剑客','一名盲剑客守着残章，只问：“剑为何出鞘？”'],
@@ -946,14 +1157,20 @@ function storyJianghu(){
   if(j.chapter===1){setJianghuEvent('废祠真凶','废祠地底，青铜面具人正在焚毁名册。失踪弟子皆因撞破血魔宗细作名单而死。',[{k:'A',tag:'侠义',c:'#6FA698',tx:'先夺名册，再擒真凶',f:()=>{const e=mkEnemy('青铜面具人','炼气','圆满','火',13,115,65,'青铜面具人');e.outlaw=true;startCombat(e,'chapter1');}},{k:'B',tag:'权谋',c:'#8B6FA8',tx:'与他交易，换取血魔宗功法',f:()=>{j.evil+=5;giveItem('血炼残篇',1);j.chapter=2;j.clue=0;S.mainLine='第二章·血月客栈：赴约查明幕后主使';log('主线','你放走细作，换得血炼残篇。恶名+5。更大的局已在血月客栈等你。');}}]);return;}
   if(j.chapter===2){const e=mkEnemy('血月客栈主','筑基','初期','火',15,150,75,'血月客栈主');e.outlaw=true;startCombat(e,'chapter2');return;}
   if(j.chapter===3){j.chapter=4;j.clue=0;S.wudao['剑道']=(S.wudao['剑道']||0)+3;S.fashu.push({n:'青冥断岳',elem:'金',power:24,mp:14,系:'剑'});S.mainLine='第四章·山门夜战：血魔宗大军压境';log('剑冢遗书','三页残章合一，你得知旧案真相，并悟得“青冥断岳”。剑道+3，新剑招已习得。');showJianghu();return;}
-  if(j.chapter===4){setJianghuEvent('山门夜战','护山大阵已破。山下百姓、藏经阁传承与掌门性命，只能优先保住一处。',[{k:'A',tag:'侠义',c:'#6FA698',tx:'下山救百姓，舍弃争功',f:()=>{j.xia+=8;const e=mkEnemy('血魔先锋','筑基','中期','火',18,180,80,'血魔先锋');e.outlaw=true;startCombat(e,'chapter4good');}},{k:'B',tag:'宗门',c:'#C9A45C',tx:'死守藏经阁，保宗门传承',f:()=>{S.contribution+=30;const e=mkEnemy('血魔护法','筑基','中期','金',19,190,85,'血魔护法');e.outlaw=true;startCombat(e,'chapter4sect');}},{k:'C',tag:'权谋',c:'#8B6FA8',tx:'趁乱夺掌门令，掌控护山阵',f:()=>{j.evil+=8;S.reputation+=20;j.chapter=5;S.sectRank='执法长老';S.mainLine='第五章·九州行者：你的名声已传遍天下';log('山门夜战','你以掌门令重启大阵，逼退强敌，也将权柄握入掌中。恶名+8、声望+20。');}}]);}
+  if(j.chapter===4){setJianghuEvent('山门夜战','护山大阵已破。山下百姓、藏经阁传承与掌门性命，只能优先保住一处。',[{k:'A',tag:'侠义',c:'#6FA698',tx:'下山救百姓，舍弃争功',f:()=>{j.xia+=8;const e=mkEnemy('血魔先锋','筑基','中期','火',18,180,80,'血魔先锋');e.outlaw=true;startCombat(e,'chapter4good');}},{k:'B',tag:'宗门',c:'#C9A45C',tx:'死守藏经阁，保宗门传承',f:()=>{S.contribution+=30;const e=mkEnemy('血魔护法','筑基','中期','金',19,190,85,'血魔护法');e.outlaw=true;startCombat(e,'chapter4sect');}},{k:'C',tag:'权谋',c:'#8B6FA8',tx:'趁乱夺掌门令，掌控护山阵',f:()=>{j.evil+=8;S.reputation+=20;j.chapter=5;S.sectRank='执法长老';S.mainLine='第五章·天命古碑：东海古碑刻着你的名字';log('山门夜战','你以掌门令重启大阵，逼退强敌，也将权柄握入掌中。恶名+8、声望+20。东海却传来异闻：一块出世古碑上，竟刻着你的名字。');}}]);}
+  if(j.chapter===5){setJianghuEvent('归墟夺命','三块天碑在东海归墟合一，映出真相：上古夺运使一直借你的命格供养圣地神子。那位自称天命所归的神子立于万丈祭坛之上，身后尽是本该属于你的气运异象。',[{k:'A',tag:'夺回天命',c:'#C4675C',tx:'登祭坛，正面击碎所谓神子',f:()=>{const e=mkEnemy('夺运圣子','结晶','后期','雷',24,285,90,'夺运圣子');e.outlaw=true;startCombat(e,'chapter5fate');}},{k:'B',tag:'携手破局',c:'#D88FA5',tx:'与最强有缘人共同登坛',f:()=>{const a=bestBondAlly(null,40);if(a){S.aff[a.name]=(S.aff[a.name]||0)+8;log('同登归墟',`${a.name}握住你的手与你共同踏上祭坛。漫天气运威压之下，你们的同心印反而愈发明亮。${a.name}好感+8，本战可直接求援。`);}const e=mkEnemy('夺运圣子','结晶','圆满','雷',25,300,95,'夺运圣子');e.outlaw=true;startCombat(e,'chapter5fate');}}]);return;}
+  if(j.chapter===6){if(idxOf(S.realm)<2){log('帝京决战','国师仙胎已有金丹威势。建议先突破至结晶，或培养高阶知己在战斗中助阵。');showJianghu();return;}setJianghuEvent('皇城斩国师','三份铁证传遍帝京，国师索性撕下伪装，以万民魂灯点燃仙胎。皇城上空出现第二轮血日，他许你一人之下、万万人之上，只要你交出天命古碑。',[{k:'A',tag:'为民拔剑',c:'#6FA698',tx:'拒绝交易，斩断万民魂灯',f:()=>{j.xia+=5;const e=mkEnemy('大夏国师·仙胎身','金丹','中期','火',31,390,100,'大夏国师');e.outlaw=true;startCombat(e,'chapter6capital');}},{k:'B',tag:'王朝新主',c:'#C9A45C',tx:'与萧景行联手重定江山',f:()=>{if(bondState('萧景行').met)S.aff['萧景行']=(S.aff['萧景行']||0)+10;const e=mkEnemy('大夏国师·龙脉身','金丹','后期','土',32,410,100,'大夏国师');e.outlaw=true;startCombat(e,'chapter6capital');}}]);return;}
+  if(j.chapter===7){if(idxOf(S.realm)<3){log('天门之战','上界仙使至少具灵威势。建议先至金丹，并培养知己或道侣作为护道人。');showJianghu();return;}setJianghuEvent('一剑问天','天梯尽头，太一仙使垂眸俯视九州，称人间修士皆为下界蝼蚁。他要你跪下献出机缘，便赐你一个杂役飞升名额。你身后是一路同行的故人、宗门与亿万不肯被奴役的众生。',[{k:'A',tag:'人间至尊',c:'#C4675C',tx:'拔剑：今日不是我飞升，是上界低头',f:()=>{const e=mkEnemy('太一仙使','具灵','后期','金',39,560,100,'太一仙使');e.outlaw=true;startCombat(e,'chapter7heaven');}},{k:'B',tag:'有情破天',c:'#D88FA5',tx:'与有缘人共执人间剑',f:()=>{const a=bestBondAlly(null,40);if(a){S.aff[a.name]=(S.aff[a.name]||0)+12;log('天门之前',`${a.name}与你十指相扣，共同握住那柄汇聚众生愿力的剑。“这一剑不为成仙，只为往后每一条路，我们都能自己选择。”${a.name}好感+12。`);}const e=mkEnemy('太一仙使·法相','具灵','圆满','金',40,590,100,'太一仙使');e.outlaw=true;startCombat(e,'chapter7heaven');}}]);return;}
 }
 function openContracts(){setJianghuEvent('侠义榜','宗门与百姓将难事写在木牌上。你只能接下一桩。',[{k:'A',tag:'护送',c:'#6FA698',tx:'护送药商穿过青狼岭',f:()=>{const e=spawnBeast('青翼妖狼');e.beast=true;startCombat(e,'contractEscort');}},{k:'B',tag:'缉凶',c:'#C4675C',tx:'缉拿劫掠村镇的黑风盗',f:()=>{const e=mkEnemy('黑风盗首','炼气','后期','金',12,105,60,'黑风盗首');e.outlaw=true;startCombat(e,'contractBounty');}},{k:'C',tag:'寻药',c:'#A98FD9',tx:'为疫村寻找三叶清心草',f:()=>{S.jianghu.contracts++;S.jianghu.xia+=2;S.lingShi+=35;giveItem('灵药·玉髓',1);log('寻药委托','你在雨后崖边寻得清心草，疫村得救。侠义+2、灵石+35。');}}]);}
 function hearRumor(){const rs=['有人说血魔宗以失踪修士炼制魂灯，灯灭之日便是灵潮来时。','北原雪族正在寻找一名腕有月痕的故人，悬赏高得惊人。','中州剑榜新添无名客，一夜连败七位名宿，却从不取人性命。','南疆古渡每逢朔日便有沉船靠岸，船客仍穿十年前的衣裳。'];log('茶馆传闻',rs[Math.floor(Math.random()*rs.length)]);S.six.神识=clamp(S.six.神识+.2,1,20);showJianghu();}
 function finishStoryBattle(tag){ensureGameState();const j=S.jianghu;
   if(tag==='chapter1'){j.chapter=2;j.clue=0;j.xia+=3;S.mainLine='第二章·血月客栈：赴约查明幕后主使';log('第一章终','名册保住了。临死前，面具人只吐出四字：“血月客栈。”侠义+3。');}
   else if(tag==='chapter2'){j.chapter=3;j.clue=0;j.storyWins++;giveItem('半枚剑令',1);S.mainLine='第三章·剑冢遗书：筑基后寻找三页残章';log('第二章终','客栈主倒下，袖中滚出半枚青云剑令。二十年前的旧案浮出水面。');}
-  else if(tag==='chapter4good'||tag==='chapter4sect'){j.chapter=5;j.storyWins++;j.xia+=tag==='chapter4good'?4:2;S.mainLine='第五章·九州行者：你的选择正在塑造天下';log('第四章终',tag==='chapter4good'?'黎明时百姓皆在，你一身血衣立于山道，侠名传遍东洲。':'藏经阁灯火未灭，青云传承得保，你成为宗门中流砥柱。');}
+  else if(tag==='chapter4good'||tag==='chapter4sect'){j.chapter=5;j.storyWins++;j.xia+=tag==='chapter4good'?4:2;S.mainLine='第五章·天命古碑：东海古碑刻着你的名字';log('第四章终',(tag==='chapter4good'?'黎明时百姓皆在，你一身血衣立于山道，侠名传遍东洲。':'藏经阁灯火未灭，青云传承得保，你成为宗门中流砥柱。')+' 东海归墟随即升起一块上古天碑，碑上竟刻着你的名字。');}
+  else if(tag==='chapter5fate'){j.chapter=6;j.clue=0;j.storyWins++;S.six.仙缘=clamp(S.six.仙缘+2,1,20);S.xiu=clamp(S.xiu+20,0,100);S.fortunes=S.fortunes||[];if(!S.fortunes.includes('天命归位'))S.fortunes.push('天命归位');giveItem('天碑命轮',1);S.mainLine='第六章·帝京风云：揭开国师以万民养仙胎的阴谋';log('第五章终',`夺运圣子身后的万丈异象尽数崩塌，被窃取多年的命格如银河倒卷归入你身。诸宗这才明白，所谓圣子只是披着你影子的赝品。仙缘+2、修为+20，获得“天碑命轮”。从今日起，你不再等天命垂青——你自己便是天命。`);}
+  else if(tag==='chapter6capital'){j.chapter=7;j.clue=0;j.storyWins++;j.xia+=6;S.reputation+=25;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('人皇气运'))S.fortunes.push('人皇气运');S.mainLine='第七章·天外剑门：上界仙使索要你的一切机缘';log('第六章终','血日熄灭，数万魂灯化作星光回归百姓。你没有坐上国师留下的位置，只站在皇城最高处告诉天下：修行者若以凡人为薪，纵已成仙，也该斩。侠义+6、声望+25，得人皇气运加身。');}
+  else if(tag==='chapter7heaven'){j.chapter=8;j.clue=0;j.storyWins++;S.reputation+=50;S.wudao['剑道']=(S.wudao['剑道']||0)+5;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('一剑断天门'))S.fortunes.push('一剑断天门');giveItem('仙使本源',1);S.mainLine='第八章·人间至尊：天门已碎，诸天因你而震动';log('第七章终','你以人间一剑斩开仙使法相，剑光余势直上九天，将高悬万年的天门从中央劈成两半。上界沉默，九州沸腾。你没有借机独自飞升，而是转身走回那些等待你的人身边。声望+50、剑道+5，获得仙使本源。自此以后，上界提起人间，只会先想起你的名字。');}
   else if(tag==='contractEscort'||tag==='contractBounty'){j.contracts++;j.xia+=2;S.lingShi+=tag==='contractEscort'?45:60;log('侠义榜','委托完成，侠义+2，领取酬金。');}
 }
 
@@ -985,31 +1202,40 @@ function sell(i){const it=SHOP[i];const h=S.bag.find(b=>b.n===it.n);if(!h||h.num
 
 /* ============ 情缘 ============ */
 function lvName(v){return v>=100?'生死相许':v>=80?'道侣':v>=60?'暧昧':v>=40?'知己':v>=20?'相识':'陌生';}
-function affGain(n,d){S.aff[n]=(S.aff[n]||0)+d;log('情缘',`与${n}好感+${d}（${S.aff[n]}·${lvName(S.aff[n])}）。`);}
+function bondState(n){ensureGameState();return S.bonds[n]||(S.bonds[n]={met:false,chapter:0,rescues:0});}
+function affGain(n,d){const b=bondState(n);b.met=true;S.aff[n]=(S.aff[n]||0)+d;log('情缘',`与${n}好感+${d}（${S.aff[n]}·${lvName(S.aff[n])}）。`);}
+function bondRequirement(n){const r=BOND_ROUTES[n],j=S.jianghu||{};const reasons=[];if((j.chapter||1)<r.needChapter)reasons.push(`主线需到第${r.needChapter}章`);if(idxOf(S.realm)<r.needRealm)reasons.push(`境界需达${REALMS[r.needRealm]}`);if(n==='玄机子'&&(S.six.仙缘||0)<12)reasons.push('仙缘需达12');if(n==='姬无夜'&&(j.xia||0)<8)reasons.push('侠义需达8');return reasons;}
+function meetBond(n){
+  const b=bondState(n),r=BOND_ROUTES[n];if(b.met){log('情缘',`你与${n}早已相识。下一步：${bondNext(n)}`);showLove();return;}
+  const req=bondRequirement(n);if(req.length){log('缘线未启',`${n}的相识路线尚未满足：${req.join('、')}。<br>路线提示：${r.route}`);showLove();return;}
+  b.met=true;S.aff[n]=Math.max(S.aff[n]||0,12);S.loc=r.where;advanceTime(1);
+  const scene=(BOND_STORIES[n]||GENERIC_BOND_STORY)[0];
+  log(`初遇 · ${n}`,`${scene}<br><br>【缘线已开启】所在地：${r.where}；初始好感 ${S.aff[n]}。达到20好感后可推进第一段个人剧情。`);maybeEvent();renderPlay();
+}
+function bondNext(n){const b=bondState(n),v=S.aff[n]||0;if(!b.met)return`循“${BOND_ROUTES[n].route}”前往相识`;const needs=[20,40,60,80];if(b.chapter>=4)return'个人缘线已完成，可在主线与战斗中生死相随';return`好感达到${needs[b.chapter]}后，推进第${b.chapter+1}幕个人剧情（当前${v}）`;}
+function advanceBond(n){
+  const b=bondState(n);if(!b.met){meetBond(n);return;}const need=[20,40,60,80][b.chapter];if(need===undefined){log('缘线',`${n}的四幕个人缘线已经完成。你们的后续故事会在主线、修炼与危难救场中继续发生。`);showLove();return;}const v=S.aff[n]||0;if(v<need){log('缘线未启',`第${b.chapter+1}幕需要好感${need}，当前${v}。可通过闲谈、送礼、同游与共同修炼增进感情。`);showLove();return;}
+  const scenes=BOND_STORIES[n]||GENERIC_BOND_STORY,txt=scenes[Math.min(b.chapter,scenes.length-1)];b.chapter++;
+  const gain=b.chapter===4?15:8;S.aff[n]=v+gain;S.reputation+=b.chapter>=3?2:0;
+  if(b.chapter===2){S.hpMax+=10;S.hp=clamp(S.hp+10,0,S.hpMax);}if(b.chapter===3){S.mpMax+=10;S.mp=clamp(S.mp+10,0,S.mpMax);}if(b.chapter===4)giveItem(`${n}的同心信物`,1);
+  log(`情缘个人章 · ${n} · 第${b.chapter}幕`,`${txt}<br><br>【缘线进展】好感+${gain}${b.chapter===2?'、气血上限+10':b.chapter===3?'、灵力上限+10':b.chapter===4?'、获得同心信物':''}。${bondNext(n)}`);advanceTime(1);maybeEvent();renderPlay();
+}
 function showLove(){
-  const db=(S.daoban||[]);
+  ensureGameState();const db=(S.daoban||[]);
   const dbLine=db.length?`<div class="row em" style="color:#D88FA5">道侣（${db.length}）：${db.join('、')}</div>`:'';
-  const rows=Object.keys(NPCS).map(n=>{const v=S.aff[n]||0;const lv=lvName(v);
-    return `<div class="row"><b>${n}</b>（${NPCS[n].desc}）　好感 ${v}·${lv}
-      <a class="lnk" data-act="talknpc" data-arg="${n}">闲谈</a>
-      <a class="lnk" data-act="gift" data-arg="${n}">送礼</a>
-      <a class="lnk" data-act="travel2" data-arg="${n}">同游</a>
-      <a class="lnk" data-act="hold" data-arg="${n}">牵手</a>
-      <a class="lnk" data-act="emb" data-arg="${n}">拥抱</a>
-      <a class="lnk" data-act="confess" data-arg="${n}">诉衷肠</a>
-      <a class="lnk" data-act="dual" data-arg="${n}">双修</a>
-      <a class="lnk" data-act="kiss" data-arg="${n}">拥吻</a>
-      <a class="lnk" data-act="pillow" data-arg="${n}">共枕</a>
-      <a class="lnk" data-act="pledge" data-arg="${n}">定情</a>
-      <a class="lnk" data-act="romE" data-arg="${n}">密会</a>
-      <a class="lnk" data-act="view" data-arg="${n}">查看</a></div>`;
+  const rows=Object.keys(NPCS).sort((a,b)=>(bondState(b).met?1:0)-(bondState(a).met?1:0)).map(n=>{const v=S.aff[n]||0,lv=lvName(v),b=bondState(n),r=BOND_ROUTES[n];
+    if(!b.met){const req=bondRequirement(n);return `<div class="questbox"><div class="chapter">未相识 · ${n}　<span class="sm">${r.realm}强者</span></div><div>${r.route}</div><div class="sm">相识地点：${r.where}　条件：${req.length?req.join('、'):'已满足'}</div>${req.length?'':`<div><a class="lnk" data-act="meetBond" data-arg="${n}">循线前往相识</a></div>`}</div>`;}
+    const rescue=v>=40?`<span style="color:#D88FA5">可助战：${r.realm}·${r.role}</span>`:'好感40成为知己后可在战斗中求援';
+    return `<div class="questbox"><div class="chapter">${n} · ${lv}　好感 ${v}　缘线 ${b.chapter}/4</div><div>${NPCS[n].desc}</div><div class="sm">${rescue}　·　${bondNext(n)}</div><div>
+      <a class="lnk" data-act="bondStory" data-arg="${n}">推进缘线</a>　<a class="lnk" data-act="talknpc" data-arg="${n}">闲谈</a>　<a class="lnk" data-act="gift" data-arg="${n}">送礼</a>　<a class="lnk" data-act="travel2" data-arg="${n}">同游</a>　<a class="lnk" data-act="view" data-arg="${n}">路线详情</a><br>
+      <a class="lnk" data-act="hold" data-arg="${n}">牵手</a>　<a class="lnk" data-act="emb" data-arg="${n}">拥抱</a>　<a class="lnk" data-act="confess" data-arg="${n}">诉衷肠</a>　<a class="lnk" data-act="dual" data-arg="${n}">双修</a>　<a class="lnk" data-act="kiss" data-arg="${n}">拥吻</a>　<a class="lnk" data-act="pillow" data-arg="${n}">共枕</a>　<a class="lnk" data-act="pledge" data-arg="${n}">定情</a>　<a class="lnk" data-act="romE" data-arg="${n}">密会</a></div></div>`;
   }).join('');
-  const body=`<div class="row sm">全性向：感情线不分性别，好感自由积累，亦可纯友谊/师徒/结义/宿敌。<b>亲密之举随好感递进解锁</b>：知己可牵手，暧昧可拥抱·诉衷肠，道侣可双修·拥吻·共枕·定情·密会。可同时有多位道侣。</div><hr class="sep">${dbLine}${rows}`;
+  const body=`<div class="row sm"><b>情缘不再只是数值：</b>每人都有明确的相识地点、前置条件和四幕个人剧情。好感40成为知己后可在战斗中主动求援；暧昧与道侣在你濒死时更可能破界救场，高阶人物甚至能镇压远超你境界的强敌。全性向，也可理解为知己、师徒、结义或爱情。</div><hr class="sep">${dbLine}${rows}`;
   $('panel').innerHTML=panel('love',`情缘 · ${timeLine()}`,body)+statusCard();
 }
-function gift(n){if(S.lingShi<30){log('情缘','灵石不足30，无以为赠。');showLove();return;}S.aff[n]=(S.aff[n]||0)+12;S.lingShi=Math.max(0,S.lingShi-30);const t=ROM[NPCS[n].tone];log('情缘',`你赠${n}以心意${t?'，'+t.hold.replace(/^他|^她/,'') :''}，好感+12（${S.aff[n]}）。`);showLove();}
+function gift(n){if(!bondState(n).met){log('情缘','尚未相识，贸然送礼只会被当成别有用心。请先循线结识。');showLove();return;}if(S.lingShi<30){log('情缘','灵石不足30，无以为赠。');showLove();return;}S.aff[n]=(S.aff[n]||0)+12;S.lingShi=Math.max(0,S.lingShi-30);const t=ROM[NPCS[n].tone];log('赠礼',`你没有随便挑一件昂贵之物，而是记住了${n}真正喜欢的“${NPCS[n].like.join('、')}”。${t?' '+t.hold.replace(/^他|^她/,''):''}<br><br>贵重的从来不是三十灵石，而是你在漫长江湖里仍把那个人的一句话放在心上。好感+12（${S.aff[n]}·${lvName(S.aff[n])}）。`);showLove();}
 function travelLove(n){const v=S.aff[n]||0;if(v<20){log('情缘',`你与${n}尚${lvName(v)}，还不到同游之时。`);showLove();return;}
-  const lines=[`你邀${n}同游青岳，山间云海翻涌，彼此说说笑笑。`,`你与${n}踏溪寻幽，衣袂沾露，不觉日暮。`,`你伴${n}登高望远，风过处，发丝相缠。`];
+  const lines=[`你邀${n}同游青岳。清晨从山门出发时还在谈论功法，午后走入无人竹径，话题却慢慢变成各自的童年与遗憾。日暮云海染金，${n}与你并肩坐在悬崖边，把最后一块干粮分成两半。返程时山路很长，你们都刻意走得比平日慢。`,`你与${n}踏溪寻幽，途中遇见山洪冲毁小桥，便一同替村民重搭木梁。忙完已是深夜，两人衣袂尽湿，只能在废弃猎屋里围火取暖。火光映着彼此疲倦的眉眼，江湖的风霜忽然都柔软下来。`,`你伴${n}登高望远，途中没有惊天奇遇，只有一场骤雨、两碗粗茶和一把不够遮两个人的旧伞。你们肩膀紧挨着走过长街，发丝被风缠在一起。后来回想，这种平凡竟比许多生死大战更让人舍不得忘。`];
   log('同游',lines[Math.floor(Math.random()*lines.length)]);affGain(n,6);advanceTime(1);maybeEvent();renderPlay();}
 function hold(n){const v=S.aff[n]||0;if(v<40){log('情缘',`你与${n}尚${lvName(v)}，牵手未免唐突。`);showLove();return;}
   log('牵手',ROM[NPCS[n].tone].hold);affGain(n,6);renderPlay();}
@@ -1034,6 +1260,7 @@ function kiss(n){const v=S.aff[n]||0;if(v<80){log('情缘',`你与${n}尚${lvNam
 function pillow(n){const v=S.aff[n]||0;if(v<80){log('情缘',`你与${n}尚${lvName(v)}，共枕之约尚远。`);showLove();return;}
   log('共枕',ROM[NPCS[n].tone].pillow);affGain(n,8);S.hp=clamp(S.hp+8,0,S.hpMax);renderPlay();}
 function pledge(n){const v=S.aff[n]||0;if(v<80){log('情缘',`你与${n}尚${lvName(v)}，定情尚需情比金坚（道侣及以上）。`);showLove();return;}
+  if(bondState(n).chapter<4){log('定情',`你们已有深情，却仍有未走完的个人缘线。先完成${n}的四幕剧情，再许下不被仓促辜负的誓言。`);showLove();return;}
   S.daoban=S.daoban||[];if(S.daoban.includes(n)){log('定情',`你与${n}早已结为道侣，白首之约不改。`);showLove();return;}
   S.daoban.push(n);affGain(n,15);
   const tok=['剑穗','玉佩','发带','灵戒'][Math.floor(Math.random()*4)];
@@ -1049,8 +1276,8 @@ function romE(n){const v=S.aff[n]||0;if(v<80){log('情缘',`你与${n}尚${lvNam
     ()=>{log('密会',`你与${n}并肩立于山巅，看云海翻涌。良久，${n}靠上你肩头，不言不语。`);},
   ];
   evs[Math.floor(Math.random()*evs.length)]();affGain(n,8);maybeEvent();renderPlay();}
-function talkNpc(n){S.aff[n]=(S.aff[n]||0)+4;log('交谈',`你与${n}论道闲谈，好感+4（${S.aff[n]}）。`);showLove();}
-function viewNpc(n){const c=NPCS[n];const v=S.aff[n]||0;const lv=lvName(v);const db=(S.daoban||[]).includes(n)?'　<b style="color:#D88FA5">（道侣）</b>':'';$('panel').innerHTML=panel('love',`查 · ${n}`,`<div class="row em">${n}${db}</div><div class="row">${c.desc}</div><div class="row">性别：${c.gender}　喜好：${c.like.join('、')}</div><div class="row">与你好感：${v}（${lv}）</div><div class="row sm"><a class="lnk" data-act="cmd" data-arg="情缘">返回情缘</a></div>`)+statusCard();}
+function talkNpc(n){if(!bondState(n).met){log('交谈','你们尚未正式相识。情缘面板会写明相识路线。');showLove();return;}const topics=[`你与${n}从近日江湖风波谈到各自的道。对方没有敷衍，而是认真听完你那些尚显稚嫩的想法，又将自己的经历掰开揉碎与你分享。临别时，${n}说下次不必找借口，想来便来。`,`夜色渐深，你与${n}在檐下对坐。你们没有谈宏大的长生，只谈受过的伤、错过的人和仍然想守住的东西。沉默并不尴尬，反而像一种只有彼此听得懂的回答。`,`你发现${n}也有与传闻截然不同的一面。那个人会疲惫、会迟疑，也会在你说笑时悄悄放松眉眼。江湖认识的是一个名号，而你正在慢慢认识名号之后真正的人。`];S.aff[n]=(S.aff[n]||0)+4;log('交谈',`${topics[Math.floor(Math.random()*topics.length)]}<br><br>好感+4（${S.aff[n]}·${lvName(S.aff[n])}）。`);showLove();}
+function viewNpc(n){const c=NPCS[n],r=BOND_ROUTES[n],b=bondState(n),v=S.aff[n]||0,lv=lvName(v),db=(S.daoban||[]).includes(n)?'　<b style="color:#D88FA5">（道侣）</b>':'';const req=bondRequirement(n);$('panel').innerHTML=panel('love',`缘线 · ${n}`,`<div class="row em">${n}${db}</div><div class="row">${c.desc}</div><div class="row">性别：${c.gender}　喜好：${c.like.join('、')}</div><hr class="sep"><div class="row"><b>相识路线：</b>${r.route}</div><div class="row">地点：${r.where}　修为：${r.realm}　战斗援助：${r.role}</div><div class="row">前置状态：${req.length?req.join('、'):'已满足'}　当前：${b.met?`${v}好感·${lv}·个人剧情${b.chapter}/4`:'尚未相识'}</div><div class="row"><b>下一步：</b>${bondNext(n)}</div><div class="row sm">战斗规则：相识且好感40可主动求援；好感越高、成为道侣后救场率与伤害越高。每场战斗最多响应一次。</div><div class="row"><a class="lnk" data-act="cmd" data-arg="情缘">返回情缘</a></div>`)+statusCard();}
 
 /* ============ 洞府 ============ */
 function showDongfu(){const body=`<div class="row">灵气 ${S.dongfu.qi}（系数${QI_COEF[S.dongfu.qi]}）　设施：${(S.dongfu.fac||[]).join('、')}</div><div class="row"><a class="lnk" data-act="upQi">花200灵石提升灵气一档</a>　<a class="lnk" data-act="addFac">花150灵石建静室/丹房</a></div><div class="sm">闭关苦修：灵气越浓月修为越高。可「闭关X年」快进岁月。</div>`;$('panel').innerHTML=panel('',`洞府 · ${S.loc}`,body)+statusCard();}
@@ -1129,15 +1356,16 @@ function qActYear(k){const cur=curEvent;curEvent=null;
 }
 
 /* ============ 对话/帮助/存档 ============ */
-function showDialogue(){const ns=Object.keys(NPCS).map(n=>`<div class="row">${n}：${NPCS[n].desc}　<a class="lnk" data-act="talknpc" data-arg="${n}">交谈</a>　<a class="lnk" data-act="view" data-arg="${n}">查看</a></div>`).join('');$('panel').innerHTML=panel('',`可对话之人`,`<div class="sm">择人交谈，或可结善缘、探机密。</div><hr class="sep">${ns}`)+statusCard();}
+function showDialogue(){ensureGameState();const ns=Object.keys(NPCS).map(n=>{const b=bondState(n),r=BOND_ROUTES[n];return `<div class="row"><b>${n}</b>　<span class="sm">${b.met?`${S.aff[n]||0}好感·${lvName(S.aff[n]||0)}`:`未相识·${r.where}`}</span><br>${NPCS[n].desc}<br>${b.met?`<a class="lnk" data-act="talknpc" data-arg="${n}">与其交谈</a>　<a class="lnk" data-act="view" data-arg="${n}">查看缘线与助战</a>`:`<span class="sm">相识路线：${r.route}</span>　<a class="lnk" data-act="view" data-arg="${n}">查看前置</a>`}</div>`;}).join('');$('panel').innerHTML=panel('',`江湖人物 · 相识名录`,`<div class="sm">人物不会凭空成为知己。先循路线相识，再通过交谈、同游与四幕个人剧情了解对方；好感达到40后，对方可在恶战中响应求援。</div><hr class="sep">${ns}`)+statusCard();}
 function showHelp(){  const body=`
-  <div class="row em" style="color:var(--gold)">主线·江湖</div><div class="row sm">江湖：推进连续章节、查案、作出立场选择；侠义榜：护送、缉凶、寻药。侠义与恶名会改变后续反馈。</div>
-  <div class="row em" style="color:var(--cyan)">修炼·变强</div><div class="row sm">修炼(闭关) | 突破(破境渡劫·登仙圆满可飞升) | 悟道 | 炼丹 炼器 符箓 阵法 御兽 灵植</div>
+  <div class="row em" style="color:var(--gold)">主线·江湖</div><div class="row sm">主线现有八章：青云疑云、血月客栈、剑冢遗书、山门夜战、天命古碑、帝京风云、天外剑门、人间至尊。查案、立场与侠义/恶名会改变剧情和人物反馈。</div>
+  <div class="row em" style="color:var(--cyan)">修炼·变强</div><div class="row sm">修炼与闭关包含不同武侠修行片段，并可能顿悟或由知己护法。突破需破境渡劫；悟道、炼丹、炼器、符箓、阵法、御兽和灵植可继续培养。</div>
   <div class="row em" style="color:var(--cyan)">游历·探索</div><div class="row sm">地图(危险等级) | 秘境(通灵/上古/心魔/虚空) | 坊市(买卖) | 图鉴(妖兽录)</div>
-  <div class="row em" style="color:var(--cyan)">人际·宗门</div><div class="row sm">宗门 | 情缘(好感/双修/道侣) | 对话 | 查看(人物)</div>
+  <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
+  <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
   <div class="row em" style="color:var(--cyan)">经营·自己</div><div class="row sm">洞府(升级) | 背包 | 闭关X年(快进)</div>
-  <div class="row em" style="color:var(--cyan)">系统</div><div class="row sm">面板(状态卡) | 存档 / 读档 | 帮助 | 重置</div>
-  <div class="sm">自由输入会按角色能力与江湖规则判定。所有面板选项均可直接点击，手机点击后会自动定位新内容并显示即时结果。</div>`;$('panel').innerHTML=panel('',`指令大全 · 问道长生`,body)+statusCard();}
+  <div class="row em" style="color:var(--cyan)">账号·自动存档</div><div class="row sm">登录账号后，安全状态下会自动同步到独立 Supabase 存档；更换手机或浏览器登录同一账号即可继续。手动存档仍可作为备用。</div>
+  <div class="sm">所有面板选项均可直接点击。手机点击后会自动把最新结果定位到视野内，不必再向上寻找刚刚触发的内容。</div>`;$('panel').innerHTML=panel('',`玩法指引 · 问道长生`,body)+statusCard();}
 /* ============ 存档 / 读档 ============ */
 const SAVE_KEY='wenda_changsheng_saves_v1';
 const AUTO_SAVE_KEY='wenda_changsheng_auto_v1';
@@ -1501,6 +1729,8 @@ document.addEventListener('click',e=>{
     case 'buy':buy(+arg);break;
     case 'sell':sell(+arg);break;
     case 'gift':gift(arg);break;
+    case 'meetBond':meetBond(arg);break;
+    case 'bondStory':advanceBond(arg);break;
     case 'dual':dual(arg);break;
     case 'talknpc':talkNpc(arg);break;
     case 'view':viewNpc(arg);break;
