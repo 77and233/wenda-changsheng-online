@@ -52,10 +52,10 @@
   .barval{font-size:12px;color:var(--grey);margin-left:4px;}
   .wb{display:inline-block;color:#fff;background:#999;border-radius:3px;padding:0 6px;margin:0 2px;font-size:12.5px;font-weight:bold;}
   .opts{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
-  .opt{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--cyan);border-radius:7px;padding:7px 10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--blk);transition:.12s;}
+  .opt{display:flex;flex-wrap:wrap;align-items:center;gap:5px 8px;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--cyan);border-radius:7px;padding:7px 10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--blk);transition:.12s;}
   .opt:hover{background:#f1f6f3;}
-  .optkey{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;background:var(--cyan);color:#fff;font-weight:bold;border-radius:5px;}
-  .opttag{display:inline-block;color:#fff;font-size:11.5px;font-weight:bold;padding:1px 7px;border-radius:4px;letter-spacing:1px;}
+  .optkey{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;min-width:26px;height:24px;background:var(--cyan);color:#fff;font-weight:bold;border-radius:5px;}
+  .opttag{display:inline-block;flex:0 0 auto;color:#fff;font-size:11.5px;font-weight:bold;padding:1px 7px;border-radius:4px;letter-spacing:1px;}
   .opt.sel{background:#eef4ef;border-color:var(--gold);box-shadow:0 0 0 2px var(--gold) inset;}
   .opt:disabled{opacity:.45;cursor:not-allowed;}
   .cgrp{margin:6px 0;}
@@ -63,8 +63,8 @@
   .cinline{font-family:inherit;padding:3px 6px;border:1px solid #ccc;border-radius:5px;}
   .cwrap{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:2px 0 6px;}
   .cwrap label{color:var(--ink);font-size:13px;}
-  .opttext{flex:1;}
-  .opthint{display:block;width:100%;font-size:11px;color:var(--grey);margin-top:3px;line-height:1.5;letter-spacing:.3px;}
+  .opttext{flex:1 1 180px;min-width:0;line-height:1.45;overflow-wrap:anywhere;}
+  .opthint{display:block;flex:0 0 100%;width:100%;padding-left:34px;font-size:11px;color:var(--grey);line-height:1.5;letter-spacing:.3px;overflow-wrap:anywhere;}
   .opthint b{color:var(--red);}
   .opthint .g{color:#5C8C6E;}
   .cmdbar{position:fixed;bottom:0;left:0;right:0;background:#f3efe6;border-top:1px solid #ddd6c8;padding:7px 8px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:780px;margin:0 auto;z-index:5;}
@@ -101,6 +101,7 @@
     .body{padding:9px 11px 10px;}
     .opt{font-size:13.5px;padding:10px 11px;border-radius:8px;}
     .optkey{min-width:24px;height:22px;}
+    .opthint{padding-left:32px;font-size:11.5px;}
     .acctbar{font-size:11.5px;}
     /* 指令栏：输入框独占一行，按钮下方自动换行 */
     .cmdbar{left:0;right:0;max-width:100%;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:5px;justify-content:flex-start;}
@@ -138,6 +139,8 @@
   <button onclick="showBestiary()">图鉴</button>
   <button onclick="showSave()">存档</button>
   <button onclick="showSave()">读档</button>
+  <button onclick="showRecovery()">休整</button>
+  <button onclick="showRestart()">重开</button>
   <button onclick="doCommand('帮助')">帮助</button>
 </div>
 
@@ -1408,9 +1411,9 @@ function viewNpc(n){const c=NPCS[n],r=BOND_ROUTES[n],b=bondState(n),v=S.aff[n]||
 
 /* ============ 洞府 ============ */
 function showDongfu(){const body=`<div class="row">灵气 ${S.dongfu.qi}（系数${QI_COEF[S.dongfu.qi]}）　设施：${(S.dongfu.fac||[]).join('、')}</div><div class="row"><a class="lnk" data-act="upQi">花200灵石提升灵气一档</a>　<a class="lnk" data-act="addFac">花150灵石建静室/丹房</a></div><div class="row"><a class="lnk" data-act="rest">打坐调息（耗时一月，恢复气血+灵力）</a>　<a class="lnk" data-act="restFull">服灵药调养（花50灵石，恢复至全满）</a></div><div class="sm">调息是免费的日常恢复：气血灵力各回四成。若伤势过重，可赴地图「青岳·灵泉」或花灵石彻底疗养。闭关苦修：灵气越浓月修为越高。可「闭关X年」快进岁月。</div>`;$('panel').innerHTML=panel('',`洞府 · ${S.loc}`,body)+statusCard();}
-function rest(){if(phase!=='play')return;const hp=Math.max(1,Math.round(S.hpMax*0.4)),mp=Math.max(1,Math.round(S.mpMax*0.4));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('调息',`你于静室盘坐，运转周天吐纳灵机。清气洗过受损经脉，倦意与伤势一点点褪去，像潮水退却后露出的礁石。<br><br>气血+${hp}、灵力+${mp}（当前 ${Math.round(S.hp)}/${S.hpMax}、${Math.round(S.mp)}/${S.mpMax}）。`);advanceTime(1);maybeEvent();renderPlay();}
-function restFull(){if(phase!=='play')return;if(S.lingShi<50){log('洞府','灵石不足50。可先用免费「打坐调息」或赴灵泉。');showDongfu();return;}S.lingShi-=50;S.hp=S.hpMax;S.mp=S.mpMax;if(S.status&&S.status!=='无')S.status='无';log('调息',`你取一枚蕴灵丹化入温水服下，又令药力在体内散开。暖意自丹田涌向四肢百骸，旧伤新痕一并熨平——这一夜之后，你又是完好的自己。<br><br>气血、灵力恢复至全满。`);advanceTime(1);maybeEvent();renderPlay();}
-function spring(){if(phase!=='play')return;if(S.loc!=='东洲·青岳'&&S.loc!=='青岳·灵泉'){log('灵泉','灵泉在青岳后山。请先前往「地图」→「东洲·青岳」。');showMap();return;}S.loc='青岳·灵泉';const hp=Math.max(10,Math.round(S.hpMax*0.6)),mp=Math.max(10,Math.round(S.mpMax*0.6));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('灵泉',`你除去外衫浸入温热的灵泉。水汽蒸腾，灵气如无数尾小鱼钻入毛孔，沿经脉缓缓游走。半个时辰后你从水里站起，发梢滴着水珠，浑身却轻盈得能踏月而行。<br><br>气血+${hp}、灵力+${mp}，伤势尽愈。`);advanceTime(1);maybeEvent();renderPlay();}
+function rest(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法调息。');renderPlay();return;}const hp=Math.max(1,Math.round(S.hpMax*0.4)),mp=Math.max(1,Math.round(S.mpMax*0.4));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('调息',`你于静室盘坐，运转周天吐纳灵机。清气洗过受损经脉，倦意与伤势一点点褪去，像潮水退却后露出的礁石。<br><br>气血+${hp}、灵力+${mp}（当前 ${Math.round(S.hp)}/${S.hpMax}、${Math.round(S.mp)}/${S.mpMax}）。`);advanceTime(1);maybeEvent();renderPlay();}
+function restFull(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法服药调养。');renderPlay();return;}if(S.lingShi<50){log('洞府','灵石不足50。可先用免费「打坐调息」或赴灵泉。');showRecovery();return;}S.lingShi-=50;S.hp=S.hpMax;S.mp=S.mpMax;if(S.status&&S.status!=='无')S.status='无';log('调息',`你取一枚蕴灵丹化入温水服下，又令药力在体内散开。暖意自丹田涌向四肢百骸，旧伤新痕一并熨平——这一夜之后，你又是完好的自己。<br><br>气血、灵力恢复至全满。`);advanceTime(1);maybeEvent();renderPlay();}
+function spring(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法前往灵泉。');renderPlay();return;}S.loc='青岳·灵泉';const hp=Math.max(10,Math.round(S.hpMax*0.6)),mp=Math.max(10,Math.round(S.mpMax*0.6));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('灵泉',`你循固定驿道回到青岳后山，除去外衫浸入温热灵泉。水汽蒸腾，灵气如无数尾小鱼钻入毛孔，沿经脉缓缓游走。半个时辰后你从水里站起，发梢滴着水珠，浑身却轻盈得能踏月而行。<br><br>气血+${hp}、灵力+${mp}，伤势尽愈。`);advanceTime(1);maybeEvent();renderPlay();}
 function upgradeQi(){const o=['贫瘠','普通','浓郁','福地','洞天'];const i=o.indexOf(S.dongfu.qi);if(i>=4){log('洞府','灵气已至洞天。');showDongfu();return;}if(S.lingShi<200){log('洞府','灵石不足200。');showDongfu();return;}S.lingShi-=200;S.dongfu.qi=o[i+1];log('洞府',`聚灵阵成型，灵气升至${S.dongfu.qi}。`);showDongfu();}
 function addFac(){if(S.lingShi<150){log('洞府','灵石不足150。');showDongfu();return;}S.lingShi-=150;const f=S.dongfu.fac.includes('丹房')?'静室':'丹房';S.dongfu.fac.push(f);log('洞府',`新建${f}。`);showDongfu();}
 
@@ -1487,6 +1490,41 @@ function qActYear(k){const cur=curEvent;curEvent=null;
 
 /* ============ 对话/帮助/存档 ============ */
 function showDialogue(){ensureGameState();const ns=Object.keys(NPCS).map(n=>{const b=bondState(n),r=BOND_ROUTES[n];return `<div class="row"><b>${n}</b>　<span class="sm">${b.met?`${S.aff[n]||0}好感·${lvName(S.aff[n]||0)}`:`未相识·${r.where}`}</span><br>${NPCS[n].desc}<br>${b.met?`<a class="lnk" data-act="talknpc" data-arg="${n}">与其交谈</a>　<a class="lnk" data-act="view" data-arg="${n}">查看缘线与助战</a>`:`<span class="sm">相识路线：${r.route}</span>　<a class="lnk" data-act="view" data-arg="${n}">查看前置</a>`}</div>`;}).join('');$('panel').innerHTML=panel('',`江湖人物 · 相识名录`,`<div class="sm">人物不会凭空成为知己。先循路线相识，再通过交谈、同游与四幕个人剧情了解对方；好感达到40后，对方可在恶战中响应求援。</div><hr class="sep">${ns}`)+statusCard();}
+function showRecovery(){
+  if(!S){$('panel').innerHTML=panel('',`休整 · 尚未入世`,`<div class="row">请先完成创角。进入游戏后，底部“休整”会一直保留。</div>`);return;}
+  if(CB||SEC||curEvent){log('休整','战斗、秘境或事件抉择中无法疗伤，请先结束当前行动。');renderPlay();return;}
+  const body=`<div class="questbox"><div class="chapter">当前状态</div><div>气血 ${bar(S.hp,S.hpMax,'#C05F55')}　灵力 ${bar(S.mp,S.mpMax,'#5E8FAE')}</div><div class="sm">恢复入口以后固定在底部“休整”，洞府和地图中也能找到。</div></div>
+  <div class="opts">
+    <button class="opt" data-act="rest"><span class="optkey">息</span><span class="opttext">洞府打坐调息</span><span class="opthint">免费，耗时一月；恢复40%气血与40%灵力，并清除普通伤势。</span></button>
+    <button class="opt" data-act="spring"><span class="optkey">泉</span><span class="opttext">前往青岳灵泉疗伤</span><span class="opthint">免费，耗时一月；恢复60%气血与60%灵力，伤势尽愈。</span></button>
+    <button class="opt" data-act="restFull"><span class="optkey">药</span><span class="opttext">服灵药彻底调养</span><span class="opthint">消耗50灵石，耗时一月；气血与灵力恢复至全满。</span></button>
+  </div>`;
+  $('panel').innerHTML=panel('',`休整疗伤 · ${S.name}`,body)+statusCard();
+}
+function showRestart(){
+  if(!S&&(phase==='create1'||phase==='create2pending')){showCreate1();log('轮回','你已经位于新游戏创角界面。');return;}
+  const who=S?`${S.name} · ${realmLabel()} · ${timeLine()}`:'当前周目';
+  const body=`<div class="questbox"><div class="chapter danger">重新开始当前游戏</div><div>${who}</div><div class="sm">确认后将结束当前周目并回到创角。账号仍会保留，手动存档槽和导出的存档文件不会删除；账号自动存档将标记为“等待新周目”，避免刷新后又读回旧进度。</div></div>
+  <div class="opts"><button class="opt" data-act="restartConfirm"><span class="optkey" style="background:var(--red)">重</span><span class="opttext">确认重开，返回创角</span></button><button class="opt" data-act="restartCancel"><span class="optkey">返</span><span class="opttext">取消，返回当前游戏</span></button></div>`;
+  $('panel').innerHTML=panel('warn',`轮回确认`,body)+(S?statusCard():'');
+}
+async function restartGameNow(){
+  clearTimeout(cloudSaveTimer);
+  if(SB_USER&&supabaseReady()){
+    if(!await ensureSbAuth()){log('轮回','账号登录已过期，暂未重开。请重新登录后再试，以免旧云存档被重新读回。');showRestart();return;}
+    CLOUD_SYNC_STATE='清理旧周目…';renderAcctBar();
+    const payload={user_id:SB_USER.id,save_data:{reset:true,t:Date.now(),v:4},updated_at:new Date().toISOString()};
+    let r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
+    if(r.status===401&&await refreshSbSession())r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
+    if(r.err){CLOUD_SYNC_STATE='重开失败';renderAcctBar();log('轮回','云端旧周目未能清理：'+r.err+'。为保护存档，本次没有重开。');showRestart();return;}
+    CLOUD_SYNC_STATE='等待新周目';
+  }
+  try{localStorage.removeItem(AUTO_SAVE_KEY);}catch(e){}
+  S=null;turn=0;year=387;monthIdx=0;phase='create1';curEvent=null;CB=null;SEC=null;CST=null;cloudSaveBusy=false;
+  $('log').innerHTML='';renderAcctBar();
+  log('轮回新启','旧周目已收束，手动备份仍然保留。请重新填写道号、出身与道途，开启新的一世。');
+  showCreate1();focusResult();
+}
 function showHelp(){  const body=`
   <div class="row em" style="color:var(--gold)">主线·江湖</div><div class="row sm">主线现有八章：青云疑云、血月客栈、剑冢遗书、山门夜战、天命古碑、帝京风云、天外剑门、人间至尊。查案、立场与侠义/恶名会改变剧情和人物反馈。</div>
   <div class="row em" style="color:var(--cyan)">修炼·变强</div><div class="row sm">修炼与闭关包含不同武侠修行片段，并可能顿悟或由知己护法。突破需破境渡劫；悟道、炼丹、炼器、符箓、阵法、御兽和灵植可继续培养。</div>
@@ -1494,6 +1532,7 @@ function showHelp(){  const body=`
   <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
   <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
   <div class="row em" style="color:var(--cyan)">经营·自己</div><div class="row sm">洞府(升级) | 背包 | 闭关X年(快进)</div>
+  <div class="row em" style="color:var(--cyan)">恢复·重开</div><div class="row sm">底部“休整”可直接选择洞府调息、青岳灵泉或灵药全满；底部“重开”会经过确认后返回创角，并保留账号及手动备份。</div>
   <div class="row em" style="color:var(--cyan)">账号·自动存档</div><div class="row sm">登录账号后，安全状态下会自动同步到独立 Supabase 存档；更换手机或浏览器登录同一账号即可继续。手动存档仍可作为备用。</div>
   <div class="sm">所有面板选项均可直接点击。手机点击后会自动把最新结果定位到视野内，不必再向上寻找刚刚触发的内容。</div>`;$('panel').innerHTML=panel('',`玩法指引 · 问道长生`,body)+statusCard();}
 /* ============ 存档 / 读档 ============ */
@@ -1533,6 +1572,7 @@ async function loadSupabaseSave(){
   const r=await sbFetch('/rest/v1/game_saves?select=save_data,updated_at&user_id=eq.'+encodeURIComponent(SB_USER.id)+'&limit=1');
   if(r.err){CLOUD_SYNC_STATE='读取失败';renderAcctBar();log('云同步',r.err);return false;}
   const row=Array.isArray(r.data)&&r.data[0];
+  if(row&&row.save_data&&row.save_data.reset){CLOUD_SYNC_STATE='等待新周目';renderAcctBar();return false;}
   if(row&&applySnapshot(row.save_data)){
     CLOUD_SYNC_STATE='已读取云进度';renderAcctBar();log('云同步',`欢迎回来，已自动继续 ${S.name} 的${realmLabel()}进度。`);renderPlay();return true;
   }
@@ -1770,14 +1810,15 @@ function importSave(){
 }
 
 /* ============ 结局 ============ */
-function endGame(type,detail){phase='ended';if(!detail)detail=endingText(type);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">重开一世可轮回——继承部分仙缘与记忆彩蛋。</div><div class="row"><a class="lnk" data-act="reload">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
+function endGame(type,detail){phase='ended';if(!detail)detail=endingText(type);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
 
 /* ============ 指令分发 ============ */
 function doCommand(c){
-  if(phase==='create1'||phase==='create2pending'){log('天道','尚未创角完成，请先按格式回复落笔。');return;}
-  if(phase==='ended'){log('天道','此世已终，可重开。');return;}
   c=c.trim();
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount};
+  if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
+  if(phase==='create1'||phase==='create2pending'){log('天道','尚未创角完成，请先按格式回复落笔。');return;}
+  if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
@@ -1793,6 +1834,8 @@ function doCommand(c){
   if(/技艺|炼丹|炼器/.test(c)){showSkill();return;}
   if(/对话|交谈/.test(c)){showDialogue();return;}
   if(/存档|读档/.test(c)){showSave();return;}
+  if(/休整|恢复|疗伤|养伤/.test(c)){showRecovery();return;}
+  if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
   if(/帮助|指令/.test(c)){showHelp();return;}
   freeAction(c);
   setTimeout(focusResult,30);
@@ -1921,6 +1964,9 @@ document.addEventListener('click',e=>{
     case 'cloudSave':cloudSave(arg);break;
     case 'cloudLoad':cloudLoad(arg);break;
     case 'cloudDelete':cloudDelete(arg);break;
+    case 'restart':showRestart();break;
+    case 'restartConfirm':restartGameNow();break;
+    case 'restartCancel':S?renderPlay():showCreate1();break;
     case 'cmd':doCommand(arg);break;
     case 'reload':location.reload();break;
   }
