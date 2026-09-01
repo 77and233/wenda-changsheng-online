@@ -180,6 +180,28 @@ const NPCS={
   '花千影':{desc:'幻月宗宗主，慵懒妖媚，笑里藏着半真半假，27',gender:'女',like:['酒','赏月','戏弄'],tone:'慵魅'},
   '洛青瑶':{desc:'青云宗天之骄女，清傲孤高，剑尖不沾凡尘，21',gender:'女',like:['剑','雪','高处'],tone:'孤高'},
 };
+/* 众女画像：外貌、气质与心性（立体的她们） */
+const PORTRAIT={
+ '顾清玄':'月白剑袍，乌发以青玉簪束得一丝不苟，眉如远山、眸若寒星，握剑的指节处有常年磨出的薄茧。清冷如谪仙，却在无人处会放缓脚步等你，或偷偷把你爱喝的茶换成更温的一盏。',
+ '云栖':'云鬓斜绾，耳坠是两粒会发光的铜钱，一双桃花眼精于算计，笑起来颊边有梨涡，爱穿绛红罗裙。精明写在眉梢，真心却藏在最深处，只对你不设防。',
+ '谢无咎':'红衣似血，长发披散，左眼尾一点朱砂泪痣，唇角永远噙着三分讥诮，腰悬一柄饮血弯刀。她像一柄出鞘即见血的刀，可那柄刀会为你，自己折断锋芒。',
+ '白凝霜':'白发如雪，肌肤几近透明，一袭冰蓝纱衣，眸色浅淡如化不开的冰，眉心一朵冰莲印记。清冷到近乎不近人情，却会为你在风雪里，回头一百次。',
+ '墨尘':'狐耳狐尾，琥珀色竖瞳，一头银发乱糟糟地翘着，衣衫松垮、光着脚。炸毛时耳尖通红，撒娇时尾巴会诚实地缠上你的腰。傲娇，是她的铠甲，也是她的软肋。',
+ '洛浅浅':'体态婀娜，眼尾天生勾人，唇若点朱，爱穿轻纱，身上总带着合欢花酿的甜香。媚是她的表象，最懂人心，也最怕被辜负。',
+ '叶知秋':'端肃的月白道袍，高髻玉簪，眉目疏朗自带威仪，握拂尘的手极稳。不怒自威，却会在替你整理衣襟时，把动作放到最轻。',
+ '苏沐':'鹅蛋脸，眉眼柔和，总是一袭素青长裙，袖口绣着剑穗纹样，掌心有常年炼丹留下的药香。温婉如春风，却比谁都坚毅，是你疲惫时最安稳的归处。',
+ '姬无夜':'身量高挑，一袭玄金王袍，凤目狭长，眸底藏着一整座古妖山，头戴十二旒冠。气度逼人，睥睨间令万妖俯首，可她在你面前，会卸下所有冠冕。',
+ '萧景行':'金线蟒袍，腰束玉带，眉眼英气逼人，执剑的手骨节分明，举手投足是久居上位的从容。野心勃勃，也情深义重，笑起来比谁都爽朗。',
+ '沈墨卿':'青衫落拓，长发半束，一壶酒悬在腰间，眉眼是漫不经心的疏狂，执笔的手极好看，沾了墨也不肯擦。诗酒是她对俗世的嘲讽，只有你是她真心想写的句子。',
+ '阿绾':'双丫髻，圆脸大眼，笑起来眼睛弯成月牙，穿草青短襦、赤着脚，脚踝系一圈叮当响的银铃，发间别着一只灵蝶。灵动跳脱，像一束照进沉闷岁月的光。',
+ '月姬':'肤若凝脂，长发如月华倾泻，一袭朦胧月白纱裙，赤足而行，身影似真似幻。眸中是千年望月的幽寂，遇见你之后，那抹清辉才有了归处。',
+ '红芍':'劲装短打，腰间别一把大刀，小麦色肌肤，眉眼英气勃勃。笑起来豪迈爽朗，说话像放鞭炮，路见不平，拔刀便是。',
+ '小满':'双麻花辫，鹅蛋脸怯生生的，眼睛又大又亮，像林间受惊的小鹿。穿药童的青布裙，口袋里总揣着几颗糖，想给你，又不敢。',
+ '玄机子':'一袭素白衣袍，长发及腰，无甚装饰却自带仙气，眸色极淡，仿佛看尽了万年，掌心时常托着一枚棋子。她算尽天下，唯独不愿算你的结局。',
+ '温若曦':'云鬓轻挽，鬓边簪一朵药花，眉眼温软、唇色浅淡，一袭杏白长裙，指尖常年沾着药香。笑起来让人如沐春风，是这乱世里最温柔的一帖药。',
+ '花千影':'眉眼是蚀骨的媚，眼尾微挑，唇色如血，爱穿月白与绯红相间的薄纱，腕上一串铃铛。一举一动皆是风情，笑里藏着刀，可那刀尖从不舍得朝向有你的方向。',
+ '洛青瑶':'一袭雪白剑袍，乌发高束，眉眼清傲如霜，鼻梁挺直，下颌线利落，执剑的手极稳。浑身是生人勿近的孤高，唯独会为你，把高处的雪也捂出一丝暖意。',
+};
 /* 各性情之亲密描写（全女角，按 tone 取用：牵/拥/诉/修/枕） */
 const ROM={
  清润:{hold:'她指尖覆上你的手，剑茧微糙，却极轻柔，像怕惊碎什么。',emb:'她拥你入怀，松风剑气皆静，下巴轻轻抵在你发顶，呼吸温软。',kiss:'她低头吻你，先落额间，再是眼睫，最后停在唇畔，如雪落青竹，克制里藏着烫。',duet:'剑意与灵机交融，她护你神识如护初雪，十指相扣，直至天光。',pillow:'她与你并榻而眠，衣带不知何时散开，玉臂横过你胸前，一夜安枕。'},
@@ -409,7 +431,9 @@ function realmLabel(){return `${S.realm}·${S.sub}`;}
 function ensureGameState(){
   if(!S)return;
   S.flags=S.flags||{};S.qstep=S.qstep||{};S.codex=S.codex||{};S.aff=S.aff||{};S.wudao=S.wudao||{};S.daoban=S.daoban||[];
-  S.bonds=S.bonds||{};S.fortunes=S.fortunes||[];
+  S.bonds=S.bonds||{};S.fortunes=S.fortunes||[];S.choices=S.choices||[];
+  S.estate=S.estate||[];S.tianjiao=S.tianjiao||{};S.gongfaMaster=S.gongfaMaster||{};
+  if(typeof S.origin==='string'&&typeof ORIGINS!=='undefined'&&ORIGINS[S.origin])S.origin={key:S.origin,lv:1,exp:0};
   Object.keys(NPCS).forEach(n=>{const oldAff=S.aff[n]||0;S.bonds[n]=S.bonds[n]||{met:oldAff>0,chapter:oldAff>=80?3:oldAff>=60?2:oldAff>=40?1:0,rescues:0};if(S.daoban.includes(n))S.bonds[n].met=true;});
   S.jianghu=S.jianghu||{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''};
   const j=S.jianghu;
@@ -567,6 +591,7 @@ function finishCreate(lingen,lingType,tizhi,six,talents){
   else if(/出众|清俊|俊美|秀丽|英气/.test(t.app))xianzi='出众';
   else if(/清秀|端正|平凡/.test(t.app))xianzi='清秀';
   const fashu=[{n:'烈火掌',elem:'火',power:9,mp:5,系:''},{n:'御风术',elem:'',power:0,mp:3,系:'身法'},{n:'流火剑诀',elem:'火',power:15,mp:10,系:'剑'}];
+  const originKey=t.origin;
   S={
     name:t.name,gender:t.gender,age:t.age,app:t.app,xianzi,realm:'炼气',sub:'初期',
     sect:'青云宗',sectRank:'外门弟子',contribution:0,reputation:rep0+repExtra,
@@ -576,6 +601,7 @@ function finishCreate(lingen,lingType,tizhi,six,talents){
     dongfu:{qi:'普通',fac:['静室']},talents:talList,_juan:juan0||juanExtra,_炼丹:lianDan,_桃花:taohua,codex:{},bonds:{},fortunes:[],
     mainLine:'第一章·青云疑云：查明外门弟子失踪真相',qstep:{},flags:{},daoban:[],
     jianghu:{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''},
+    origin:{key:originKey,lv:1,exp:0},
   };
   if(S._juan)S.bag.push({n:'玄阶残卷',num:1});
   phase='play';turn=0;year=387;monthIdx=0;CST=null;
@@ -605,11 +631,12 @@ function statusCard(){
   <div class="row">修为 ${bar(S.xiu,100,'#A87E2E')}</div>
   <div class="row">灵石 ${S.lingShi}　功德 ${S.merit>0?'+':''}${S.merit}　业力 ${S.karma}　异常 ${S.status}</div>
   <div class="row">江湖名号 ${jianghuTitle()}　侠义 ${S.jianghu.xia}　恶名 ${S.jianghu.evil}　委托 ${S.jianghu.contracts}</div>
+  <div class="row sm">家业 ${S.origin&&ORIGINS[S.origin.key]?S.origin.key+' · '+ORIGINS[S.origin.key].levels[Math.max(0,Math.min((S.origin.lv||1)-1,4))]+'（'+(S.origin.lv||1)+'/5）':'尚未立业'}　<a class="lnk" data-act="cmd" data-arg="家业">经营</a></div>
   <div class="row sm">所在地 ${S.loc}；主线：${S.mainLine}</div>
   <div class="row sm">个人道途：${S.personalLine||S.daoTu}</div>
   <div class="row sm">悟道：${wd}　好感：${aff}${(S.daoban&&S.daoban.length)?'　道侣：'+S.daoban.join('、'):''}</div>
   <div class="row sm">大机缘：${fate}</div>
-  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 结局 帮助</div>`;
+  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 功法 天骄 结局 帮助</div>`;
   return panel('',`状态卡 · ${S.name}`,body);
 }
 
@@ -645,9 +672,19 @@ function onNewYear(){
 }
 
 /* ============ 修炼 ============ */
+function masteryTick(d){
+  S.gongfaMaster=S.gongfaMaster||{};
+  (S.gongfa||[]).forEach(g=>{
+    if(!g||!g.n)return;
+    const old=S.gongfaMaster[g.n]||0,neu=old+d;
+    S.gongfaMaster[g.n]=neu;
+    if(!g.mastered&&neu>=100){g.mastered=true;log('功法大成',`你苦修日久，${g.n}（${g.grade}）终于臻至大成！灵力运转浑如天成，功法威力+20%，系数大涨。`);}
+  });
+}
 function doCultivate(close){
   if(phase!=='play')return;
-  const k=1+S.six.资质*0.05, lc=LING_COEF[S.lingType]||1, gc=Math.max(...S.gongfa.map(g=>GONG_COEF[g.grade]||1)), qc=QI_COEF[S.dongfu.qi];
+  masteryTick(close?3:2);
+  const k=1+S.six.资质*0.05, lc=LING_COEF[S.lingType]||1, gc=Math.max(...S.gongfa.map(g=>(GONG_COEF[g.grade]||1)*(g.mastered?1.2:1))), qc=QI_COEF[S.dongfu.qi];
   const need=S.realm==='炼气'?8:S.realm==='筑基'?10:12;
   const mc=S.six.道心>=need+4?1.2:(S.six.道心>=need?1.0:0.5);
   const rate=BASE[S.realm]*k*lc*gc*qc*mc*(close?2:1);
@@ -665,6 +702,8 @@ function doCultivate(close){
   if(d100()<=28){const insight=Math.max(1,Math.round(S.six.悟性/7));S.xiu=clamp(S.xiu+insight,0,100);S.six.道心=clamp(S.six.道心+.2,1,20);msg+=` 修至忘我处，你忽然贯通一处旧日疑难，额外修为+${insight}，道心微涨。`;}
   const lover=bestBondAlly(null,40);
   if(lover&&d100()<=24){const n=lover.name;S.mp=clamp(S.mp+12,0,S.mpMax);S.aff[n]=(S.aff[n]||0)+3;msg+=` 夜深时，${n}没有打扰，只在洞府外替你守住风雪与来客。你出定睁眼，看见那盏始终未灭的灯，心境安稳下来；${n}好感+3、灵力恢复。`;}
+  if(d100()<=10){S.wudao['剑道']=(S.wudao['剑道']||0)+0.5;S.six.悟性=clamp(S.six.悟性+0.2,1,20);msg+=' 静极思动，你在反复吐纳间忽然参透一式旧日剑招的别样用法，剑道+0.5、悟性微涨。';}
+  if(d100()<=8&&S.gongfa.length<3){S.gongfa.push({n:'紫气东来功',grade:'玄阶'});msg+=' 晨曦初现，你观东方紫气而悟，自创玄阶功法《紫气东来功》！';}
   if(S.xiu>=100)msg+=' 修为圆满，可「突破」。';
   log(timeLine(),msg);
   advanceTime(1); maybeEvent(); renderPlay();
@@ -749,8 +788,117 @@ function triggerRandomEvent(){
       {k:'A',tag:'情缘',c:'#D88FA5',tx:'走过去（若已有知己或道侣，将有一段月色相拥）',hint:'影响：知己/道侣好感+12；若无人可寻则独自赏花',f:()=>{const db=S.daoban||[];const ks=db.length?db:Object.keys(NPCS).filter(n=>(S.aff[n]||0)>=40);if(!ks.length){log('花朝','烟花易冷，你独自看完一场热闹。或许该在情缘面板里，认识一个人了。');return;}const n=ks[Math.floor(Math.random()*ks.length)];S.aff[n]=(S.aff[n]||0)+12;const v=S.aff[n];log('花朝夜会',`烟花最盛时，你在廊下牵起${n}的手。满城喧嚣忽然退成背景，只剩那个人低垂的眉眼与微红的耳尖。花雨落进发间，你们谁也没提明天——好像这样的夜晚，本来就该属于彼此。<br><br>${n}好感+12（${v}·${lvName(v)}）。`);}},
       {k:'B',tag:'平和',c:'#6FA698',tx:'立于原地，静观花雨',hint:'影响：道心+0.5，宁心',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('平和','花雨纷纷，你静立如松，心湖不波。');}},
     ]},
+    {t:'灵宠认主',n:'一只奄奄一息的赤羽雏鸟扑进你怀里，身后追着觊觎它的猎妖人。',opts:[
+      {k:'A',tag:'机缘',c:'#A98FD9',tx:'救下雏鸟，以血为契',hint:'影响：获得灵宠赤羽（战斗加成），仙缘+1',f:()=>{S.six.仙缘++;S.flags.灵宠=true;log('灵宠','赤羽雏鸟认你为主，暖意驱散疲惫。仙缘+1，得灵宠「赤羽」。此后战斗偶有助阵。');}},
+      {k:'B',tag:'平和',c:'#6FA698',tx:'还给猎妖人，换一笔灵石',hint:'影响：灵石+60，错过灵宠',f:()=>{S.lingShi+=60;log('平和','你得了60灵石，心里却空落落的。');}}]},
+    {t:'古修洞府',n:'山腹中现出一座尘封的古修士洞府，石门半掩，药香与腐气混在一起。',opts:[
+      {k:'A',tag:'探宝',c:'#A98FD9',tx:'破开禁制，入府寻宝',hint:'胜算：约六成得宝物，四成触动机关受伤',f:()=>{if(d100()<=60){const g=['玄阶功法','聚气丹','灵药·玉髓'][Math.floor(Math.random()*3)];giveItem(g,1);S.lingShi+=40;log('古修洞府',`你破开禁制，得${g}与40灵石。`);}else{S.hp=clamp(S.hp-20,1,S.hpMax);log('古修洞府','机关齐发，你狼狈逃出，气血-20。');}}},
+      {k:'B',tag:'稳妥',c:'#6FA698',tx:'封门而去，不扰前人',hint:'影响：道心+0.5，无风险',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('平和','你合上石门，向洞主遥遥一礼。道心微涨。');}}]},
+    {t:'坊市豪赌',n:'坊市地下赌坊，庄家以灵石为注，邀你押一局「五行转轮」。',opts:[
+      {k:'A',tag:'豪赌',c:'#C4675C',tx:'押上50灵石，赌个大的',hint:'胜算：约五五开，赢则翻三倍，输则全赔',f:()=>{if(S.lingShi<50){log('赌坊','灵石不足50。');return;}S.lingShi-=50;if(d100()<=50){S.lingShi+=150;log('赌坊','转轮停在你押的方位！净赚150灵石。');}else{log('赌坊','你输了。赌坊老板笑得意味深长。');}}},
+      {k:'B',tag:'清醒',c:'#6FA698',tx:'转身离开',hint:'影响：道心+0.5（守住本心）',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('平和','你从纸醉金迷中抽身，道心微涨。');}}]},
+    {t:'街头义诊',n:'城中疫病横行，一名老医者忙不过来，药摊前排起长队。',opts:[
+      {k:'A',tag:'仁心',c:'#6FA698',tx:'留下帮忙，义诊三日',hint:'影响：功德+2、侠义+2；若有丹道更得人心',f:()=>{S.merit+=2;S.jianghu.xia+=2;if((S.wudao['丹道']||0)>0){S.reputation+=5;log('义诊','你以丹道配伍，药到病除，声望+5。功德+2、侠义+2。');}else{log('义诊','你帮忙熬药分诊，功德+2、侠义+2。');}}},
+      {k:'B',tag:'务实',c:'#A98FD9',tx:'献上灵药，独自离去',hint:'影响：若有灵药则功德+1',f:()=>{const h=S.bag.find(b=>b.n==='灵药·玉髓');if(h&&h.num>0){h.num--;S.merit++;log('义诊','你留下一株灵药，功德+1。');}else{log('义诊','你囊中无药，只能离去。');}}}]},
+    {t:'夜探古墓',n:'城外荒冢夜里透出磷火，有盗墓贼说里面葬着一位元婴真君。',opts:[
+      {k:'A',tag:'冒险',c:'#C4675C',tx:'下墓探秘',hint:'胜算：约五成得传承/宝物，五成遇守墓尸傀',f:()=>{if(d100()<=50){const g=['玄阶功法','灵药·玉髓','聚气丹'][Math.floor(Math.random()*3)];giveItem(g,1);S.six.悟性=clamp(S.six.悟性+0.5,1,20);log('古墓','你在棺椁旁得'+g+'，并参悟墓主刻下的道纹。悟性微涨。');}else{log('古墓','尸傀暴起！');startCombat(mkEnemy('守墓尸傀','筑基','圆满','土',18,190,75,'守墓尸傀'));}}},
+      {k:'B',tag:'敬重',c:'#6FA698',tx:'在墓前上香，不扰亡灵',hint:'影响：功德+1',f:()=>{S.merit++;log('平和','你上香祭拜，墓中似有叹息声，功德+1。');}}]},
+    {t:'仙鹤传书',n:'一只白鹤衔来一枚玉简，落你掌心便化开，是某位前辈的邀约。',opts:[
+      {k:'A',tag:'机缘',c:'#A98FD9',tx:'循鹤而去，赴约',hint:'影响：可能得前辈指点（悟性+），或落入试炼',f:()=>{if(d100()<=60){S.six.悟性=clamp(S.six.悟性+1,1,20);S.six.仙缘++;log('仙鹤','前辈留了三句口诀，你豁然开朗。悟性+1、仙缘+1。');}else{log('仙鹤','这竟是一场试炼，你勉强通过，虽无所获，道心更坚。');S.six.道心=clamp(S.six.道心+1,1,20);}}},
+      {k:'B',tag:'谨慎',c:'#6FA698',tx:'不赴来路不明的约',hint:'影响：无收益，安全',f:()=>log('平和','你捏碎玉简，不去招惹未知。')}]},
+    {t:'擂台比武',n:'城中设下擂台，擂主连胜九场，扬言败尽天下散修。',opts:[
+      {k:'A',tag:'应战',c:'#C4675C',tx:'登台比武',hint:'胜算：约五五开，胜则声望+15、灵石+100',f:()=>{if(d100()<=50+S.six.资质*0.5){S.reputation+=15;S.lingShi+=100;log('擂台','你三招定胜负，全场哗然。声望+15、灵石+100。');}else{S.hp=clamp(S.hp-18,1,S.hpMax);log('擂台','你被击落擂台，气血-18。');}}},
+      {k:'B',tag:'观战',c:'#6FA698',tx:'台下观摩武艺',hint:'影响：悟性+0.2，安全',f:()=>{S.six.悟性=clamp(S.six.悟性+0.2,1,20);log('平和','你在台下拆解招式，悟性微涨。');}}]},
+    {t:'采药遇险',n:'悬崖上一株千年灵药，一名散修正被毒蛇缠身，命悬一线。',opts:[
+      {k:'A',tag:'救人',c:'#6FA698',tx:'先救人，再取药',hint:'影响：功德+1、侠义+1；散修可能赠药',f:()=>{S.merit++;S.jianghu.xia++;if(d100()<=50){giveItem('灵药·玉髓',1);log('采药','你救下散修，他感激之余把千年灵药分你一半。功德+1、侠义+1、得灵药。');}else{log('采药','你救下散修，功德+1、侠义+1。');}}},
+      {k:'B',tag:'夺药',c:'#8B6FA8',tx:'先取灵药，不顾他人',hint:'影响：得灵药，但业力+1',f:()=>{giveItem('灵药·玉髓',1);S.karma++;log('采药','你摘走灵药，身后传来落崖的惨叫。业力+1。');}}]},
+    {t:'神秘道人',n:'一个疯疯癫癫的老道拦路，非要与你赌三枚铜钱，赌注是你的「道」。',opts:[
+      {k:'A',tag:'奇遇',c:'#A98FD9',tx:'陪他赌这荒唐一局',hint:'影响：可能悟道（道心+），也可能被骗走铜钱',f:()=>{if(d100()<=55){S.six.道心=clamp(S.six.道心+2,1,20);S.six.仙缘++;log('奇遇','老道三局皆输，却抚掌大笑：“能守住本心者，天下大可去得！”道心+2、仙缘+1。');}else{log('奇遇','你输了，老道拿走三枚铜钱，笑得高深莫测。');}}},
+      {k:'B',tag:'理性',c:'#6FA698',tx:'不理这个疯子',f:()=>log('平和','你绕道而行，那老道的笑声却追了一路。')}]},
+    {t:'河神嫁女',n:'沿岸村民敲锣打鼓，要把一名少女投入河中献给所谓的河神。',opts:[
+      {k:'A',tag:'除妖',c:'#C4675C',tx:'揭穿河神骗局',hint:'影响：可能触发战斗，胜则功德+2、侠义+3',f:()=>{if(d100()<=60){S.merit+=2;S.jianghu.xia+=3;log('河神','河中哪有什么河神，只是一头老鼍作祟。你斩鼍护民，功德+2、侠义+3。');}else{log('河神','老鼍凶悍，你与它斗得难解难分！');startCombat(mkEnemy('河中老鼍','筑基','中期','水',17,170,70,'河中老鼍'));}}},
+      {k:'B',tag:'旁观',c:'#8B6FA8',tx:'不插手地方陋习',hint:'影响：业力+1，见死不救',f:()=>{S.karma++;log('业力','你冷眼旁观，业力暗生。');}}]},
+    {t:'黑市商机',origin:'商贾之家',n:'黑市放出一批禁运灵矿，价低得反常，押注的人都在赌它来路不正。',opts:[
+      {k:'A',tag:'豪赌',c:'#A98FD9',tx:'吃下整批货（200灵石，五成五翻倍）',hint:'影响：成则豪商之路更进一步，败则血本无归',f:()=>{if(S.lingShi<200){log('黑市','灵石不足200，你只能看着别人吃下这批货。');return;}S.lingShi-=200;if(d100()<=55){S.lingShi+=420;S.reputation+=5;log('黑市','灵矿转手大赚，你押对了！净赚420灵石、声望+5。');}else{log('黑市','灵矿来路东窗事发，你被官府扣下罚款。');}oGain(50);}},
+      {k:'B',tag:'稳妥',c:'#6FA698',tx:'只买一小份（50灵石）',hint:'影响：小赚小赔，稳健经营',f:()=>{S.lingShi-=50;if(d100()<=60){S.lingShi+=110;log('黑市','小份灵矿转手，净赚60灵石。');}else log('黑市','小亏一笔，当做学费。');oGain(15);}}]},
+    {t:'灵田异宝',origin:'农家子',n:'夜深人静，你的灵田里泛起一层柔光，像是有什么东西在地下翻身。',opts:[
+      {k:'A',tag:'机缘',c:'#A98FD9',tx:'连夜挖开灵田',hint:'影响：可能挖出灵脉晶石（灵石+），也可能惊动田精',f:()=>{if(d100()<=55){S.lingShi+=150;S.dongfu.qi=Math.max(S.dongfu.qi,'普通');log('灵田','你挖出一枚灵脉晶石，灵田灵气随之上升！灵石+150。');}else{log('灵田','挖出一窝田精，它们气呼呼地追了你半里地。');}oGain(30);}},
+      {k:'B',tag:'守时',c:'#6FA698',tx:'等天亮再说',hint:'影响：错过机缘，但安稳',f:()=>log('灵田','天亮后柔光散去，你安慰自己，田还在就好。')}]},
+    {t:'猎王试炼',origin:'猎户之后',n:'山林深处传来兽王的吼声，方圆十里飞禽走兽尽伏。有猎王传言，能猎此兽者得山中认可。',opts:[
+      {k:'A',tag:'猎王',c:'#C4675C',tx:'深入猎兽',hint:'影响：进入战斗，胜则猎艺大涨',f:()=>{log('猎王','你握弓循声而入，兽王就在眼前！');startCombat(mkEnemy('山林兽王','金丹','中期','木',26,300,90,'山林兽王'));}},
+      {k:'B',tag:'敬畏',c:'#6FA698',tx:'退避三舍，向兽王致敬',hint:'影响：道心+1，山灵记你一份善',f:()=>{S.six.道心=clamp(S.six.道心+1,1,20);log('猎王','你放下弓箭，向兽王遥遥一礼。山灵记得你的敬畏。');}}]},
+    {t:'朝堂密旨',origin:'官宦子弟',n:'一纸密旨送到你手上，上面要你查一桩牵连甚广的旧案，办好了是泼天功劳，办砸了是杀头之罪。',opts:[
+      {k:'A',tag:'接旨',c:'#C4675C',tx:'接下这桩差事',hint:'影响：耗一月，五成五声望+15，否则声望-5',f:()=>{if(d100()<=55){S.reputation+=15;S.lingShi+=150;log('密旨','你查清旧案，圣心大悦，声望+15、赏金150灵石。');}else{S.reputation-=5;log('密旨','案子越查越深，你触了霉头，声望-5。');}oGain(35);advanceTime(1);maybeEvent();renderPlay();}},
+      {k:'B',tag:'称病',c:'#6FA698',tx:'称病推辞',hint:'影响：避祸，但错失机会',f:()=>log('密旨','你抱恙推辞，静观其变。')}]},
+    {t:'边关告急',origin:'将门之后',n:'边关传来战报，蛮族叩关，军中缺的不是粮草，而是一个敢带头冲锋的人。',opts:[
+      {k:'A',tag:'从军',c:'#C4675C',tx:'披甲赴边',hint:'影响：进入战斗，胜则军功卓著',f:()=>{log('边关','你披上祖传的甲胄，策马出关！');startCombat(mkEnemy('蛮族勇士','金丹','中期','火',28,320,95,'蛮族勇士'));}},
+      {k:'B',tag:'筹粮',c:'#6FA698',tx:'后方筹粮运抵',hint:'影响：侠义+2、声望+3',f:()=>{S.jianghu.xia+=2;S.reputation+=3;log('边关','你押运粮草昼夜兼程，军心大振。侠义+2、声望+3。');}}]},
+    {t:'祖宅夜话',origin:'没落世家',n:'老宅的墙上，一幅蒙尘的画像在夜里睁开了眼。画中先祖有话要对你说。',opts:[
+      {k:'A',tag:'聆训',c:'#A98FD9',tx:'聆听先祖遗训',hint:'影响：悟性+1、仙缘+1，或得家族秘传',f:()=>{S.six.悟性=clamp(S.six.悟性+1,1,20);S.six.仙缘=clamp(S.six.仙缘+1,1,20);S.reputation+=5;log('祖宅','先祖讲起家族最风光的年代，也讲起为何衰落。悟性+1、仙缘+1、声望+5。');}},
+      {k:'B',tag:'超度',c:'#6FA698',tx:'为画像上香超度',hint:'影响：功德+1，先祖安眠',f:()=>{S.merit++;log('祖宅','画像中的先祖含笑消散，功德+1。');}}]},
+    {t:'市井封神',origin:'市井孤儿',n:'坊间说书人把你编进了评书，说你白手起家、重情重义。一时间街头巷尾都在传你的名号。',opts:[
+      {k:'A',tag:'借势',c:'#A98FD9',tx:'推波助澜，坐实名号',hint:'影响：声望+8，市井民心归附',f:()=>{S.reputation+=8;S.jianghu.xia+=2;log('市井','评书越传越神，你在市井已是传说。声望+8、侠义+2。');}},
+      {k:'B',tag:'低调',c:'#6FA698',tx:'任他们说去，我行我素',hint:'影响：道心+0.5',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('市井','名头再响，不如自己问心无愧。道心微涨。');}}]},
+    {t:'文坛设擂',origin:'书香门第',n:'一位成名大儒设下文擂，扬言江南文士皆是庸才。你恰好路过。',opts:[
+      {k:'A',tag:'应擂',c:'#C4675C',tx:'登台应擂',hint:'胜算：约五五开，胜则文名大涨',f:()=>{if(d100()<=50+(S.six.悟性||0)*0.5){S.reputation+=12;S.six.悟性=clamp(S.six.悟性+1,1,20);log('文擂','你一篇文章力压群儒，文名+12、悟性+1。');}else{log('文擂','大儒技高一筹，你虽败犹荣。');}oGain(25);}},
+      {k:'B',tag:'品茶',c:'#6FA698',tx:'在台下听完，不置一词',hint:'影响：悟性+0.3，安稳',f:()=>{S.six.悟性=clamp(S.six.悟性+0.3,1,20);log('文擂','你听完一整场论战，受益匪浅。');}}]},
+    {t:'道统相召',origin:'方外遗孤',n:'一位鹤发童颜的道人寻到你，说你根骨与某支失传道统相合，愿引你入道。',opts:[
+      {k:'A',tag:'入道',c:'#A98FD9',tx:'随道人修行',hint:'影响：悟性+2，或得道统功法',f:()=>{S.six.悟性=clamp(S.six.悟性+2,1,20);S.six.道心=clamp(S.six.道心+1,1,20);log('道统','道人传你三篇心法，字字珠玑。悟性+2、道心+1。');}},
+      {k:'B',tag:'婉拒',c:'#6FA698',tx:'道不同，不相为谋',hint:'影响：道心+0.5，各走各路',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('道统','道人也不强求，拂尘一挥，飘然远去。');}}]},
+    {t:'血脉返祖',origin:'妖族后裔',n:'月圆之夜，你体内妖血忽然沸腾，远古先祖的身影在识海浮现。',opts:[
+      {k:'A',tag:'觉醒',c:'#C9A45C',tx:'敞开心神，迎接觉醒',hint:'影响：资质+1、妖力觉醒，但可能被血脉吞噬神智',f:()=>{if(d100()<=70){S.six.资质=clamp(S.six.资质+1,1,20);S.hpMax+=15;S.six.仙缘=clamp(S.six.仙缘+1,1,20);log('返祖','血脉苏醒，你的五感与妖力同时跃升。资质+1、气血上限+15、仙缘+1。');}else{S.status='心魔缠身';log('返祖','血脉反噬，妖性压过神智，你需静养。');}oGain(35);}},
+      {k:'B',tag:'压制',c:'#6FA698',tx:'以道心压制妖血',hint:'影响：道心+1，安稳度过',f:()=>{S.six.道心=clamp(S.six.道心+1,1,20);log('返祖','你以道心镇住妖血，月圆过后安然无恙。');}}]},
+    {t:'天骄的轻蔑',n:'坊市门口，一名锦衣天骄的随从当街拦住你：「我家少主说了，你这种泥腿子也配学修仙？跪下叫三声爷爷，赏你十枚灵石。」四周哄笑一片。',opts:[
+      {k:'A',tag:'打脸',c:'#C4675C',tx:'一言不发，直接应战',hint:'影响：进入战斗，胜则声望大涨、全场鸦雀无声',f:()=>{log('打脸','你甚至没有看那随从一眼，只对锦衣天骄道：「你的狗叫得再响，也咬不死人。来。」');startCombat(mkEnemy('锦衣天骄','筑基','中期','火',20,200,72,'锦衣天骄'));}},
+      {k:'B',tag:'忍让',c:'#6FA698',tx:'不与他一般见识',hint:'影响：道心+1，隐忍待发',f:()=>{S.six.道心=clamp(S.six.道心+1,1,20);log('忍让','你转身离开，身后哄笑更甚。但你清楚，真正的强者从不在意狗叫。道心+1。');}}]},
+    {t:'蒙尘古镜',n:'地摊上一面蒙尘古镜被当成废品叫卖，可你分明感到镜中传来一缕极淡的灵机。',opts:[
+      {k:'A',tag:'捡漏',c:'#A98FD9',tx:'花20灵石买下',hint:'影响：大概率是宝（照妖镜/灵石），小概率真废品',f:()=>{S.lingShi-=20;if(d100()<=65){const g=100+Math.floor(Math.random()*150);S.lingShi+=g;log('捡漏','你拭去镜上尘土，镜面竟映出藏宝方位——循迹挖出前人埋藏的'+g+'灵石！地摊老板脸色铁青。');}else log('捡漏','你擦了半天，发现真就是面普通镜子。摊主憋笑憋得很辛苦。');}},
+      {k:'B',tag:'稳妥',c:'#6FA698',tx:'不去赌这个眼力',hint:'影响：无消耗',f:()=>log('平和','你放下古镜，转身离开。')}]},
+    {t:'前辈灌顶',n:'山道旁，一名重伤垂死的老散修抓住你的衣角：「小友……老夫毕生修为，与其随我入土，不如赠你。只求你替老夫……报一个仇。」',opts:[
+      {k:'A',tag:'机缘',c:'#A98FD9',tx:'受此灌顶，承其遗志',hint:'影响：修为+25、悟性+1，但结下因果',f:()=>{S.xiu=clamp(S.xiu+25,0,100);S.six.悟性=clamp(S.six.悟性+1,1,20);S.flags.前辈遗志=true;log('灌顶','老人以残存功力为你伐毛洗髓，气机如江河入海。修为+25、悟性+1。他咽气前只留下一句：「那人叫赵九霄，金丹中期，在东荒做山大王。」你记住了。');}},
+      {k:'B',tag:'救治',c:'#6FA698',tx:'先以丹药为其续命',hint:'影响：消耗灵药，功德+1，修为略进',f:()=>{const h=S.bag.find(b=>b.n==='灵药·玉髓');if(h&&h.num>0){h.num--;S.merit++;S.xiu=clamp(S.xiu+10,0,100);log('救治','你以灵药为其续命，老人捡回一命，执意将残存功力渡你三成。功德+1、修为+10。');}else{log('救治','你身上没有灵药，只能看着他眼中的光渐渐熄灭。');}}}]},
+    {t:'秘境宝光',n:'远山一道宝光冲天而起，照亮半片夜空。寻宝者闻风而动，各宗弟子倾巢而出。',opts:[
+      {k:'A',tag:'夺宝',c:'#C4675C',tx:'抢先一步赶去',hint:'胜算：约六成夺宝，可能遭遇争抢',f:()=>{if(d100()<=60){const g=['玄阶功法','灵药·玉髓','聚灵符'][Math.floor(Math.random()*3)];giveItem(g,1);S.lingShi+=80;log('夺宝','你脚程最快，抢在众人之前取了宝物：得'+g+'与80灵石。后到者只能看着你远去的背影骂娘。');}else{log('夺宝','你赶到时宝物已被一名元婴老怪收入囊中，只能悻悻而归。');}}},
+      {k:'B',tag:'冷静',c:'#6FA698',tx:'宝光冲天，必有凶险，不凑热闹',hint:'影响：安全，道心微涨',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('冷静','果不其然，那宝光下埋着一头上古妖兽，夺宝者死伤惨重。你庆幸自己没去。');}}]},
+    {t:'气运之子',n:'一名与你年纪相仿的少年，身怀三件重宝，走路的姿势都带着「我命由我不由天」的张扬。他听说你最近风头正劲，特意来「会一会」。',opts:[
+      {k:'A',tag:'交锋',c:'#C4675C',tx:'让他知道什么叫人外有人',hint:'影响：进入战斗，胜则声望+15、夺其机缘',f:()=>{log('气运之子','少年咧嘴一笑：「巧了，我也这么想。」');startCombat(mkEnemy('气运之子','筑基','后期','金',24,240,78,'气运之子'));}},
+      {k:'B',tag:'避开',c:'#6FA698',tx:'气运之子身怀因果，不沾为妙',hint:'影响：安全，但可能被他记恨',f:()=>{S.flags.气运之敌=true;log('避开','你避而不战，少年嗤笑一声「怂包」离去。但你总觉得，这事没完。');}}]},
+    {t:'藏宝图残卷',n:'一名落魄书生变卖祖传藏宝图，只换三碗阳春面。图中指向东荒一处古战场。',opts:[
+      {k:'A',tag:'买图',c:'#A98FD9',tx:'买下藏宝图（50灵石）',hint:'影响：可能得传承，也可能只是废纸',f:()=>{if(S.lingShi<50){log('藏宝图','囊中羞涩。');return;}S.lingShi-=50;if(d100()<=55){S.gongfa=S.gongfa||[];S.gongfa.push({n:'残阳剑经',grade:'地阶'});log('藏宝图','你按图索骥，在古战场掘出一册《残阳剑经》（地阶功法）！书生若知道，怕是要哭晕在面摊。');}else{log('藏宝图','你挖了半天，只挖出一坛发霉的老酒。');}}},
+      {k:'B',tag:'施舍',c:'#6FA698',tx:'请书生吃碗面，不问藏宝图',hint:'影响：功德+1，善缘',f:()=>{S.merit++;log('施舍','你请书生吃了面，他千恩万谢。你转身离开时，他忽然追上来塞给你一枚玉简：「恩公，这图虽假，这玉简是真——里面是一门前人笔记。」悟性微涨。');S.six.悟性=clamp(S.six.悟性+0.5,1,20);}}]},
+    {t:'宗门大比',n:'宗门十年一度的大比开锣，魁首可得藏经阁上三楼三日参悟之权与《七星剑阵》传承。',opts:[
+      {k:'A',tag:'夺魁',c:'#C4675C',tx:'报名参赛，一路打上去',hint:'胜算：约五成五，胜则声望+12、得《七星剑阵》',f:()=>{if(d100()<=55+S.six.资质*0.4){S.reputation+=12;S.fashu=S.fashu||[];S.fashu.push({n:'七星剑阵',elem:'金',power:26,mp:14,系:'剑'});log('大比','你一路过关斩将，决赛一剑定乾坤，全场沸腾！魁首之名响彻宗门，得《七星剑阵》。');}else{log('大比','你在八强遭遇宿敌，惜败一招。虽败犹荣，道心微涨。');S.six.道心=clamp(S.six.道心+0.5,1,20);}}},
+      {k:'B',tag:'观战',c:'#6FA698',tx:'在台下观摩高手过招',hint:'影响：悟性+1，安全',f:()=>{S.six.悟性=clamp(S.six.悟性+1,1,20);log('观战','你于台下看尽百场比试，招式心法皆有所得。悟性+1。');}}]},
+    {t:'黑市拍卖会',n:'一家不入流的小茶馆，暗地里却是一场黑市拍卖。压轴竟是一枚能重塑经脉的「九转涅槃丹」。',opts:[
+      {k:'A',tag:'竞拍',c:'#A98FD9',tx:'参与竞拍（300灵石起）',hint:'影响：需300灵石，得九转涅槃丹（资质+1、重伤尽复）',f:()=>{if(S.lingShi<300){log('黑市','灵石不足300。');return;}S.lingShi-=300;S.six.资质=clamp(S.six.资质+1,1,20);S.hp=S.hpMax;S.mp=S.mpMax;S.status='无';log('黑市','你拍下九转涅槃丹服下，药力如甘霖洗过周身，经脉重塑、旧伤尽愈！资质+1。');}},
+      {k:'B',tag:'旁观',c:'#6FA698',tx:'只看看，水太深',hint:'影响：无消耗',f:()=>log('黑市','你冷眼旁观一场豪夺，未置一词。')}]},
+    {t:'灵兽谷',n:'山间一处隐秘谷地，灵兽成群。谷中传来一声清越的鹤鸣，似在召唤有缘人。',opts:[
+      {k:'A',tag:'驯兽',c:'#A98FD9',tx:'循鹤鸣而入，尝试驯服灵兽',hint:'胜算：约五成得灵宠，三成被兽群追赶',f:()=>{if(d100()<=50){S.flags.灵宠=true;S.six.仙缘=clamp(S.six.仙缘+1,1,20);log('灵兽谷','一只通体雪白的仙鹤落在你肩头，以喙轻蹭你脸颊，认你为主。仙缘+1，得灵宠「雪鹤」。');}else if(d100()<=60){S.hp=clamp(S.hp-20,1,S.hpMax);log('灵兽谷','你惊动了兽群，被追出谷外，气血-20。');}else{log('灵兽谷','灵兽们远远望着你，既不亲近也不敌视。你与这片山谷，终究有缘无分。');}}},
+      {k:'B',tag:'退避',c:'#6FA698',tx:'灵兽有灵，不扰清净',hint:'影响：功德+1',f:()=>{S.merit++;log('灵兽谷','你悄然退出，不惊一兽一禽。谷中鹤鸣再响，似在道谢。功德+1。');}}]},
+    {t:'论道大会',n:'散修联盟设下论道台，各路修士高谈阔论，从五行本源辩到长生真谛。',opts:[
+      {k:'A',tag:'论道',c:'#7FA8C9',tx:'登台立论，舌战群修',hint:'胜算：约六成（看悟性），胜则悟性+2、声望+8',f:()=>{if(d100()<=60+(S.six.悟性||0)){S.six.悟性=clamp(S.six.悟性+2,1,20);S.reputation+=8;log('论道','你以一句「道不在天，在人心」压服满场，台下静默三息，随即掌声雷动。悟性+2、声望+8。');}else{log('论道','你被一名老修驳得哑口无言，但旁听亦有收获，悟性微涨。');S.six.悟性=clamp(S.six.悟性+0.5,1,20);}}},
+      {k:'B',tag:'旁听',c:'#6FA698',tx:'静坐听讲，不置一词',hint:'影响：悟性+0.5，安稳',f:()=>{S.six.悟性=clamp(S.six.悟性+0.5,1,20);log('旁听','你听了三日论道，受益匪浅。悟性微涨。');}}]},
+    {t:'丹方残卷',n:'旧书摊上一册残破丹书被当作垫桌脚的废纸，你眼尖，瞥见封皮一角写着一个「洗」字。',opts:[
+      {k:'A',tag:'捡漏',c:'#A98FD9',tx:'花5灵石买下',hint:'影响：大概率得丹方（炼丹新配方）',f:()=>{S.lingShi-=5;S.danfang=S.danfang||[];if(!S.danfang.includes('洗髓丹方')){S.danfang.push('洗髓丹方');log('丹方','残卷果然是《洗髓丹方》残页！你补全丹方，自此可炼制洗髓丹（需丹道3+灵药）。');}else{S.lingShi+=20;log('丹方','这页丹方你已见过，转手卖了20灵石。');}}},
+      {k:'B',tag:'不捡',c:'#6FA698',tx:'破烂而已，不看',hint:'影响：错过机缘',f:()=>log('平和','你摇摇头走了。摆摊老妪把丹书翻过来，继续垫锅。')}]},
+    {t:'剑冢异动',n:'万剑冢深处，一柄无名残剑无风自鸣，剑尖遥指你所在的方向，似在认主。',opts:[
+      {k:'A',tag:'取剑',c:'#C4675C',tx:'步入剑冢，接受剑之试炼',hint:'胜算：约五成（看剑道），胜则得残剑（剑道+2）',f:()=>{if(d100()<=50+(S.wudao['剑道']||0)*2){S.wudao['剑道']=(S.wudao['剑道']||0)+2;S.fashu=S.fashu||[];S.fashu.push({n:'断水剑意',elem:'金',power:22,mp:12,系:'剑'});log('剑冢','残剑入你之手，万千剑鸣齐齐一静，随即爆发出震天剑吟——万剑朝宗！剑道+2，得「断水剑意」。');}else{log('剑冢','剑意反噬，你气血翻涌，踉跄退出。');S.hp=clamp(S.hp-25,1,S.hpMax);}}},
+      {k:'B',tag:'不取',c:'#6FA698',tx:'剑有灵，不遇其主不强求',hint:'影响：道心+0.5',f:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);log('剑冢','你向残剑一礼，转身而去。身后剑鸣渐渐平息，似有遗憾。')}}]},
+    {t:'少女求救',n:'林间小径，一名素衣少女被三名劫修围住，她怀中死死护着一枚玉匣，见到你如见救星。',opts:[
+      {k:'A',tag:'英雄救美',c:'#C4675C',tx:'出手相救',hint:'影响：进入战斗，胜则功德+2、少女重谢',f:()=>{log('救美','你白衣掠出，一剑逼退两名劫修，沉声道：「她我保了。」');startCombat(mkEnemy('劫修头目','筑基','初期','火',16,150,65,'劫修头目'),'saveMaiden');}},
+      {k:'B',tag:'旁观',c:'#8B6FA8',tx:'事不关己，悄然离去',hint:'影响：业力+1',f:()=>{S.karma++;log('业力','你脚步一顿，终究没有回头。身后传来少女的哭喊，你走得越来越快。')}}]},
+    {t:'商路遇劫',n:'一支商队被山匪拦住，货物散了一地。商队管事见你修为不凡，高喊：「侠士救命！酬劳百枚灵石！」',opts:[
+      {k:'A',tag:'护镖',c:'#C4675C',tx:'出手退匪',hint:'影响：进入战斗，胜则灵石+100、侠义+2',f:()=>{log('护镖','你纵身跃入战团，一掌震退匪首：「光天化日，也敢劫道？」');startCombat(mkEnemy('山匪头领','筑基','中期','土',18,180,70,'山匪头领'),'guardMerchant');}},
+      {k:'B',tag:'谈价',c:'#6FA698',tx:'与山匪谈分成',hint:'影响：恶名+2，得灵石',f:()=>{S.lingShi+=60;S.jianghu.evil+=2;log('谈价','你与匪首分说利害，最终各取一半。商队保住了货，你得了60灵石，却也落了个「黑白通吃」的名声。');}}]},
+    {t:'龙脉涌动',n:'地底传来沉闷轰鸣，一条龙脉从你脚下苏醒，灵气如潮水般涌出地表，整片山野的草木以肉眼可见的速度疯长。',opts:[
+      {k:'A',tag:'引气',c:'#A98FD9',tx:'就地盘坐，借龙脉灵气冲关',hint:'影响：修为+20、资质+0.5，龙脉之力灌体',f:()=>{S.xiu=clamp(S.xiu+20,0,100);S.six.资质=clamp(S.six.资质+0.5,1,20);log('龙脉','龙气如江河灌顶，你浑身经脉被灵气冲刷得嗡嗡作响。修为+20、资质微涨！');}},
+      {k:'B',tag:'引向宗门',c:'#6FA698',tx:'将龙脉方位报给宗门',hint:'影响：贡献+30，宗门大兴',f:()=>{S.contribution+=30;log('龙脉','宗门得此灵脉，举宗欢腾。你被记大功一件，贡献+30。')}}]},
+    {t:'天劫余威',n:'远方有人渡劫，九重天雷将一方山岳劈成焦土。雷劫散去，那片焦土中心却传来一缕异常蓬勃的生机。',opts:[
+      {k:'A',tag:'淬体',c:'#C4675C',tx:'进入劫区，借雷劫余威淬体',hint:'胜算：约六成气血上限+15，四成被雷气灼伤',f:()=>{if(d100()<=60){S.hpMax+=15;S.hp+=15;log('淬体','雷劫余威如细针扎遍全身，你咬牙硬撑，肉身在雷气中再度蜕变。气血上限+15！');}else{S.hp=clamp(S.hp-30,1,S.hpMax);log('淬体','残余雷气比你想象中狂暴，你被劈得外焦里嫩，气血-30。');}}},
+      {k:'B',tag:'寻宝',c:'#A98FD9',tx:'翻找劫区，看有没有渡劫者遗落',hint:'影响：可能得遗物/灵石',f:()=>{if(d100()<=45){S.lingShi+=200;log('寻宝','你在焦土里挖出渡劫者遗落的储物袋，得200灵石！');}else{log('寻宝','焦土里只有灰烬与残骸，你一无所获。');}}}]},
   ];
-  curEvent=evs[Math.floor(Math.random()*evs.length)];
+  const pool=evs.filter(e=>!e.origin||e.origin===(S.origin&&S.origin.key));
+  curEvent=pool[Math.floor(Math.random()*pool.length)];
   log('奇遇 · '+curEvent.t,curEvent.n);
 }
 function renderEvent(){const o=curEvent.opts.map(x=>typeof x==='string'?x:opt(x.k,x.tag,x.c,x.tx,'evt',x.k,x.hint)).join('');return panel('mystic',`${curEvent.kind||'奇遇'} · ${curEvent.t}`,`<div class="row">${curEvent.n}</div><div class="opts">${o}</div><div class="sm" style="margin-top:6px">注：提示中的概率为推演估算，实际结果仍受天机影响。</div>`);}
@@ -811,6 +959,11 @@ const ENDINGS={
   '坐化':{c:'#5C8C6E',cond:'寿元耗尽',desc:'你寿元耗尽，于洞府安然坐化。回首一生，仙途如逆旅，唯道心长存。'},
   '陨落':{c:'#C4675C',cond:'战死或渡劫失败',desc:'你倒在了求道之路上，再也无缘长生。修仙界从不缺一具枯骨。'},
   '入魔':{c:'#8B6FA8',cond:'心魔失控',desc:'你心魔难抑，堕入魔道，神智渐失，终成一方魔物，不复本心。'},
+  '富可敌国':{c:'#C9A45C',cond:'出身商贾之家，家业满级',desc:'你以商道问鼎九州，富可敌国。天下的灵石流经你的手，再用这些灵石，买下仙路每一道门。'},
+  '田园仙隐':{c:'#6FA698',cond:'出身农家子，家业满级',desc:'你守着灵田与所爱，春种秋收，看云卷云舒。人间百年，仙路虽缓，你却比谁都知足。'},
+  '万妖之祖':{c:'#8B6FA8',cond:'出身妖族后裔，家业满级',desc:'你血脉返祖，君临万妖。古妖山为你俯首，人间为你侧目——但你只记得那个月夜，血脉初醒时的心跳。'},
+  '铁血元帅':{c:'#C9A45C',cond:'出身将门之后，家业满级',desc:'你从一名私兵打成了九州铁壁，万军听你号令。马革裹尸，是你祖辈的宿命，却是你亲手改写的结局。'},
+  '文圣':{c:'#7FA8C9',cond:'出身书香门第，家业满级',desc:'你立言立教，文章照彻千古。修仙界有你的传说，凡间更有你的祠堂——笔虽无锋，却能改天换地。'},
 };
 function showFate(){
   ensureGameState();
@@ -820,6 +973,14 @@ function showFate(){
 /* 结局计算：由道途、业力/功德与主线分支共同决定 */
 function computeEnding(){
   const c=S.choices||[];
+  if((S.origin||{}).lv>=5){
+    const k=S.origin.key;
+    if(k==='商贾之家')return '富可敌国';
+    if(k==='农家子')return '田园仙隐';
+    if(k==='妖族后裔')return '万妖之祖';
+    if(k==='将门之后')return '铁血元帅';
+    if(k==='书香门第')return '文圣';
+  }
   if(S.karma>=15&&(S.daoban||[]).includes('谢无咎'))return '魔帝';
   if((S.daoban||[]).includes('温若曦')&&S.merit>=15)return '医仙';
   if((S.wudao['剑道']||0)>=12&&c.includes('humanitySword'))return '剑神';
@@ -845,6 +1006,11 @@ function endingText(type){
     '坐化':'你寿元耗尽，于'+S.loc+'安然坐化。回首一生，仙途如逆旅，唯道心长存。',
     '陨落':'你倒在了求道之路上，再也无缘长生。修仙界从不缺一具枯骨。',
     '入魔':'你心魔难抑，堕入魔道，神智渐失，终成一方魔物，不复本心。',
+    '富可敌国':'你以商道问鼎九州，富可敌国。天下的灵石流经你的手，再以这笔财富买下仙路的每一道门。史官写你，一半是传奇，一半是不可思议。',
+    '田园仙隐':'你守着灵田与所爱，春种秋收，看云卷云舒。人间百年，仙路虽缓，你却比谁都知足——原来长生不在天上，在每一次丰收时的心安。',
+    '万妖之祖':'你血脉返祖，君临万妖。古妖山为你俯首，人间为你侧目。可只有你自己记得，那个月夜血脉初醒时，你第一眼看见的人。',
+    '铁血元帅':'你从一名私兵打成了九州铁壁，万军听你号令，边关因你而宁。马革裹尸是你祖辈的宿命，却是你亲手改写成的凯旋。',
+    '文圣':'你立言立教，文章照彻千古。修仙界有你的传说，凡间更有你的祠堂——笔虽无锋，却能改天换地。后世书生，皆以你为道。',
   };
   return (m[type]||m['陨落'])+'\n'+base;
 }
@@ -1035,6 +1201,7 @@ function winCombat(){
   else if(e.outlaw){log('战利品',`缉凶所得灵石${loot.length?('、'+loot.join('、')):''}。此战有名有据，侠义+1。`);S.jianghu.xia+=1;}
   else{log('战利品',`夺得灵石${loot.length?('、'+loot.join('、')):''}。无名杀伐有损心性，业力+2。`);S.karma+=2;S.jianghu.evil+=1;}
   if(S.flags.血魔仇&&/血魔/.test(e.name)){S.flags.血魔仇=false;S.merit++;log('因果','你斩却昔日之仇，了却一桩因果，功德+1。');}
+  masteryTick(1);
   CB=null;if(afterWin)finishStoryBattle(afterWin);advanceTime(0);maybeEvent();renderPlay();
 }
 function combatLose(){
@@ -1188,13 +1355,13 @@ function showJianghu(){
   <div class="opts">${story}
     ${opt('榜','委托','#6FA698','查看侠义榜：护送、缉凶、寻药','jhContract','open')}
     ${opt('闻','情报','#7FA8C9','在茶馆打听江湖传闻','jhRumor','one')}
-  </div><hr class="sep"><div class="row sm">江湖行为会改变侠义与恶名；名声影响交涉、奖励和后续剧情。战胜妖兽不再无故增加业力，滥杀与夺财才会。</div>`;
+  </div><hr class="sep"><div class="sm">本章专属挑战：输入「<b>天骄</b>」查看本章可击败的九州天骄——越阶取胜可得专属功法（万剑归宗/焚天诀/谪仙诀……）与无上声望。</div><hr class="sep"><div class="row sm">江湖行为会改变侠义与恶名；名声影响交涉、奖励和后续剧情。战胜妖兽不再无故增加业力，滥杀与夺财才会。</div>`;
   $('panel').innerHTML=panel('mystic',`江湖志 · ${jianghuTitle()}`,body)+statusCard();
 }
 function setJianghuEvent(t,n,opts){curEvent={kind:'江湖抉择',t,n,opts};renderPlay();}
 function investigateJianghu(mode){
   ensureGameState();const j=S.jianghu;
-  if(mode==='wander'||j.chapter>=5){
+  if(mode==='wander'){
     const pool=[
       {t:'雨夜破庙',n:'破庙里，一名受伤镖师死死护着染血木匣，门外已有追兵逼近。',opts:[
         {k:'A',tag:'侠义',c:'#6FA698',tx:'替他挡下追兵',f:()=>{j.xia+=3;S.reputation+=3;S.lingShi+=40;log('雨夜破庙','你守住木匣，也守住了镖师一家老小的活路。侠义+3。');}},
@@ -1296,6 +1463,19 @@ function finishStoryBattle(tag){ensureGameState();const j=S.jianghu;
   else if(tag==='chapter5fate'){j.chapter=6;j.clue=0;j.storyWins++;S.six.仙缘=clamp(S.six.仙缘+2,1,20);S.xiu=clamp(S.xiu+20,0,100);S.fortunes=S.fortunes||[];if(!S.fortunes.includes('天命归位'))S.fortunes.push('天命归位');giveItem('天碑命轮',1);S.mainLine='第六章·帝京风云：揭开国师以万民养仙胎的阴谋';log('第五章终',`夺运圣子身后的万丈异象尽数崩塌，被窃取多年的命格如银河倒卷归入你身。诸宗这才明白，所谓圣子只是披着你影子的赝品。仙缘+2、修为+20，获得“天碑命轮”。从今日起，你不再等天命垂青——你自己便是天命。`);}
   else if(tag==='chapter6capital'){j.chapter=7;j.clue=0;j.storyWins++;j.xia+=6;S.reputation+=25;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('人皇气运'))S.fortunes.push('人皇气运');S.mainLine='第七章·天外剑门：上界仙使索要你的一切机缘';log('第六章终','血日熄灭，数万魂灯化作星光回归百姓。你没有坐上国师留下的位置，只站在皇城最高处告诉天下：修行者若以凡人为薪，纵已成仙，也该斩。侠义+6、声望+25，得人皇气运加身。');}
   else if(tag==='chapter7heaven'){j.chapter=8;j.clue=0;j.storyWins++;S.reputation+=50;S.wudao['剑道']=(S.wudao['剑道']||0)+5;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('一剑断天门'))S.fortunes.push('一剑断天门');giveItem('仙使本源',1);S.mainLine='第八章·人间至尊：天门已碎，诸天因你而震动';log('第七章终','你以人间一剑斩开仙使法相，剑光余势直上九天，将高悬万年的天门从中央劈成两半。上界沉默，九州沸腾。你没有借机独自飞升，而是转身走回那些等待你的人身边。声望+50、剑道+5，获得仙使本源。自此以后，上界提起人间，只会先想起你的名字。');}
+  else if(tag==='sectEscort'){S.contribution+=8;S.lingShi+=40;log('宗门','你击退狼群，商队平安过岭。贡献+8、灵石+40。');}
+  else if(tag==='sectBeast'){giveItem('妖丹',1);S.contribution+=8;S.lingShi+=30;log('宗门','妖兽伏诛，村镇重归安宁。贡献+8、灵石+30、得妖丹。');}
+  else if(tag==='saveMaiden'){S.merit+=2;S.lingShi+=80;S.jianghu.xia+=2;log('救美','劫修尽数伏诛。少女盈盈下拜：「恩公大恩，无以为报。」她将玉匣中一枚温养多年的灵珠赠你。功德+2、灵石+80、侠义+2，那枚灵珠暖意融融，似有灵性。');}
+  else if(tag==='guardMerchant'){S.lingShi+=100;S.jianghu.xia+=2;log('护镖','匪众溃散，商队管事千恩万谢，奉上百枚灵石。侠义+2、灵石+100。');}
+  else if(tag&&tag.startsWith('tianjiao')){
+    const ti=+tag.slice(8);const tt=TIANJIAO[ti];if(!tt)return;
+    S.tianjiao=S.tianjiao||{};if(S.tianjiao[ti])return;
+    S.tianjiao[ti]=true;S.reputation+=30;tt.give();
+    log('天骄战',`${tt.name}轰然倒地，满场死寂。你拂去衣上尘埃，连正眼都未多给。全场这才如梦初醒——${tt.title}，败了。<br><br>声望+30，得：${tt.reward}。自今日起，九州天骄榜上，你的名字压过了${tt.name}。`);
+  }
+  else if(tag==='originHunt'){giveItem('妖丹',1);S.lingShi+=30;S.origin&&S.origin.lv<5&&oGain(22);log('家业','你满载而归，得妖丹与30灵石。');}
+  else if(tag==='originBandit'){S.lingShi+=60;S.jianghu.xia+=2;S.origin&&oGain(28);log('家业','剿匪大捷，军功卓著。侠义+2、灵石+60。');}
+  else if(tag==='exploreGhost'){S.merit+=2;S.lingShi+=60;log('探索','你斩灭鬼修，寒渊归宁。功德+2、灵石+60。');}
   else if(tag==='contractEscort'||tag==='contractBounty'){j.contracts++;j.xia+=2;S.lingShi+=tag==='contractEscort'?45:60;log('侠义榜','委托完成，侠义+2，领取酬金。');}
 }
 
@@ -1314,12 +1494,63 @@ function showMap(){
   const rows=places.map(p=>{const d=p.need>cur;const w=d?`<span class="danger">［危险·建议${REALMS[p.need]}］</span>`:'［可游］';return `<div class="row">${p.n}　${w}　${p.desc}　<a class="lnk" data-act="travel" data-arg="${p.n}|${p.need}">前往</a></div>`;}).join('');
   $('panel').innerHTML=panel('',`九州舆图 · ${timeLine()}`,`<div class="row sm">九州凶险，越界者死。按你当前${realmLabel()}标注可否久留。</div><hr class="sep">${rows}`)+statusCard();
 }
+/* 各地图探索事件：危险之地高风险高回报 */
+const MAP_EVENTS={
+ '东洲·青岳':[
+  {t:'灵草崖',n:'青岳后崖灵草成片，一名采药童被藤蔓困在半空。',opts:[
+   {k:'A',tag:'采药',c:'#6FA698',tx:'采灵草、救药童',hint:'影响：得灵药·玉髓×1、功德+1，安全',f:()=>{giveItem('灵药·玉髓',1);S.merit++;log('探索','你采下一筐灵草，又将药童救下。得灵药·玉髓、功德+1。');}},
+   {k:'B',tag:'机缘',c:'#A98FD9',tx:'深入崖底寻宝',hint:'胜算：约六成得灵石，四成跌落受伤',f:()=>{if(d100()<=60){S.lingShi+=60;log('探索','崖底发现散修遗留的灵石袋，+60灵石。');}else{S.hp=clamp(S.hp-15,1,S.hpMax);log('探索','脚下一滑，你从崖壁跌落，气血-15。');}}}]},
+  {t:'山神庙',n:'荒废山神庙里供着一尊无面神像，香案积灰，却有新鲜供果。',opts:[
+   {k:'A',tag:'虔诚',c:'#6FA698',tx:'上香祭拜',hint:'影响：道心+1，或得神祇垂青',f:()=>{if(d100()<=30){S.six.仙缘++;log('探索','无面神像似有一瞬垂眸，仙缘+1。');}else{S.six.道心=clamp(S.six.道心+1,1,20);log('探索','香烟袅袅，你心境澄明，道心+1。');}}},
+   {k:'B',tag:'好奇',c:'#A98FD9',tx:'掀开神像找机关',hint:'影响：可能得宝，也可能惊动邪祟',f:()=>{if(d100()<=45){S.lingShi+=80;log('探索','神像下有暗格，藏着80灵石。');}else{log('探索','你惊动了盘踞于此的游魂，狼狈退出。');S.karma++;}}}]},
+ ],
+ '中州·天阙':[
+  {t:'剑榜争名',n:'中州剑榜前，一名无名客挑战你的名次。观战者如云。',opts:[
+   {k:'A',tag:'应战',c:'#C4675C',tx:'接下挑战',hint:'胜算：约五五开，胜则声望+20、灵石+120',f:()=>{if(d100()<=50+S.six.资质){S.reputation+=20;S.lingShi+=120;S.wudao['剑道']=(S.wudao['剑道']||0)+1;log('探索','你击败挑战者，剑榜名次再进，声望+20、剑道+1。');}else{S.hp=clamp(S.hp-20,1,S.hpMax);log('探索','惜败一招，你负伤而退，气血-20。');}}},
+   {k:'B',tag:'藏锋',c:'#6FA698',tx:'婉拒，观摩剑招',hint:'影响：剑道+0.5，安全',f:()=>{S.wudao['剑道']=(S.wudao['剑道']||0)+0.5;log('探索','你在台下观摩数百招，剑道微进。');}}]},
+  {t:'天阙拍卖会',n:'一场隐秘拍卖会正在举行，压轴是一枚能重塑灵根的洗髓丹。',opts:[
+   {k:'A',tag:'竞拍',c:'#A98FD9',tx:'豪掷灵石竞拍',hint:'影响：需500灵石，得洗髓丹（资质+1）',f:()=>{if(S.lingShi<500){log('探索','灵石不足500，你只能空手而归。');return;}S.lingShi-=500;S.six.资质=clamp(S.six.资质+1,1,20);log('探索','你拍下洗髓丹服下，资质+1，灵根愈发纯净。');}},
+   {k:'B',tag:'平和',c:'#6FA698',tx:'只看看，不参与',hint:'影响：无消耗',f:()=>log('探索','你旁观一场豪赌，未置一词。')}]},
+ ],
+ '南疆·赤炎':[
+  {t:'地火炼体',n:'赤炎地火喷涌，有修士在地火旁打坐，借火炼体。',opts:[
+   {k:'A',tag:'炼体',c:'#C4675C',tx:'借地火淬炼肉身',hint:'胜算：约六成气血上限+10，四成被火灼伤',f:()=>{if(d100()<=60){S.hpMax+=10;S.hp+=10;log('探索','地火煅体，你气血上限+10。');}else{S.hp=clamp(S.hp-25,1,S.hpMax);log('探索','火候未够，你被地火灼伤，气血-25。');}}},
+   {k:'B',tag:'猎妖',c:'#A98FD9',tx:'深入猎妖兽',hint:'影响：进入战斗，胜则得妖丹/灵石',f:()=>startCombat(spawnBeast(pickBeast()))}]},
+  {t:'赤炎古矿',n:'一处废弃灵石矿洞深处透出微光，矿工说有妖兽盘踞。',opts:[
+   {k:'A',tag:'冒险',c:'#A98FD9',tx:'下矿探宝',hint:'胜算：约五成得灵石+150，五成遇妖兽',f:()=>{if(d100()<=50){S.lingShi+=150;giveItem('妖丹',1);log('探索','你在矿洞深处挖到150灵石和一颗妖丹。');}else{log('探索','矿洞里窜出一头妖兽！');startCombat(spawnBeast('赤焰妖蟒'));}}},
+   {k:'B',tag:'稳妥',c:'#6FA698',tx:'绕开矿洞',f:()=>log('探索','你绕开了这个是非之地。')}]},
+ ],
+ '西漠·流沙':[
+  {t:'古寺佛光',n:'流沙深处一座古寺，佛光冲霄，有沙匪追着难民逃向这里。',opts:[
+   {k:'A',tag:'救人',c:'#6FA698',tx:'出手护难民',hint:'影响：功德+2、侠义+3；可能触发战斗',f:()=>{if(d100()<=60){S.merit+=2;S.jianghu.xia+=3;log('探索','你护住难民，古寺钟声为你而鸣。功德+2、侠义+3。');}else{log('探索','沙匪扑来，你迎战！');startCombat(mkEnemy('沙匪首领','金丹','中期','土',22,260,80,'沙匪首领'));}}},
+   {k:'B',tag:'寻缘',c:'#A98FD9',tx:'入寺参悟佛法',hint:'影响：道心+2，或得佛门机缘',f:()=>{if(d100()<=35){S.six.道心=clamp(S.six.道心+2,1,20);S.fortunes=S.fortunes||[];if(!S.fortunes.includes('佛缘')){S.fortunes.push('佛缘');S.gongfa.push({n:'金刚不坏身',grade:'地阶'});log('探索','你参悟古寺壁画，得地阶功法《金刚不坏身》！道心+2。');}}else{S.six.道心=clamp(S.six.道心+1,1,20);log('探索','佛理浩瀚，你心有所悟，道心+1。');}}}]},
+  {t:'魔渊封镇',n:'西漠尽头是镇压上古魔渊的封印，裂缝里渗出令人心悸的魔气。',opts:[
+   {k:'A',tag:'镇魔',c:'#C4675C',tx:'加固封印',hint:'影响：功德+3，但可能被魔气侵染',f:()=>{if(d100()<=70){S.merit+=3;log('探索','你以灵力加固封印，功德+3。');}else{S.karma++;S.status='心魔缠身';log('探索','魔气反噬，你心神受染，业力+1。');}}},
+   {k:'B',tag:'远离',c:'#6FA698',tx:'转身离开',f:()=>log('探索','你深知魔渊不可轻犯，转身离开。')}]},
+ ],
+ '北原·寒渊':[
+  {t:'雪族易宝',n:'北原雪族以冰魄珠易物，一颗可换一册寒系功法或百枚灵石。',opts:[
+   {k:'A',tag:'换功法',c:'#A98FD9',tx:'以冰魄珠换寒系功法',hint:'影响：需冰魄珠，得《北冥寒剑》',f:()=>{const h=S.bag.find(b=>b.n==='冰魄珠');if(!h||h.num<=0){log('探索','你没有冰魄珠。可猎玄冰雪魇获取。');return;}h.num--;S.fashu.push({n:'北冥寒剑',elem:'冰',power:30,mp:16,系:'剑'});log('探索','你以冰魄珠换得绝学《北冥寒剑》。');}},
+   {k:'B',tag:'换灵石',c:'#6FA698',tx:'换百枚灵石',f:()=>{const h=S.bag.find(b=>b.n==='冰魄珠');if(!h||h.num<=0){log('探索','你没有冰魄珠。');return;}h.num--;S.lingShi+=100;log('探索','你换得100灵石。');}}]},
+  {t:'寒渊鬼修',n:'寒渊深处，一名鬼修拦住去路，要你留下阳寿买路。',opts:[
+   {k:'A',tag:'除鬼',c:'#C4675C',tx:'拔剑斩鬼',hint:'影响：进入战斗，胜则功德+2',f:()=>{const e=mkEnemy('寒渊鬼修','元婴','初期','冰',26,340,85,'寒渊鬼修');e.outlaw=true;startCombat(e,'exploreGhost');}},
+   {k:'B',tag:'周旋',c:'#6FA698',tx:'以道心相抗，逼退鬼修',hint:'胜算：约五五开，失败损阳寿',f:()=>{if(d100()<=50+S.six.道心){S.merit++;log('探索','你道心坚毅，鬼修不敢靠近，退去。功德+1。');}else{S.age+=5;log('探索','鬼修摄走你一缕阳气，阳寿-5。');}}}]},
+ ],
+};
+function explore(){
+  const evs=MAP_EVENTS[S.loc]||MAP_EVENTS['东洲·青岳'];
+  const e=evs[Math.floor(Math.random()*evs.length)];
+  curEvent={kind:'探索 · '+S.loc,t:e.t,n:e.n,opts:e.opts};
+  renderPlay();
+}
 function travel(name,need){
   const cur=idxOf(S.realm);
   if(need>cur){log('危险提示',`${name}建议${REALMS[need]}，你仅${realmLabel()}。已示警——去否由你。`);if(d100()<=40){const dmg=20+need*15;S.hp=clamp(S.hp-dmg,1,S.hpMax);S.status='重伤';log('杀劫',`你擅闯高阶地界，遭${REALMS[need]}修士镇压，重伤而逃！`);advanceTime(1);maybeEvent();renderPlay();return;}}
   S.loc=name;
   if(name==='青岳·灵泉'){spring();return;}
-  log('游历',`你行至${name}，风物迥异。`);advanceTime(1);maybeEvent();renderPlay();
+  log('游历',`你行至${name}。这里的地貌、势力与机缘，都与别处截然不同——等待你的，是独属于此地的奇遇与凶险。`);
+  if(name==='秘境·通灵'){enterSecret('通灵');return;}
+  advanceTime(1);explore();
 }
 
 /* ============ 坊市 ============ */
@@ -1407,10 +1638,82 @@ function romE(n){const v=S.aff[n]||0;if(v<80){log('情缘',`你与${n}尚${lvNam
   ];
   evs[Math.floor(Math.random()*evs.length)]();affGain(n,8);maybeEvent();renderPlay();}
 function talkNpc(n){if(!bondState(n).met){log('交谈','你们尚未正式相识。情缘面板会写明相识路线。');showLove();return;}const topics=[`你与${n}从近日江湖风波谈到各自的道。对方没有敷衍，而是认真听完你那些尚显稚嫩的想法，又将自己的经历掰开揉碎与你分享。临别时，${n}说下次不必找借口，想来便来。`,`夜色渐深，你与${n}在檐下对坐。你们没有谈宏大的长生，只谈受过的伤、错过的人和仍然想守住的东西。沉默并不尴尬，反而像一种只有彼此听得懂的回答。`,`你发现${n}也有与传闻截然不同的一面。那个人会疲惫、会迟疑，也会在你说笑时悄悄放松眉眼。江湖认识的是一个名号，而你正在慢慢认识名号之后真正的人。`];S.aff[n]=(S.aff[n]||0)+4;log('交谈',`${topics[Math.floor(Math.random()*topics.length)]}<br><br>好感+4（${S.aff[n]}·${lvName(S.aff[n])}）。`);showLove();}
-function viewNpc(n){const c=NPCS[n],r=BOND_ROUTES[n],b=bondState(n),v=S.aff[n]||0,lv=lvName(v),db=(S.daoban||[]).includes(n)?'　<b style="color:#D88FA5">（道侣）</b>':'';const req=bondRequirement(n);$('panel').innerHTML=panel('love',`缘线 · ${n}`,`<div class="row em">${n}${db}</div><div class="row">${c.desc}</div><div class="row">性别：${c.gender}　喜好：${c.like.join('、')}</div><hr class="sep"><div class="row"><b>相识路线：</b>${r.route}</div><div class="row">地点：${r.where}　修为：${r.realm}　战斗援助：${r.role}</div><div class="row">前置状态：${req.length?req.join('、'):'已满足'}　当前：${b.met?`${v}好感·${lv}·个人剧情${b.chapter}/4`:'尚未相识'}</div><div class="row"><b>下一步：</b>${bondNext(n)}</div><div class="row sm">战斗规则：相识且好感40可主动求援；好感越高、成为道侣后救场率与伤害越高。每场战斗最多响应一次。</div><div class="row"><a class="lnk" data-act="cmd" data-arg="情缘">返回情缘</a></div>`)+statusCard();}
+function viewNpc(n){const c=NPCS[n],r=BOND_ROUTES[n],b=bondState(n),v=S.aff[n]||0,lv=lvName(v),db=(S.daoban||[]).includes(n)?'　<b style="color:#D88FA5">（道侣）</b>':'';const req=bondRequirement(n);$('panel').innerHTML=panel('love',`缘线 · ${n}`,`<div class="row em">${n}${db}</div><div class="row">${c.desc}</div><div class="row sm" style="color:#5F5E5A">画像：${PORTRAIT[n]||''}</div><div class="row">性别：${c.gender}　喜好：${c.like.join('、')}</div><hr class="sep"><div class="row"><b>相识路线：</b>${r.route}</div><div class="row">地点：${r.where}　修为：${r.realm}　战斗援助：${r.role}</div><div class="row">前置状态：${req.length?req.join('、'):'已满足'}　当前：${b.met?`${v}好感·${lv}·个人剧情${b.chapter}/4`:'尚未相识'}</div><div class="row"><b>下一步：</b>${bondNext(n)}</div><div class="row sm">战斗规则：相识且好感40可主动求援；好感越高、成为道侣后救场率与伤害越高。每场战斗最多响应一次。</div><div class="row"><a class="lnk" data-act="cmd" data-arg="情缘">返回情缘</a></div>`)+statusCard();}
 
+/* 出身家业：十种出身各有专属经营路线与五级成长 */
+const ORIGINS={
+ '农家子':{desc:'灵田为业，春种秋收，最懂厚土生息。',levels:['佃农','良田主','地主','灵植师','田上仙'],acts:[
+  {k:'种',tx:'种灵药（20灵石，七成得一株玉髓）',run:()=>{if(S.lingShi<20){log('家业','种苗钱都拿不出。');showOrigin();return;}S.lingShi-=20;if(d100()<=70){giveItem('灵药·玉髓',1);log('家业','你悉心照料，灵药成熟，得一株玉髓灵药。');}else log('家业','一场虫灾，颗粒无收。');oGain(18);}},
+  {k:'垦',tx:'开垦新田（100灵石，四成挖出前人埋藏）',run:()=>{if(S.lingShi<100){log('家业','开垦需100灵石。');showOrigin();return;}S.lingShi-=100;if(d100()<=40){S.lingShi+=150;log('家业','垦荒挖出前人埋藏的灵石，得150灵石！');}else{S.six.道心=clamp(S.six.道心+1,1,20);log('家业','你开垦新田，道心随汗水愈发坚定。');}oGain(30);}}]},
+ '猎户之后':{desc:'山林为伴，箭术通神，一弓在手天下可走。',levels:['猎户','猎手','猎魁','猎王','猎仙'],acts:[
+  {k:'猎',tx:'进山狩猎（入战，胜得兽材）',run:()=>{const b=spawnBeast(pickBeast());if(b){log('家业','你循着兽踪深入山林……');startCombat(b,'originHunt');}}},
+  {k:'阱',tx:'布置陷阱（30灵石，六成收获）',run:()=>{if(S.lingShi<30){log('家业','陷阱材料钱不足。');showOrigin();return;}S.lingShi-=30;if(d100()<=60){giveItem('妖丹',1);S.lingShi+=40;log('家业','陷阱捕获猎物，得妖丹与40灵石。');}else log('家业','陷阱被大妖破坏，白忙一场。');oGain(20);}}]},
+ '商贾之家':{desc:'商路通九，白手起家，铜臭也是本事。',levels:['小贩','行商','坐商','大商','豪商'],acts:[
+  {k:'贩',tx:'低买高卖（50灵石，六成赚60-150）',run:()=>{if(S.lingShi<50){log('家业','本钱不足。');showOrigin();return;}S.lingShi-=50;if(d100()<=60){const g=60+Math.floor(Math.random()*90);S.lingShi+=g;log('家业',`你低买高卖，净赚${g}灵石。`);}else log('家业','行情看走眼，折了本钱。');oGain(20);}},
+  {k:'路',tx:'押运商路（200灵石，五成五赚260-420）',run:()=>{if(S.lingShi<200){log('家业','商路本钱不足。');showOrigin();return;}S.lingShi-=200;if(d100()<=55){const g=260+Math.floor(Math.random()*160);S.lingShi+=g;log('家业',`商队平安往返，净赚${g}灵石！`);}else log('家业','商路遭劫，血本无归。');oGain(45);}}]},
+ '官宦子弟':{desc:'门庭显赫，仕途如棋，权柄亦是修行。',levels:['白衣','小吏','州府','朝臣','权臣'],acts:[
+  {k:'职',tx:'述职领俸（耗一月，得灵石/声望/贡献）',run:()=>{S.lingShi+=50;S.contribution+=3;S.reputation+=2;log('家业','你当差述职，领俸50灵石，声望微涨。');oGain(18);advanceTime(1);maybeEvent();renderPlay();}},
+  {k:'交',tx:'结交权贵（100灵石，六成声望+8）',run:()=>{if(S.lingShi<100){log('家业','交际费不足。');showOrigin();return;}S.lingShi-=100;if(d100()<=60){S.reputation+=8;log('家业','一场酒宴，你结交了贵人，声望+8。');}else log('家业','礼送出去了，人却没见着。');oGain(25);}}]},
+ '将门之后':{desc:'祖上从军，一身胆气，马革裹尸亦无悔。',levels:['私兵','百夫长','千夫长','将军','元帅'],acts:[
+  {k:'操',tx:'操练武艺（耗一月，攻防微涨）',run:()=>{S.six.资质=clamp(S.six.资质+0.2,1,20);S.hpMax+=5;log('家业','你日夜操练，武艺精进，资质微涨、气血上限+5。');oGain(15);advanceTime(1);maybeEvent();renderPlay();}},
+  {k:'剿',tx:'剿匪（入战，胜得军功声望）',run:()=>{log('家业','你领兵进山剿匪……');const e=mkEnemy('悍匪头目','筑基','中期','土',16,160,70,'悍匪头目');e.outlaw=true;startCombat(e,'originBandit');}}]},
+ '没落世家':{desc:'祖上阔过，家道中落，复兴之志未熄。',levels:['遗孤','寻根','中兴','世家主','世祖'],acts:[
+  {k:'寻',tx:'寻访旧族（100灵石，五成得家族遗物）',run:()=>{if(S.lingShi<100){log('家业','盘缠不足。');showOrigin();return;}S.lingShi-=100;if(d100()<=50){S.lingShi+=120;S.reputation+=4;log('家业','你寻回祖辈埋藏的家底，得120灵石，声望+4。');}else log('家业','故人早已凋零，一无所获。');oGain(25);}},
+  {k:'祭',tx:'祭拜祖祠（耗一月，悟性/声望）',run:()=>{S.six.悟性=clamp(S.six.悟性+0.3,1,20);S.reputation+=2;log('家业','你在祖祠前长跪，听风讲述家族旧事，悟性微涨。');oGain(15);advanceTime(1);maybeEvent();renderPlay();}}]},
+ '市井孤儿':{desc:'泥里滚大，消息灵通，最懂人心薄厚。',levels:['乞儿','市井儿','里巷王','坊主','一城之主'],acts:[
+  {k:'探',tx:'市井打探（情报随机收益）',run:()=>{const rs=['你打听到一处黑市，转手消息得30灵石。','你在赌坊外捡漏，赚了40灵石。','你帮茶馆跑腿，得20灵石。'];S.lingShi+=20+Math.floor(Math.random()*30);log('家业',rs[Math.floor(Math.random()*rs.length)]);oGain(15);}},
+  {k:'混',tx:'混出名堂（高风险，恶名/重赏）',run:()=>{if(d100()<=45){S.lingShi+=120;log('家业','你替人办了桩见不得光的差事，得120灵石。');S.jianghu.evil+=1;}else{S.karma++;log('家业','事情办砸了，还惹了一身麻烦，业力+1。');}oGain(30);}}]},
+ '书香门第':{desc:'诗书传家，一支笔可写山河，也可写人心。',levels:['蒙童','秀才','文士','大儒','文圣'],acts:[
+  {k:'著',tx:'著书立说（耗一月，文名/悟性）',run:()=>{S.six.悟性=clamp(S.six.悟性+0.5,1,20);S.reputation+=3;log('家业','你写下新作，墨香传遍坊间，悟性微涨、文名渐起。');oGain(20);advanceTime(1);maybeEvent();renderPlay();}},
+  {k:'论',tx:'文会论道（100灵石入场，五成五文名+10）',run:()=>{if(S.lingShi<100){log('家业','文会入场费不足。');showOrigin();return;}S.lingShi-=100;if(d100()<=55){S.reputation+=10;S.six.悟性=clamp(S.six.悟性+0.5,1,20);log('家业','你舌战群儒，文名+10、悟性微涨。');}else log('家业','你被人驳得哑口无言。');oGain(25);}}]},
+ '方外遗孤':{desc:'自幼离世，道观养大，与尘缘隔着半扇门。',levels:['野修','记名','真传','嫡传','道统之主'],acts:[
+  {k:'参',tx:'参悟道藏（耗一月，道心/悟性）',run:()=>{S.six.道心=clamp(S.six.道心+0.5,1,20);S.six.悟性=clamp(S.six.悟性+0.3,1,20);log('家业','你在道藏前枯坐一日，字句如活，道心微涨。');oGain(18);advanceTime(1);maybeEvent();renderPlay();}},
+  {k:'守',tx:'守护道场（随机功德或战斗）',run:()=>{if(d100()<=60){S.merit++;log('家业','你驱散一伙扰道场的散修，功德+1。');}else{log('家业','来的是硬茬子！');startCombat(mkEnemy('抢山散修','筑基','中期','金',15,150,70,'抢山散修'));}oGain(25);}}]},
+ '妖族后裔':{desc:'妖血在身，返祖之路，或成万妖之祖。',levels:['返祖初醒','化形','血脉觉醒','妖中俊杰','万妖之祖'],acts:[
+  {k:'炼',tx:'炼化妖血（80灵石，五成五妖力+）',run:()=>{if(S.lingShi<80){log('家业','妖血材料钱不足。');showOrigin();return;}S.lingShi-=80;if(d100()<=55){S.six.资质=clamp(S.six.资质+0.3,1,20);S.hpMax+=8;log('家业','妖血入体，血脉又苏醒一分，资质微涨、气血上限+8。');}else log('家业','妖血反噬，你花了好几天才压下去。');oGain(22);}},
+  {k:'啸',tx:'对月长啸（耗一月，妖力/仙缘）',run:()=>{S.six.仙缘=clamp(S.six.仙缘+0.3,1,20);log('家业','月下长啸，血脉深处似有远古回应，仙缘微涨。');oGain(15);advanceTime(1);maybeEvent();renderPlay();}}]},
+};
+function showOrigin(){
+  if(!S.origin)S.origin={key:S.originKey||'农家子',lv:1,exp:0};
+  const o=S.origin,oo=ORIGINS[o.key];if(!oo)return;
+  const need=[0,100,300,700,1400];
+  const next=o.lv>=5?'已臻巅峰，将影响你的最终结局':`距「${oo.levels[o.lv]}」还差 ${Math.max(0,need[o.lv]-o.exp)} 业值`;
+  const acts=oo.acts.map((a,i)=>opt(a.k,'家业','#A98FD9',a.tx,'originAct',String(i))).join('');
+  $('panel').innerHTML=panel('',`家业 · ${o.key}`,`<div class="row em">${o.key} · ${oo.levels[Math.max(0,Math.min(o.lv-1,4))]}</div><div class="row sm">${oo.desc}</div><div class="row sm">家业等级 ${o.lv}/5　业值 ${o.exp}　${next}</div><hr class="sep"><div class="opts">${acts}</div><div class="sm">家业与出身绑定，是你在仙途之外的立身之本。等级越高，收益越大，结局越独特。</div>`)+statusCard();
+}
+function oGain(e){const o=S.origin;o.exp+=e;const need=[0,100,300,700,1400];while(o.lv<5&&o.exp>=need[o.lv]){o.exp-=need[o.lv];o.lv++;log('家业','事业更上层楼：你如今已是「'+ORIGINS[o.key].levels[o.lv-1]+'」！');}}
+function originAct(i){const o=S.origin;if(!o)return;const ac=ORIGINS[o.key]&&ORIGINS[o.key].acts[+i];if(ac)ac.run();}
 /* ============ 洞府 ============ */
-function showDongfu(){const body=`<div class="row">灵气 ${S.dongfu.qi}（系数${QI_COEF[S.dongfu.qi]}）　设施：${(S.dongfu.fac||[]).join('、')}</div><div class="row"><a class="lnk" data-act="upQi">花200灵石提升灵气一档</a>　<a class="lnk" data-act="addFac">花150灵石建静室/丹房</a></div><div class="row"><a class="lnk" data-act="rest">打坐调息（耗时一月，恢复气血+灵力）</a>　<a class="lnk" data-act="restFull">服灵药调养（花50灵石，恢复至全满）</a></div><div class="sm">调息是免费的日常恢复：气血灵力各回四成。若伤势过重，可赴地图「青岳·灵泉」或花灵石彻底疗养。闭关苦修：灵气越浓月修为越高。可「闭关X年」快进岁月。</div>`;$('panel').innerHTML=panel('',`洞府 · ${S.loc}`,body)+statusCard();}
+/* 洞府产业：灵田/丹房/器坊/兽栏，投灵石建造，经营产出 */
+const ESTATE={
+ '灵田':{cost:200,desc:'开灵田一亩，可种灵药，收成换灵药与灵石',run:()=>{if(d100()<=70){giveItem('灵药·玉髓',1);log('产业','灵田丰收，得一株玉髓灵药。');}else{log('产业','一场虫灾，灵田收成不佳。');}}},
+ '丹房':{cost:250,desc:'建丹房一间，炼丹更易成功',run:()=>{S._炼丹=(S._炼丹||0)+1;log('产业','丹房开炉试炼，你对手法又有心得（炼丹加成+1）。');}},
+ '器坊':{cost:250,desc:'起器坊一座，打造法器出售',run:()=>{if(d100()<=50){S.lingShi+=120;log('产业','器坊打造的法器卖出好价，赚120灵石。');}else{log('产业','器坊材料不济，亏了小半。');}}},
+ '兽栏':{cost:300,desc:'设兽栏一围，驯养灵兽',run:()=>{if(d100()<=40){S.flags.灵宠=true;log('产业','兽栏里一头青玉灵狐认你为主，从此伴你左右！');}else{log('产业','灵兽性子野，还需时日驯服。');}}},
+};
+function estateBuild(k){
+  const e=ESTATE[k];if(!e)return;
+  S.estate=S.estate||[];
+  if(S.estate.includes(k)){log('产业',k+'已建成。');showDongfu();return;}
+  if(S.lingShi<e.cost){log('产业','灵石不足'+e.cost+'。');showDongfu();return;}
+  S.lingShi-=e.cost;S.estate.push(k);
+  log('产业',`你耗费${e.cost}灵石与数月光阴，${k}落成。看着崭新的${k}，你第一次觉得，这洞府有了家的模样。`);
+  advanceTime(1);showDongfu();
+}
+function estateRun(){
+  if(phase!=='play'||CB||SEC||curEvent){log('产业','当前行动尚未结束。');renderPlay();return;}
+  S.estate=S.estate||[];
+  if(!S.estate.length){log('产业','洞府还没有任何产业，先建一座吧。');showDongfu();return;}
+  if(S.lingShi<30){log('产业','经营需要30灵石材料费。');showDongfu();return;}
+  S.lingShi-=30;
+  const k=S.estate[Math.floor(Math.random()*S.estate.length)];
+  ESTATE[k].run();
+  advanceTime(1);maybeEvent();renderPlay();
+}
+function showDongfu(){S.estate=S.estate||[];
+  const es=Object.keys(ESTATE).map(k=>{const has=S.estate.includes(k);return `<div class="row">${has?`<span style="color:#6FA698">●</span> ${k}（已建）`:k+'　建造成本'+ESTATE[k].cost+'灵石　<a class="lnk" data-act="estateBuild" data-arg="'+k+'">建造</a>'}<span class="sm">${ESTATE[k].desc}</span></div>`;}).join('');
+  const body=`<div class="row">灵气 ${S.dongfu.qi}（系数${QI_COEF[S.dongfu.qi]}）　设施：${(S.dongfu.fac||[]).join('、')}</div><div class="row"><a class="lnk" data-act="upQi">花200灵石提升灵气一档</a>　<a class="lnk" data-act="addFac">花150灵石建静室/丹房</a></div><div class="row"><a class="lnk" data-act="rest">打坐调息（耗时一月，恢复气血+灵力）</a>　<a class="lnk" data-act="restFull">服灵药调养（花50灵石，恢复至全满）</a></div><div class="row em">洞府产业</div>${es}<div class="row"><a class="lnk" data-act="estateRun">经营产业（花30灵石+一月，随机产出）</a></div><div class="sm">产业是你在仙途之外的立身之本：灵田产灵药、丹房精丹术、器坊赚灵石、兽栏驯灵宠。调息是免费的日常恢复：气血灵力各回四成。闭关苦修：灵气越浓月修为越高。可「闭关X年」快进岁月。</div>`;
+  $('panel').innerHTML=panel('',`洞府 · ${S.loc}`,body)+statusCard();}
 function rest(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法调息。');renderPlay();return;}const hp=Math.max(1,Math.round(S.hpMax*0.4)),mp=Math.max(1,Math.round(S.mpMax*0.4));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('调息',`你于静室盘坐，运转周天吐纳灵机。清气洗过受损经脉，倦意与伤势一点点褪去，像潮水退却后露出的礁石。<br><br>气血+${hp}、灵力+${mp}（当前 ${Math.round(S.hp)}/${S.hpMax}、${Math.round(S.mp)}/${S.mpMax}）。`);advanceTime(1);maybeEvent();renderPlay();}
 function restFull(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法服药调养。');renderPlay();return;}if(S.lingShi<50){log('洞府','灵石不足50。可先用免费「打坐调息」或赴灵泉。');showRecovery();return;}S.lingShi-=50;S.hp=S.hpMax;S.mp=S.mpMax;if(S.status&&S.status!=='无')S.status='无';log('调息',`你取一枚蕴灵丹化入温水服下，又令药力在体内散开。暖意自丹田涌向四肢百骸，旧伤新痕一并熨平——这一夜之后，你又是完好的自己。<br><br>气血、灵力恢复至全满。`);advanceTime(1);maybeEvent();renderPlay();}
 function spring(){if(phase!=='play'||CB||SEC||curEvent){log('休整','当前行动尚未结束，无法前往灵泉。');renderPlay();return;}S.loc='青岳·灵泉';const hp=Math.max(10,Math.round(S.hpMax*0.6)),mp=Math.max(10,Math.round(S.mpMax*0.6));S.hp=clamp(S.hp+hp,0,S.hpMax);S.mp=clamp(S.mp+mp,0,S.mpMax);if(S.status&&S.status!=='无')S.status='无';log('灵泉',`你循固定驿道回到青岳后山，除去外衫浸入温热灵泉。水汽蒸腾，灵气如无数尾小鱼钻入毛孔，沿经脉缓缓游走。半个时辰后你从水里站起，发梢滴着水珠，浑身却轻盈得能踏月而行。<br><br>气血+${hp}、灵力+${mp}，伤势尽愈。`);advanceTime(1);maybeEvent();renderPlay();}
@@ -1421,16 +1724,119 @@ function addFac(){if(S.lingShi<150){log('洞府','灵石不足150。');showDongf
 function showBag(){const rows=S.bag.map(b=>`<div class="row">${b.n} ×${b.num}</div>`).join('')||'<div class="row">乾坤袋空空如也。</div>';$('panel').innerHTML=panel('',`背包 · ${S.name}`,`<div class="row em">乾坤袋</div><hr class="sep">${rows}<div class="sm">灵石：${S.lingShi}　功法：${S.gongfa.map(g=>g.n).join('、')}　法术：${S.fashu.map(f=>f.n).join('、')}</div>`)+statusCard();}
 
 /* ============ 宗门 ============ */
-function showSect(){const body=`<div class="row">宗门 ${S.sect}　阶位 ${S.sectRank}　贡献 ${S.contribution}</div><div class="row"><a class="lnk" data-act="sectTask">接取贡献任务</a>　<a class="lnk" data-act="sectBig">宗门大比（十年一度）</a></div><div class="sm">贡献换资源、拜师、入藏经阁。叛宗扣声望，或遭追杀。</div>`;$('panel').innerHTML=panel('',`宗门 · ${S.sect}`,body)+statusCard();}
-function sectTask(){S.contribution+=5;S.lingShi+=20;log('宗门','你完成采药巡逻，贡献+5，俸禄+20灵石。');showSect();}
-function sectBig(){if(d100()<=40+S.six.资质+S.six.悟性){S.contribution+=20;S.reputation+=10;log('大比','你于宗门大比崭露头角，声望+10，贡献+20。');}else{S.six.道心=clamp(S.six.道心+1,1,20);log('大比','你败于同门，然战之有益，道心微涨。');}advanceTime(1);maybeEvent();renderPlay();}
+function showSect(){
+  const exch=[
+    {n:'聚气丹',cost:10,eff:'气血+20',run:()=>giveItem('聚气丹',1)},
+    {n:'灵药·玉髓',cost:30,eff:'炼丹材料',run:()=>giveItem('灵药·玉髓',1)},
+    {n:'九转金丹诀',cost:80,eff:'地阶功法·修为增速+',run:()=>{if((S.gongfa||[]).find(g=>g.n==='九转金丹诀')){log('宗门','你已习得《九转金丹诀》。');showSect();return;}S.gongfa.push({n:'九转金丹诀',grade:'地阶'});log('宗门','藏经阁三层，你取走《九转金丹诀》（地阶功法），贡献-80。');}},
+    {n:'七星剑阵',cost:100,eff:'绝学·金系威力26',run:()=>{if((S.fashu||[]).find(f=>f.n==='七星剑阵')){log('宗门','你已习得《七星剑阵》。');showSect();return;}S.fashu.push({n:'七星剑阵',elem:'金',power:26,mp:14,系:'剑'});log('宗门','藏经阁顶层剑典，你拓印《七星剑阵》，贡献-100。');}},
+  ];
+  const rows=exch.map((it,i)=>`<div class="row">${it.n}　${it.eff}　<span class="em">${it.cost}</span>贡献　<a class="lnk" data-act="sectExchange" data-arg="${i}">兑换</a></div>`).join('');
+  const body=`<div class="row">宗门 ${S.sect}　阶位 ${S.sectRank}　贡献 ${S.contribution}</div><div class="row"><a class="lnk" data-act="sectTask">接取贡献任务</a>　<a class="lnk" data-act="sectBig">宗门大比（十年一度，魁首得七星剑阵）</a></div><div class="row em">藏经阁兑换</div>${rows}<div class="sm">贡献换资源、拜师、入藏经阁。叛宗扣声望，或遭追杀。</div>`;
+  $('panel').innerHTML=panel('',`宗门 · ${S.sect}`,body)+statusCard();
+}
+function sectTask(){
+  const tasks=[
+    {t:'采药巡逻',desc:'宗门后山药园巡逻，驱赶偷药的野畜',win:()=>{S.contribution+=5;S.lingShi+=20;log('宗门','你完成采药巡逻，贡献+5，俸禄+20灵石。');}},
+    {t:'护送商队',desc:'护送宗门商队过青狼岭，可能遇袭',win:()=>{if(d100()<=60){S.contribution+=8;S.lingShi+=40;log('宗门','商队平安过岭，宗门记你一功。贡献+8、灵石+40。');}else{log('宗门','商队遭青狼群袭击，你且战且退！');startCombat(mkEnemy('青狼头狼','筑基','初期','木',15,140,65,'青狼头狼'),'sectEscort');}}},
+    {t:'清剿妖兽',desc:'山脚村镇闹妖兽，宗门悬赏剿灭',win:()=>{log('宗门','你循着妖气追入密林……');startCombat(spawnBeast(pickBeast()),'sectBeast');}},
+  ];
+  const t=tasks[Math.floor(Math.random()*tasks.length)];
+  log('宗门任务',`${t.t}：${t.desc}`);
+  t.win();
+  if(!CB)advanceTime(1);showSect();
+}
+function sectBig(){
+  const chance=clamp(35+S.six.资质+S.six.悟性,10,95);
+  if(d100()<=chance){S.contribution+=20;S.reputation+=10;log('大比',`宗门大比，你连战连胜杀入决赛。最后一战，你以碾压之势夺魁，掌门亲自赐下奖励。声望+10、贡献+20。`);if(d100()<=50){S.fashu=S.fashu||[];if(!S.fashu.find(f=>f.n==='七星剑阵')){S.fashu.push({n:'七星剑阵',elem:'金',power:26,mp:14,系:'剑'});log('大比','魁首之礼：藏经阁顶层《七星剑阵》拓本！');}}}
+  else{S.six.道心=clamp(S.six.道心+1,1,20);log('大比',`你在八强遭遇内门第一人，苦战败北。虽败犹荣，道心+1。胜算显示：约${chance}%。`);}
+  advanceTime(1);maybeEvent();renderPlay();
+}
+function sectExchange(i){
+  const exch=[{n:'聚气丹',cost:10,run:()=>giveItem('聚气丹',1)},{n:'灵药·玉髓',cost:30,run:()=>giveItem('灵药·玉髓',1)},{n:'九转金丹诀',cost:80,run:()=>{if((S.gongfa||[]).find(g=>g.n==='九转金丹诀')){log('宗门','你已习得。');showSect();return;}S.gongfa.push({n:'九转金丹诀',grade:'地阶'});log('宗门','得《九转金丹诀》（地阶功法）。');}},{n:'七星剑阵',cost:100,run:()=>{if((S.fashu||[]).find(f=>f.n==='七星剑阵')){log('宗门','你已习得。');showSect();return;}S.fashu.push({n:'七星剑阵',elem:'金',power:26,mp:14,系:'剑'});log('宗门','得《七星剑阵》。');}}];
+  const it=exch[i];if(!it)return;
+  if(S.contribution<it.cost){log('宗门','贡献不足'+it.cost+'。');showSect();return;}
+  S.contribution-=it.cost;it.run();showSect();
+}
+function finishSectTask(tag){
+  if(tag==='sectEscort'){S.contribution+=8;S.lingShi+=40;log('宗门','你击退狼群，商队平安过岭。贡献+8、灵石+40。');}
+  else if(tag==='sectBeast'){giveItem('妖丹',1);S.contribution+=8;S.lingShi+=30;log('宗门','妖兽伏诛，村镇重归安宁。贡献+8、灵石+30、得妖丹。');}
+}
 
+/* ============ 天骄榜：九州十大天骄，越阶挑战、装逼打脸 ============ */
+const TIANJIAO=[
+ {name:'剑冢孤星·顾长歌',needChapter:1,realm:'炼气',sub:'圆满',elem:'金',power:16,hp:150,spirit:60,title:'剑冢孤星',desc:'剑冢村走出的孤儿，三岁握剑，十岁剑意初成，被誉为百年不遇的剑道奇才。',reward:'《万剑归宗》· 剑道+3',give:()=>{S.fashu.push({n:'万剑归宗',elem:'金',power:32,mp:18,系:'剑'});S.wudao['剑道']=(S.wudao['剑道']||0)+3;}},
+ {name:'焚天圣女·姜灵焰',needChapter:2,realm:'筑基',sub:'中期',elem:'火',power:20,hp:200,spirit:70,title:'焚天圣女',desc:'南疆火域走出的火灵体，抬手便是漫天火雨，同阶无人敢缨其锋。',reward:'《焚天诀》· 气血上限+20',give:()=>{S.gongfa.push({n:'焚天诀',grade:'地阶'});S.hpMax+=20;S.hp+=20;}},
+ {name:'阵道鬼才·商陆',needChapter:3,realm:'筑基',sub:'圆满',elem:'土',power:22,hp:230,spirit:75,title:'阵道鬼才',desc:'出身寒门，以阵法入道，一口七杀阵图困杀过金丹妖兽。',reward:'《天罡北斗阵》· 阵道+3',give:()=>{S.fashu.push({n:'天罡北斗阵',elem:'土',power:28,mp:15,系:'阵'});S.wudao['阵道']=(S.wudao['阵道']||0)+3;}},
+ {name:'体修狂人·铁如山',needChapter:4,realm:'结晶',sub:'初期',elem:'土',power:26,hp:300,spirit:80,title:'体修狂人',desc:'横练肉身，金刚不坏，一拳可碎山岳，曾以肉身硬抗金丹一击。',reward:'体道+3 · 气血上限+30',give:()=>{S.wudao['体道']=(S.wudao['体道']||0)+3;S.hpMax+=30;S.hp+=30;}},
+ {name:'药谷传人·白芷',needChapter:5,realm:'结晶',sub:'中期',elem:'木',power:24,hp:260,spirit:72,title:'药谷传人',desc:'药王谷嫡传，一手毒丹医天下，也杀天下。',reward:'丹道+3 · 灵药×3',give:()=>{S.wudao['丹道']=(S.wudao['丹道']||0)+3;giveItem('灵药·玉髓',3);}},
+ {name:'符道天才·太叔明',needChapter:6,realm:'金丹',sub:'初期',elem:'雷',power:30,hp:340,spirit:85,title:'符道天才',desc:'一笔画符，万雷听令，曾以一纸紫霄雷符轰平一座山贼寨。',reward:'《紫霄神符》· 符道+3',give:()=>{S.fashu.push({n:'紫霄神符',elem:'雷',power:36,mp:20,系:'符'});S.wudao['符道']=(S.wudao['符道']||0)+3;}},
+ {name:'御兽天骄·青鸾',needChapter:6,realm:'金丹',sub:'中期',elem:'木',power:28,hp:360,spirit:82,title:'御兽天骄',desc:'自幼与灵兽为伴，身边跟着一头九阶青鸾，出手便是人兽合击。',reward:'御兽道+3 · 灵宠·青鸾',give:()=>{S.wudao['御兽道']=(S.wudao['御兽道']||0)+3;S.flags.灵宠=true;}},
+ {name:'无情道子·玄一',needChapter:7,realm:'具灵',sub:'初期',elem:'冰',power:34,hp:420,spirit:90,title:'无情道子',desc:'无情道嫡传，斩情绝爱，剑心通明，视万物为刍狗。',reward:'道心+3 · 悟性+2',give:()=>{S.six.道心=clamp(S.six.道心+3,1,20);S.six.悟性=clamp(S.six.悟性+2,1,20);}},
+ {name:'血魔传人·血无极',needChapter:8,realm:'元婴',sub:'初期',elem:'阴',power:40,hp:500,spirit:95,title:'血魔传人',desc:'血魔宗雪藏的底牌，一身血河功已臻化境，所过之处草木皆枯。',reward:'《血河吞天功》· 业力+2',give:()=>{S.gongfa.push({n:'血河吞天功',grade:'天阶'});S.karma+=2;}},
+ {name:'上界谪仙·白衣卿',needChapter:8,realm:'元婴',sub:'圆满',elem:'金',power:48,hp:560,spirit:99,title:'上界谪仙',desc:'谪落人间的上界仙种，举手投足皆是道韵，是横在所有人面前的天堑。',reward:'《谪仙诀》· 仙缘+3',give:()=>{S.gongfa.push({n:'谪仙诀',grade:'仙阶'});S.six.仙缘=clamp(S.six.仙缘+3,1,20);}},
+];
+function showTianjiao(){
+  const j=S.jianghu||{};S.tianjiao=S.tianjiao||{};
+  const rows=TIANJIAO.map((t,i)=>{
+    const lock=(j.chapter||1)<t.needChapter;
+    const done=S.tianjiao[i];
+    const state=done?'<span style="color:#6FA698;font-weight:bold">已败于你</span>':(lock?'<span class="sm">主线到第'+t.needChapter+'章解锁</span>':`<a class="lnk" data-act="tianjiao" data-arg="${i}">挑战</a>`);
+    return `<div class="questbox"><div class="chapter">${t.title} · ${t.name}</div><div class="sm">${t.desc}</div><div class="sm">境界 ${t.realm}${t.sub}　威胁度 ★${Math.min(5,1+Math.floor(t.power/10))}　胜利奖励：${t.reward}</div><div class="row">${state}</div></div>`;
+  }).join('');
+  $('panel').innerHTML=panel('warn',`天骄榜 · ${timeLine()}`,`<div class="row em">九州天骄榜 · 打遍同阶，方显真章</div><div class="sm">榜单上的人，每一个都曾踩着你这样的人扬名。挑战并击败他们，你的名字将越过他们，被整个九州记住。已击败：${Object.keys(S.tianjiao).length}/${TIANJIAO.length}。</div><hr class="sep">${rows}`)+statusCard();
+}
+function tianjiaoFight(i){
+  const t=TIANJIAO[i];if(!t)return;
+  const j=S.jianghu||{};if((j.chapter||1)<t.needChapter){log('天骄榜','主线推进到第'+t.needChapter+'章后，此人方会入世。');showTianjiao();return;}
+  if(S.tianjiao&&S.tianjiao[i]){log('天骄榜','此人已是你手下败将，不必再战。');showTianjiao();return;}
+  log('天骄战',`你递上战帖。${t.name}扫了你一眼，嗤笑：「又一个不自量力的。」围观众人哄然。你只淡淡道：「打一场，便知。」`);
+  startCombat(mkEnemy(t.name,t.realm,t.sub,t.elem,t.power,t.hp,t.spirit,t.title),'tianjiao'+i);
+}
 /* ============ 技艺 ============ */
 function showSkill(){const body=`<div class="row em">技艺：炼丹/炼器/符箓/阵法/御兽/灵植</div><div class="row"><a class="lnk" data-act="alchemy">炼丹（有药理通神则更易成）</a></div><div class="sm">技艺等级 初窥→熟练→精通→大师→宗师。失败炸炉毁材。</div>`;$('panel').innerHTML=panel('',`技艺 · ${S.name}`,body)+statusCard();}
 function doAlchemy(){const h=S.bag.find(b=>b.n==='灵药·玉髓');if(!h||h.num<=0){log('炼丹','缺少灵药·玉髓。');showSkill();return;}h.num--;const chance=clamp(40+(S._炼丹?15:0)+S.six.神识+5*(S.wudao['丹道']||0),10,95);if(d100()<=chance){S.bag.push({n:'聚气丹',num:1});log('炼丹','丹成！得聚气丹一枚。');}else{log('炼丹','炉火失控，炸炉毁材。');}showSkill();}
 
 /* ============ 悟道 ============ */
 function showWudao(){const branches=['剑道','丹道','器道','符道','阵道','体道','御兽道','无情道','有情道'];const rows=branches.map(b=>`<div class="row">${b}　等级 ${S.wudao[b]||0}　<a class="lnk" data-act="wudao" data-arg="${b}">论道观想+1点</a></div>`).join('');$('panel').innerHTML=panel('',`悟道 · ${timeLine()}`,`<div class="row sm">悟道点=永久被动。剑道：剑系威力+5%/级；丹道：炼丹成功+5%/级；体道：气血上限+；无情道：道心+；有情道：情缘好感+10%/级。</div><hr class="sep">${rows}`)+statusCard();}
+/* 功法图鉴：全部可习得功法与获取路线 */
+const GONGFA_GUIDE=[
+ {n:'太虚斩天经',grade:'天阶',type:'功法',eff:'功法系数极高（越阶战力）',get:'天命大机缘「悬崖古戒 · 残魂传法」→ 叩首承道'},
+ {n:'一剑开天',grade:'绝学',type:'法术',eff:'金系·威力38·消耗20',get:'同「太虚斩天经」机缘附带'},
+ {n:'金刚不坏身',grade:'地阶',type:'功法',eff:'肉身坚韧（气血上限提升）',get:'西漠·流沙探索「古寺佛光」→ 入寺参悟（35%概率）'},
+ {n:'赤霄炼火诀',grade:'地阶',type:'功法',eff:'火系威力+，火系法术加强',get:'南疆·赤炎探索「地火炼体」成功淬体后有机缘'},
+ {n:'太阴炼形术',grade:'地阶',type:'功法',eff:'神识+，免疫心魔侵染',get:'北原·寒渊探索「寒渊鬼修」除鬼后搜魂所得'},
+ {n:'九转金丹诀',grade:'地阶',type:'功法',eff:'修为增速+，突破成功率+',get:'宗门「大比」崭露头角 / 贡献兑换'},
+ {n:'紫气东来功',grade:'玄阶',type:'功法',eff:'功法系数1.4',get:'中州·天阙探索「剑榜争名」胜出后得传'},
+ {n:'玄阶功法',grade:'玄阶',type:'功法',eff:'功法系数1.3',get:'天机坊市花600灵石购买'},
+ {n:'血炼残篇',grade:'魔道',type:'功法',eff:'血河功残篇（魔道路线）',get:'主线第一章废祠「与细作交易」'},
+ {n:'青冥断岳',grade:'剑招',type:'法术',eff:'金系·威力24·消耗14',get:'主线第三章「剑冢遗书」三页残章合一'},
+ {n:'北冥寒剑',grade:'绝学',type:'法术',eff:'冰系·威力30·消耗16',get:'北原·寒渊探索「雪族易宝」以冰魄珠换取'},
+ {n:'人间一剑',grade:'绝学',type:'法术',eff:'金系·威力55·消耗26',get:'主线第七章「铸人间剑」熔最强信物'},
+ {n:'众生剑潮',grade:'绝学',type:'法术',eff:'金系·威力50·消耗22',get:'主线第七章「铸人间剑」以功德请众生共铸'},
+ {n:'万剑归宗',grade:'绝学',type:'法术',eff:'金系·威力32·消耗18',get:'天骄榜击败「剑冢孤星·顾长歌」'},
+ {n:'焚天诀',grade:'地阶',type:'功法',eff:'火系威力+，火系法术加强',get:'天骄榜击败「焚天圣女·姜灵焰」'},
+ {n:'天罡北斗阵',grade:'绝学',type:'法术',eff:'土系·威力28·消耗15',get:'天骄榜击败「阵道鬼才·商陆」'},
+ {n:'紫霄神符',grade:'绝学',type:'法术',eff:'雷系·威力36·消耗20',get:'天骄榜击败「符道天才·太叔明」'},
+ {n:'血河吞天功',grade:'天阶',type:'功法',eff:'魔道功法，血系威力+，业力积累',get:'天骄榜击败「血魔传人·血无极」'},
+ {n:'谪仙诀',grade:'仙阶',type:'功法',eff:'仙阶功法，功法系数3.0，越阶如饮水',get:'天骄榜击败「上界谪仙·白衣卿」（最强挑战）'},
+ {n:'残阳剑经',grade:'地阶',type:'功法',eff:'剑道+，夕阳剑意',get:'随机事件「藏宝图残卷」→ 买图寻宝（55%）'},
+ {n:'云中鹤步',grade:'玄阶',type:'法术',eff:'身法·遁速+，逃命保命',get:'坊市黑市奇物 / 中州探索'},
+ {n:'玄冰刺',grade:'玄阶',type:'法术',eff:'冰系·威力18·消耗10',get:'北原·寒渊探索「雪族易宝」'},
+ {n:'摄魂幡',grade:'地阶',type:'法宝',eff:'战斗开场摄敌战意，魔道专属',get:'古墓传承（随机事件「夜探古墓」深探）'},
+ {n:'大衍诀',grade:'地阶',type:'功法',eff:'悟性+，参悟一切法',get:'秘境「上古洞府」传承节点参悟'},
+ {n:'辟谷丹方',grade:'秘方',type:'丹方',eff:'炼出辟谷丹，闭关不再损耗气血',get:'宗门藏经阁贡献兑换 / 药谷'},
+ {n:'聚灵阵图',grade:'秘方',type:'阵图',eff:'洞府布阵，灵气+一档',get:'阵道+3后坊市购得'},
+ {n:'洗髓丹方',grade:'秘方',type:'丹方',eff:'炼出洗髓丹（资质+1）',get:'中州·天阙拍卖会（500灵石）'},
+ {n:'七星剑阵',grade:'地阶',type:'法术',eff:'金系·威力26·消耗14，七剑齐出',get:'宗门大比夺魁奖励'},
+ {n:'金乌焚天',grade:'仙阶',type:'法术',eff:'火系·威力60·消耗30，天阶之上',get:'飞升雷劫后 / 上古秘境最深一层'},
+];
+function showGongfa(){
+  S.gongfaMaster=S.gongfaMaster||{};
+  const owned=(S.gongfa||[]).map(g=>g.n);const spells=(S.fashu||[]).filter(f=>f.power>0).map(f=>f.n);
+  const rows=GONGFA_GUIDE.map(g=>{const has=owned.includes(g.n)||spells.includes(g.n);const gm=S.gongfaMaster[g.n]||0;const gObj=(S.gongfa||[]).find(x=>x.n===g.n);const mTag=gObj&&gObj.mastered?'<span style="color:#C9A45C;font-weight:bold">已大成</span>':`熟练 ${Math.min(100,Math.round(gm))}/100`;const state=has?'<span style="color:#6FA698;font-weight:bold">已习得</span> · '+mTag:'<span style="color:#8C8578;font-weight:bold">未习得</span> · 获取途径：'+g.get;return `<div class="questbox"><div class="chapter">${g.n}　<span class="sm">${g.grade}</span></div><div class="sm">${g.eff}</div><div class="sm">${state}</div></div>`;}).join('');
+  $('panel').innerHTML=panel('',`功法图鉴 · 获取路线`,`<div class="row sm">当前功法：${owned.join('、')||'无'}；已习法术：${spells.join('、')||'无'}</div><div class="row sm">修炼/战斗可积累功法熟练度，达到100「功法大成」：该功法系数+20%。</div><hr class="sep">${rows}<div class="row sm">功法决定修为增速与破境加成；法术决定战斗输出。不同品阶系数：玄阶1.3、地阶1.7、天阶2.2、仙阶3.0。按上面路线图去拿。</div>`)+statusCard();
+}
 function gainWudao(b){S.wudao[b]=(S.wudao[b]||0)+1;if(b==='体道'){S.hpMax+=20;S.hp+=20;}if(b==='无情道'){S.six.道心=clamp(S.six.道心+1,1,20);}S.six.悟性=clamp(S.six.悟性+0.2,1,20);log('悟道',`你于${b}有所感，悟道点+1（当前${S.wudao[b]}）。`);showWudao();}
 
 /* ============ 主线钩子 ============ */
@@ -1531,7 +1937,10 @@ function showHelp(){  const body=`
   <div class="row em" style="color:var(--cyan)">游历·探索</div><div class="row sm">地图(危险等级) | 秘境(通灵/上古/心魔/虚空) | 坊市(买卖) | 图鉴(妖兽录)</div>
   <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
   <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
-  <div class="row em" style="color:var(--cyan)">经营·自己</div><div class="row sm">洞府(升级) | 背包 | 闭关X年(快进)</div>
+  <div class="row em" style="color:var(--gold)">天骄榜·爽文打脸</div><div class="row sm">输入「天骄」查看九州十大天骄，越阶挑战、胜者扬名：专属功法与巨额声望。随机事件里还会遇到当街嘲讽的龙套——打脸一时爽，一直打脸一直爽。</div>
+  <div class="row em" style="color:var(--cyan)">功法·精通</div><div class="row sm">输入「功法」查看全部功法/法术的获取路线图（30+ 部，覆盖天骄榜/秘境/主线/探索/家业）。修炼与战斗积累熟练度，满 100「功法大成」系数+20%。</div>
+  <div class="row em" style="color:var(--cyan)">家业·产业</div><div class="row sm">出身决定家业路线（「家业」经营，五级称号+专属结局）；洞府可建灵田/丹房/器坊/兽栏四类产业，投灵石经营产出。</div>
+  <div class="row em" style="color:var(--cyan)">经营·自己</div><div class="row sm">洞府(升级+产业) | 背包 | 闭关X年(快进)</div>
   <div class="row em" style="color:var(--cyan)">恢复·重开</div><div class="row sm">底部“休整”可直接选择洞府调息、青岳灵泉或灵药全满；底部“重开”会经过确认后返回创角，并保留账号及手动备份。</div>
   <div class="row em" style="color:var(--cyan)">账号·自动存档</div><div class="row sm">登录账号后，安全状态下会自动同步到独立 Supabase 存档；更换手机或浏览器登录同一账号即可继续。手动存档仍可作为备用。</div>
   <div class="sm">所有面板选项均可直接点击。手机点击后会自动把最新结果定位到视野内，不必再向上寻找刚刚触发的内容。</div>`;$('panel').innerHTML=panel('',`玩法指引 · 问道长生`,body)+statusCard();}
@@ -1810,7 +2219,7 @@ function importSave(){
 }
 
 /* ============ 结局 ============ */
-function endGame(type,detail){phase='ended';if(!detail)detail=endingText(type);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
+function endGame(type,detail){phase='ended';if(!detail)detail=endingText(type);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8',富可敌国:'#C9A45C',田园仙隐:'#6FA698',万妖之祖:'#8B6FA8',铁血元帅:'#C9A45C',文圣:'#7FA8C9'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
 
 /* ============ 指令分发 ============ */
 function doCommand(c){
@@ -1818,7 +2227,7 @@ function doCommand(c){
   if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
   if(phase==='create1'||phase==='create2pending'){log('天道','尚未创角完成，请先按格式回复落笔。');return;}
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
@@ -1917,10 +2326,15 @@ document.addEventListener('click',e=>{
     case 'romE':romE(arg);break;
     case 'upQi':upgradeQi();break;
     case 'addFac':addFac();break;
+    case 'originAct':originAct(arg);break;
+    case 'estateBuild':estateBuild(arg);break;
+    case 'estateRun':estateRun();break;
+    case 'tianjiao':tianjiaoFight(+arg);break;
     case 'rest':rest();break;
     case 'restFull':restFull();break;
     case 'spring':spring();break;
     case 'sectTask':sectTask();break;
+    case 'sectExchange':sectExchange(+arg);break;
     case 'sectBig':sectBig();break;
     case 'alchemy':doAlchemy();break;
     case 'wudao':gainWudao(arg);break;
