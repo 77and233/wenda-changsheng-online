@@ -834,7 +834,9 @@ function askOracle(sys,usr,maxTok){
   if(!c.key)return Promise.resolve(null);
   return (async()=>{
     const headers={'Content-Type':'application/json','Authorization':'Bearer '+c.key};
-    const payload=JSON.stringify({model:c.model||AI_PRESETS['DeepSeek'].model,messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600});
+    const reqData={model:c.model||AI_PRESETS['DeepSeek'].model,messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.55,max_tokens:maxTok||600};
+    if(/siliconflow\.cn/i.test(c.base))reqData.response_format={type:'json_object'};
+    const payload=JSON.stringify(reqData);
     for(let attempt=0;attempt<2;attempt++){
       const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),55000);
       try{
@@ -866,12 +868,19 @@ function normalizeAIResult(raw){
   j.gameplay_outcome={hp:clamp(Math.round(Number(a.hp)||0),-120,120),mp:clamp(Math.round(Number(a.mp)||0),-120,120),xiu:clamp(Math.round(Number(a.xiu)||0),-30,40),lingShi:clamp(Math.round(Number(a.lingShi)||0),-500,500),merit:clamp(Math.round(Number(a.merit)||0),-10,10),karma:clamp(Math.round(Number(a.karma)||0),-10,10),new_items:items.filter(x=>x&&typeof x.name==='string').slice(0,5).map(x=>({name:aiPlain(x.name,40),qty:clamp(Math.round(Number(x.qty)||1),1,9),effect:aiPlain(x.effect||'无',100)})),new_skills:skills.filter(x=>x&&typeof x.name==='string').slice(0,3).map(x=>({name:aiPlain(x.name,40),grade:['黄阶','玄阶','地阶','天阶','仙阶'].includes(x.grade)?x.grade:'玄阶',type:x.type==='法术'?'法术':'功法',power:clamp(Math.round(Number(x.power)||0),0,80)}))};
   j.narrative=aiPlain(j.narrative,600);j.next_actions=Array.isArray(j.next_actions)?j.next_actions:(Array.isArray(old.next_choices)?old.next_choices:[]);j.next_actions=j.next_actions.filter(x=>x&&typeof x.text==='string').slice(0,3).map(x=>({text:aiPlain(x.text,36),hint:aiPlain(x.hint||'天机未明',100)}));j.ask_player=typeof j.ask_player==='string'&&j.ask_player.trim()?aiPlain(j.ask_player,160):null;if(!j.ask_player&&!j.next_actions.length)j.ask_player='你准备如何继续？';return j;
 }
+function salvageAIResult(raw){
+  const text=aiResponseText(raw);if(!text)return null;let narrative='';
+  const m=text.match(/"narrative"\s*:\s*"((?:\\.|[^"\\])*)/i);if(m){try{narrative=JSON.parse('"'+m[1].replace(/"\s*[,}]?[\s\S]*$/,'')+'"');}catch(e){narrative=m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"');}}
+  if(!narrative){narrative=text.replace(/```(?:json)?/gi,'').replace(/```/g,'').replace(/^\s*\{?/,'').replace(/\}?\s*$/,'').trim();}
+  narrative=aiPlain(narrative.replace(/"?gameplay_outcome"?\s*:[\s\S]*$/i,'').replace(/"?next_actions"?\s*:[\s\S]*$/i,''),600);if(narrative.length<12)return null;
+  return normalizeAIResult({narrative,gameplay_outcome:{hp:0,mp:0,xiu:0,lingShi:0,merit:0,karma:0,new_items:[],new_skills:[]},next_actions:[{text:'继续追寻此事',hint:'沿用AI生成的当前剧情继续'},{text:'谨慎查明细节',hint:'风险较低，补全人物与线索'},{text:'换个目标行动',hint:'输入新的具体行动改变方向'}],ask_player:null});
+}
 function localPersistentAI(action){
   ensureGameState();const act=aiPlain(action,80)||'静观天地变化',last=S.aiHistory.length?'此前种下的因果仍在暗处回响。':'这是你向未知踏出的第一步。';
   return normalizeAIResult({narrative:`${last}你在${S.loc}收敛心神，将念头落在“${act}”上。山风掠过衣角，远处灵光一闪即逝，仿佛有什么存在已经听见你的愿望。道路并未立刻显明，但新的线索已悄然出现，只等你决定以何种方式追寻。`,gameplay_outcome:{hp:0,mp:0,xiu:0,lingShi:0,merit:0,karma:0,new_items:[],new_skills:[]},next_actions:[{text:'顺着线索深入',hint:'延续当前目标，可能遇到机缘'},{text:'谨慎观察四周',hint:'风险较低，更容易发现细节'},{text:'改变方法再试',hint:'可输入更具体的新行动'}],ask_player:null});
 }
-function finishAIAction(action,j,fallback){
-  applyAIOutcome(j.gameplay_outcome);rememberAI(action,j);advanceTime(1);const q=j.ask_player;S.aiPendingQuestion=q||'';S.aiScene={narrative:j.narrative,next_actions:j.next_actions,ask_player:q||''};curEvent=null;renderPlay();log('天机结算',aiOutcomeSummary(j.gameplay_outcome)+(q?'；正在等待你的回答。':fallback?'；云端未完成生成（'+(AI_LAST_ERROR||'输出格式未通过')+'），本次仍已连续续写并保存。':'；命数已写入历史。'));saveLocalAuto();scheduleCloudAutosave();
+function finishAIAction(action,j,fallback,salvaged){
+  applyAIOutcome(j.gameplay_outcome);rememberAI(action,j);advanceTime(1);const q=j.ask_player;S.aiPendingQuestion=q||'';S.aiScene={narrative:j.narrative,next_actions:j.next_actions,ask_player:q||''};curEvent=null;renderPlay();log('天机结算',aiOutcomeSummary(j.gameplay_outcome)+(q?'；正在等待你的回答。':salvaged?'；模型格式不规范，已自动整理其原始剧情并保存。':fallback?'；云端未完成生成（'+(AI_LAST_ERROR||'没有返回内容')+'），本次仍已连续续写并保存。':'；命数已写入历史。'));saveLocalAuto();scheduleCloudAutosave();
 }
 function applyAIOutcome(g){
   S.hp=clamp(S.hp+g.hp,1,S.hpMax);S.mp=clamp(S.mp+g.mp,0,S.mpMax);S.xiu=clamp(S.xiu+g.xiu,0,100);S.lingShi=Math.max(0,S.lingShi+g.lingShi);S.merit+=g.merit;S.karma=Math.max(0,S.karma+g.karma);g.new_items.forEach(x=>giveItem(x.name,x.qty));g.new_skills.forEach(x=>{if(x.type==='法术'){if(!S.fashu.find(f=>f.n===x.name))S.fashu.push({n:x.name,elem:'灵',power:x.power||12,mp:Math.max(5,Math.round((x.power||12)*.55)),系:'天机'});}else if(!S.gongfa.find(f=>f.n===x.name))S.gongfa.push({n:x.name,grade:x.grade});});
@@ -883,11 +892,12 @@ function aiGenAction(action){
   const sys=`你是深谙东方仙侠气韵的“天道叙事引擎”，负责驱动连贯、长时序的修仙世界。文风要求：${style}。必须延续历史摘要，不得凭空跳跃；数值修改必须克制且符合当前境界，炼气期不得直接获得仙阶功法。玩家表达“我想发生某事”时应尽量融入，但不得违背世界逻辑。重大分支或意图不明时可设置 ask_player。你的整个回复必须是一个可被 JSON.parse 直接解析的 JSON 对象：禁止 Markdown、代码块、注释、前后说明和尾随逗号；所有键名和字符串必须使用英文双引号。结构：{"narrative":"80-150字连续叙事","gameplay_outcome":{"hp":0,"mp":0,"xiu":0,"lingShi":0,"merit":0,"karma":0,"new_items":[{"name":"物品名","qty":1,"effect":"作用"}],"new_skills":[{"name":"功法名","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":0}]},"next_actions":[{"text":"12字以内","hint":"可能后果"}],"ask_player":null}。next_actions 最多3个。`;
   const p=aiPlayerState();const usr=`【当前游戏状态】\n- 玩家：${p.name}，${p.gender}，${p.age}岁\n- 境界：${p.realm}·${p.sub}\n- 气血：${p.hp}/${p.hpMax}\n- 灵力：${p.mp}/${p.mpMax}\n- 修为：${p.xiu}/100\n- 灵石：${p.lingShi}\n- 功德：${p.merit}，业力：${p.karma}\n- 灵根：${p.lingen.join('、')}，体质：${p.tizhi}\n- 道侣/知己：${p.daolu.join('、')||'无'}\n- 所在地：${p.loc}\n- 主线进度：${p.mainLine}\n- 背包摘要：${p.bag.map(i=>i.name+'×'+i.qty).join('、')||'空'}\n- 功法：${p.gongfa.join('、')||'无'}\n- 法术：${p.fashu.join('、')||'无'}\n【历史摘要】（最近5次关键事件）\n${aiHistoryText()}\n【玩家最新指令】\n${action}\n请生成下一段剧情；若指令模糊或剧情需选择，请在 ask_player 中提问。`;
   S.aiPendingQuestion='';S.aiScene=null;askOracle(sys,usr,700).then(async raw=>{
-    let j=normalizeAIResult(raw),fallback=false;
+    let j=normalizeAIResult(raw),fallback=false,salvaged=false,originalRaw=raw;
     if(!j&&raw){const broken=aiResponseText(raw),firstError=AI_LAST_ERROR;const repairSys='你是 JSON 格式修复器。只返回合法 JSON 对象，不得输出 Markdown、解释或代码块。保留原文叙事与数据含义，并确保至少包含 narrative、gameplay_outcome、next_actions、ask_player。';const repaired=await askOracle(repairSys,'请修复以下内容为合法 JSON：\n'+String(broken).slice(0,5000),500);j=normalizeAIResult(repaired);if(!j&&!AI_LAST_ERROR)AI_LAST_ERROR=firstError||'模型连续两次未返回可解析 JSON';}
+    if(!j&&originalRaw){j=salvageAIResult(originalRaw);salvaged=!!j;}
     if(!j){if(!AI_LAST_ERROR)AI_LAST_ERROR='接口没有返回剧情内容';j=localPersistentAI(action);fallback=true;}
-    AI_BUSY=false;finishAIAction(action,j,fallback);
-  }).catch(e=>{AI_BUSY=false;AI_LAST_ERROR=AI_LAST_ERROR||(e&&e.message)||'剧情请求发生异常';finishAIAction(action,localPersistentAI(action),true);});
+    AI_BUSY=false;finishAIAction(action,j,fallback,salvaged);
+  }).catch(e=>{AI_BUSY=false;AI_LAST_ERROR=AI_LAST_ERROR||(e&&e.message)||'剧情请求发生异常';finishAIAction(action,localPersistentAI(action),true,false);});
 }
 function aiGenEvent(){
   const c=aiCfg();
