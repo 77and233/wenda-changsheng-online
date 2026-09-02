@@ -64,6 +64,7 @@
   .cwrap{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:2px 0 6px;}
   .cwrap label{color:var(--ink);font-size:13px;}
   .opttext{flex:1 1 180px;min-width:0;line-height:1.45;overflow-wrap:anywhere;}
+  .txt{width:92%;padding:6px 8px;background:#14151c;border:1px solid #3a3d4c;border-radius:4px;color:#e8e6e0;font-size:13px;margin:4px 0;}
   .opthint{display:block;flex:0 0 100%;width:100%;padding-left:34px;font-size:11px;color:var(--grey);line-height:1.5;letter-spacing:.3px;overflow-wrap:anywhere;}
   .opthint b{color:var(--red);}
   .opthint .g{color:#5C8C6E;}
@@ -636,7 +637,7 @@ function statusCard(){
   <div class="row sm">个人道途：${S.personalLine||S.daoTu}</div>
   <div class="row sm">悟道：${wd}　好感：${aff}${(S.daoban&&S.daoban.length)?'　道侣：'+S.daoban.join('、'):''}</div>
   <div class="row sm">大机缘：${fate}</div>
-  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 功法 天骄 结局 帮助</div>`;
+  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 功法 天骄 结局 天道 帮助</div>`;
   return panel('',`状态卡 · ${S.name}`,body);
 }
 
@@ -738,7 +739,257 @@ function triggerFortuneEvent(){
   if(!fs.length)return false;
   curEvent=fs[Math.floor(Math.random()*fs.length)];curEvent.kind='天命大机缘';log('天命大机缘 · '+curEvent.t,curEvent.n);return true;
 }
+/* ============ 天机演算引擎：程序化生成，每次选择皆由命数而定 ============ */
+const ORACLE={
+ places:['破败的山神庙','雨后的旧市集','深谷中的古渡口','废弃的灵石矿洞','竹林深处的茅屋','枯井边的老槐树','悬棺高悬的断崖','人来人往的坊市','雾气弥漫的山道','结冰的湖畔','荒废的村落','熔岩涌动的洞窟','剑痕斑驳的演武场','尘封的藏书楼','野花遍地的药谷','黑水沉沉的深渊边','芦苇荡荡的河湾','兽骨堆成的祭坛'],
+ persons:['一名背着药篓的老药农','一个青衫落拓的书生','一位赤足的采茶少女','一名疤面的独臂刀客','一位白袍清癯的丹师','一个黑衣蒙面的刺客','一位鹤发鸡皮的老妪','一名锦衣华服的公子','一位眼波流转的妖媚女子','一个憨厚老实的樵夫','一名跛足的道人','一位银发如雪的剑修','一个满身泥泞的猎户','一名粉雕玉琢的童子','一位气息晦涩的散修','一名挂剑而行的女侠'],
+ details:['雨后的泥泞沾满衣摆','一树桃花正开得灼眼','香案上燃着半截残香','锈蚀的铁剑斜插在地','半埋土中的石碑字迹模糊','一汪温泉正冒着热气','野狐从草丛里探出头','远山传来一声闷雷','一盏孤灯在风中摇曳','石阶上爬满青苔','河面上飘着一盏莲灯','树梢悬着一枚褪色的旧符'],
+ verbs:['拦住了你的去路','低声向你求救','郑重地递来一物','冷笑一声向你挑战','附在你耳边低语','设下了一个精巧的陷阱','邀请你入局','一口咬定你偷了东西','求你代为保管一件东西','指给你一条凶险的近路','向你讨一杯水喝','将一枚古玉按进你手心'],
+ rewards:[
+  {tx:'灵石',run:()=>{const g=rollOutcome(60,40);S.lingShi+=g;return '灵石+'+g;}},
+  {tx:'灵药·玉髓',run:()=>{giveItem('灵药·玉髓',1);return '灵药·玉髓×1';}},
+  {tx:'修为',run:()=>{const g=Math.round(rollOutcome(15,8));S.xiu=clamp(S.xiu+g,0,100);return '修为+'+g;}},
+  {tx:'悟性',run:()=>{const g=Math.round(rollOutcome(1,0.6)*10)/10;S.six.悟性=clamp(S.six.悟性+g,1,20);return '悟性+'+g;}},
+  {tx:'道心',run:()=>{const g=Math.round(rollOutcome(1,0.6)*10)/10;S.six.道心=clamp(S.six.道心+g,1,20);return '道心+'+g;}},
+  {tx:'声望',run:()=>{const g=Math.round(rollOutcome(8,5));S.reputation+=g;return '声望+'+g;}},
+  {tx:'仙缘',run:()=>{const g=Math.round(rollOutcome(1,0.5)*10)/10;S.six.仙缘=clamp(S.six.仙缘+g,1,20);return '仙缘+'+g;}},
+  {tx:'聚气丹',run:()=>{giveItem('聚气丹',1);return '聚气丹×1';}},
+  {tx:'聚灵符',run:()=>{giveItem('聚灵符',1);return '聚灵符×1';}},
+ ],
+ risks:[
+  {tx:'气血受损',run:()=>{const g=Math.round(rollOutcome(18,10));S.hp=clamp(S.hp-g,1,S.hpMax);return '气血-'+g;}},
+  {tx:'业力暗生',run:()=>{S.karma++;return '业力+1';}},
+  {tx:'身陷囹圄',run:()=>{S.hp=clamp(S.hp-10,1,S.hpMax);S.reputation=Math.max(0,S.reputation-3);return '气血-10、声望-3';}},
+  {tx:'心神受扰',run:()=>{S.mp=clamp(S.mp-12,0,S.mpMax);return '灵力-12';}},
+  {tx:'被诬告',run:()=>{S.jianghu.evil=(S.jianghu.evil||0)+1;S.reputation=Math.max(0,S.reputation-2);return '恶名+1、声望-2';}},
+ ],
+ enemyNames:{pre:['噬血','玄冥','赤焰','九幽','断魂','伏魔','藏锋','镇岳','寒渊','裂空','听雨','踏雪'],suf:['老祖','妖王','剑客','魔子','散人','刀皇','圣女','天王','道君','尊者','狂客','孤侠']},
+};
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function rollOutcome(base,spread){return Math.max(1,Math.round(base+(Math.random()*2-1)*spread));}
+function rollQuality(){
+  const r=d100();
+  if(r<=10)return {q:'大成功',mult:2.2,txt:'天地交感，气运加身！'};/* 一成惊喜 */
+  if(r<=60)return {q:'成功',mult:1.0,txt:'事态正如你所料。'};
+  if(r<=90)return {q:'受挫',mult:0.4,txt:'事与愿违，勉强收场。'};
+  return {q:'大失败',mult:0,txt:'你触动了这片天地最深的恶意……'};
+}
+function mkRandomEnemy(level){
+  const nm=pick(ORACLE.enemyNames.pre)+pick(ORACLE.enemyNames.suf);
+  const base=clamp(idxOf(S.realm)+(level||0),0,REALMS.length-1);
+  const realm=REALMS[base];
+  const atk=Math.round(14+base*6+Math.random()*6);
+  const hp=Math.round(120+base*55+Math.random()*40);
+  const elems=['金','木','水','火','土','雷','冰'];
+  const e=mkEnemy(nm,realm,['初期','中期','后期'][Math.floor(Math.random()*3)],elems[Math.floor(Math.random()*7)],atk,hp,50+Math.floor(Math.random()*25),nm);
+  return e;
+}
+function genScene(v,p,d,vb){
+  const t=[
+   `你在${p}遇见${v}。${d}。那${v}${vb}——四周寂静，仿佛整片天地都在等你一个决定。`,
+   `${p}的尽头，${v}静静站着。${d}。${v}${vb}，随即沉默，目光落在你身上。`,
+   `今日行至${p}，${d}。${v}忽然而至，${vb}。风停了一瞬，你的心跳也跟着停了一瞬。`,
+   `${p}深处雾气翻涌，${d}。${v}不知何时已在你三步之内，${vb}。`,
+  ];
+  return pick(t);
+}
+/* ============ AI 天机：接入真实大模型 API（OpenAI 兼容），未配置时自动回退本地引擎 ============ */
+const AI_PRESETS={
+ 'Pollinations（免Key·免费）':{base:'https://text.pollinations.ai/openai',model:'openai',noKey:true},
+ '智谱Z.ai(国际·推荐)':{base:'https://api.z.ai/api/paas/v4/chat/completions',model:'glm-4.7-flash'},
+ '硅基流动(国内·推荐)':{base:'https://api.siliconflow.cn/v1/chat/completions',model:'THUDM/glm-4-9b-chat'},
+ '智谱GLM(国内)':{base:'https://open.bigmodel.cn/api/paas/v4/chat/completions',model:'glm-4.7-flash'},
+ '腾讯混元':{base:'https://api.hunyuan.cloud.tencent.com/v1/chat/completions',model:'hunyuan-turbos-latest'},
+ 'DeepSeek':{base:'https://api.deepseek.com/v1/chat/completions',model:'deepseek-chat'},
+ '通义千问':{base:'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',model:'qwen-plus'},
+ 'Kimi月之暗面':{base:'https://api.moonshot.cn/v1/chat/completions',model:'moonshot-v1-8k'},
+};
+function aiCfg(){try{return JSON.parse(localStorage.getItem('wd_ai')||'{}')}catch(e){return {}}}
+function aiEnabled(){const c=aiCfg();return !!(c.on&&c.base&&(c.key||/pollinations\.ai/i.test(c.base)));}
+function aiSave(c){localStorage.setItem('wd_ai',JSON.stringify(c));}
+function askOracle(sys,usr,maxTok){
+  const c=aiCfg();
+  if(!c.key||!c.base)return Promise.resolve(null);
+  return new Promise(res=>{
+    const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),25000);
+    const headers={'Content-Type':'application/json'};if(c.key)headers.Authorization='Bearer '+c.key;
+    fetch(c.base,{method:'POST',signal:ctrl.signal,headers,body:JSON.stringify({model:c.model||AI_PRESETS['DeepSeek'].model,messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:0.95,max_tokens:maxTok||600})})
+    .then(r=>r.json()).then(j=>{clearTimeout(t);const txt=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;res(txt||null);})
+    .catch(()=>{clearTimeout(t);res(null);});
+  });
+}
+function stripCodeBlock(t){if(!t)return t;let x=t.replace(/```json/g,'').replace(/```/g,'').trim();const a=x.indexOf('{'),b=x.lastIndexOf('}');if(a>=0&&b>a)x=x.slice(a,b+1);return x;}
+function aiPlayerState(){ensureGameState();return {name:S.name,realm:S.realm,sub:S.sub,hp:Math.round(S.hp),hpMax:S.hpMax,mp:Math.round(S.mp),mpMax:S.mpMax,xiu:Math.round(S.xiu),lingen:S.lingen,daoTu:S.daoTu,daolu:S.daoban||[],merit:S.merit,karma:S.karma,loc:S.loc,bag:(S.bag||[]).map(x=>({name:x.n,qty:x.num})),gongfa:(S.gongfa||[]).map(x=>x.n)};}
+function normalizeAIResult(raw){
+  let j;try{j=JSON.parse(stripCodeBlock(raw));}catch(e){return null;}
+  if(!j||typeof j!=='object'||typeof j.narrative!=='string'||!j.gameplay_outcome)return null;
+  const g=j.gameplay_outcome,t=['combat','loot','skill','event','dialogue'];if(!t.includes(g.type))g.type='event';
+  g.loot=Array.isArray(g.loot)?g.loot.filter(x=>x&&typeof x.name==='string').slice(0,5).map(x=>({name:x.name.slice(0,40),qty:clamp(Math.round(Number(x.qty)||1),1,9),effect:String(x.effect||'无').slice(0,100)})):[];
+  if(g.skill&&typeof g.skill.name==='string')g.skill={name:g.skill.name.slice(0,40),grade:['黄阶','玄阶','地阶','天阶','仙阶'].includes(g.skill.grade)?g.skill.grade:'玄阶',type:g.skill.type==='法术'?'法术':'功法',power:clamp(Math.round(Number(g.skill.power)||10),1,80),description:String(g.skill.description||'').slice(0,160)};else g.skill=null;
+  if(g.enemy&&typeof g.enemy.name==='string')g.enemy={name:g.enemy.name.slice(0,40),realm:String(g.enemy.realm||S.realm),hp:clamp(Math.round(Number(g.enemy.hp)||120),40,1200),atk:clamp(Math.round(Number(g.enemy.atk)||15),5,100),elem:['金','木','水','火','土','雷','冰'].includes(g.enemy.elem)?g.enemy.elem:'土'};else g.enemy=null;
+  const a=g.attribute_changes||{};g.attribute_changes={hp:clamp(Math.round(Number(a.hp)||0),-120,120),mp:clamp(Math.round(Number(a.mp)||0),-120,120),xiu:clamp(Math.round(Number(a.xiu)||0),-30,40),merit:clamp(Math.round(Number(a.merit)||0),-10,10),karma:clamp(Math.round(Number(a.karma)||0),-10,10)};
+  g.next_choices=Array.isArray(g.next_choices)?g.next_choices.filter(x=>x&&typeof x.text==='string').slice(0,3).map(x=>({text:x.text.slice(0,70),hint:String(x.hint||'天机未明').slice(0,100)})):[];
+  j.world_changes=j.world_changes&&typeof j.world_changes==='object'?j.world_changes:{};return j;
+}
+function applyAIOutcome(g){
+  const a=g.attribute_changes||{};S.hp=clamp(S.hp+(a.hp||0),1,S.hpMax);S.mp=clamp(S.mp+(a.mp||0),0,S.mpMax);S.xiu=clamp(S.xiu+(a.xiu||0),0,100);S.merit+=a.merit||0;S.karma=Math.max(0,S.karma+(a.karma||0));
+  (g.loot||[]).forEach(x=>{giveItem(x.name,x.qty);});
+  if(g.skill){if(g.skill.type==='法术')S.fashu.push({n:g.skill.name,elem:'灵',power:g.skill.power,mp:Math.max(5,Math.round(g.skill.power*.55)),系:'天机'});else S.gongfa.push({n:g.skill.name,grade:g.skill.grade});}
+  if(g.enemy){const e=mkEnemy(g.enemy.name,g.enemy.realm,'中期',g.enemy.elem,g.enemy.atk,g.enemy.hp,60,g.enemy.name);startCombat(e,'aiDynamic');return true;}return false;
+}
+function aiChoice(g,x,i){return {k:['A','B','C'][i],tag:i===0?'机缘':i===1?'谨慎':'变数',c:i===0?'#A98FD9':i===1?'#6FA698':'#C4675C',tx:x.text,hint:x.hint,f:function(){curEvent=null;const inCombat=applyAIOutcome(g);if(!inCombat){let msg='命数落定：'+g.type+'。';if(g.loot.length)msg+='获得：'+g.loot.map(x=>x.name+'×'+x.qty).join('、')+'。';if(g.skill)msg+='悟得：'+g.skill.name+'。';log('天机结算',msg);advanceTime(1);maybeEvent();renderPlay();}}};}
+function aiGenAction(action){
+  const c=aiCfg(),style=c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气';log('天机演算','正在根据你的指令重写这一方天地……');
+  const sys=`你是“天道演算器”，负责仙侠 HTML 游戏的动态内容。必须只返回合法 JSON，不要 Markdown，不要解释。文风：${style}。严格输出：{"narrative":"100-200字场景","world_changes":{"new_location":"可选","environment":"可选"},"gameplay_outcome":{"type":"combat|loot|skill|event|dialogue","enemy":{"name":"","realm":"","hp":0,"atk":0,"elem":"金木水火土雷冰"},"loot":[{"name":"","qty":1,"effect":""}],"skill":{"name":"","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":10,"description":""},"attribute_changes":{"hp":0,"mp":0,"xiu":0,"merit":0,"karma":0},"next_choices":[{"text":"","hint":""}]}}。不适用字段填空对象、空数组或0。敌人境界必须与玩家当前境界上下浮动一个小境界；掉落须符合敌人属性；天阶/仙阶技能必须有独特机制。`;
+  const usr=`player_state=${JSON.stringify(aiPlayerState())}\naction=${action}\n请生成一次可直接结算的动态结果。`;
+  askOracle(sys,usr,900).then(raw=>{const j=normalizeAIResult(raw);if(!j){log('天机','大模型返回格式异常，已回退本地天机。');genDynamicEvent();return;}const g=j.gameplay_outcome;const wc=j.world_changes||{};if(wc.new_location)S.loc=String(wc.new_location).slice(0,30);const choices=g.next_choices.length?g.next_choices:[{text:'顺势而为',hint:'按天机结果结算'},{text:'谨慎观察',hint:'可能错失机缘，也可能避开风险'}];curEvent={kind:'天机演算',t:wc.new_location||'动态命数',n:String(j.narrative).replace(/</g,'&lt;'),opts:choices.map((x,i)=>aiChoice(g,x,i))};renderPlay();log('天机演算','天道已生成新场景，选择你的下一步。');});
+}
+function aiGenEvent(){
+  const c=aiCfg();
+  log('天机演算','天道之眼睁开，命数正由你未知的力量重新书写……');
+  const base=`玩家：${S.name}，境界${realmLabel()}，道途${S.daoTu}，出身${(S.origin||{}).key||'无'}，当前在${S.loc}。`;
+  const sys='你是一位深谙东方仙侠气韵的小说家与游戏主持人。根据玩家当前状态，即兴创作一段简短、有画面感的奇遇场景。要求：1) 中文，80-140字；2) 风格像《凡人修仙传》与《问道红尘》，有氛围感与悬念；3) 不要替玩家做决定；4) 结尾留一个转折。';
+  askOracle(sys,base+'请直接创作奇遇场景正文，不要解释。').then(txt=>{
+    if(!txt){log('天机','天道沉寂（AI 未响应），改为命数自行推演。');genDynamicEvent();return;}
+    /* 用 AI 场景 + 本地天机生成三个选项（文案来自 AI，数值由本地结算） */
+    const sys2='你是仙侠游戏主持人。给上面场景出三个玩家可选行动，输出 JSON（不要解释、不要代码块）：{"opts":[{"text":"行动描述（12-18字）","hint":"影响提示（10-16字）","kind":"gain|gamble|leave|trade"},...]}}，三个 kind 尽量不同。';
+    askOracle(sys2,'场景：'+txt+'\n玩家：'+base,400).then(j2=>{
+      let arr=null;try{const j=JSON.parse(stripCodeBlock(j2));arr=j&&j.opts;}catch(e){arr=null;}
+      const kindMap={gain:0,gamble:1,leave:2,trade:3};
+      const optPool=[
+       (k)=>{const rw=pick(ORACLE.rewards);return {k,tag:'机缘',c:'#A98FD9',tx:'上前一探，或得'+rw.tx,hint:'影响：视天机而定（约六成获益）',f:()=>{const q=rollQuality();const r=rw.run();log(q.q,`${q.txt} ${r}。`);}};},
+       (k)=>{return {k,tag:'豪赌',c:'#C4675C',tx:'孤注一掷，深探究竟',hint:'胜算：约五五开，败则入战/重伤',f:()=>{const q=rollQuality();if(q.q==='大失败'){const e=mkRandomEnemy(0);log('大失败','你踏入了精心布下的杀局！'+q.txt);startCombat(e,'dynFight');return;}if(q.q==='受挫'){const rk=pick(ORACLE.risks);const r=rk.run();log('受挫',q.txt+' '+r);return;}const rw=pick(ORACLE.rewards);const r=rw.run();S.six.仙缘=clamp(S.six.仙缘+0.5,1,20);log('豪赌',`${q.txt} 你赌赢了——${r}，仙缘微涨。`);}};},
+       (k)=>{return {k,tag:'平和',c:'#6FA698',tx:'不为所动，转身离开',hint:'影响：道心微涨，可能错失机缘',f:()=>{const q=rollQuality();if(q.q==='大失败'){S.six.道心=clamp(S.six.道心-0.5,1,20);log('大失败','你转身的瞬间，身后传来一声叹息——那声音直入识海，道心微损。');return;}S.six.道心=clamp(S.six.道心+1,1,20);log('平和',`${q.txt} 你按下好奇，转身离去。心湖不波，道心+1。`);}};},
+       (k)=>{return {k,tag:'交易',c:'#A98FD9',tx:'以50灵石换取对方所知',hint:'影响：花50灵石，或得线索，或被坑',f:()=>{if(S.lingShi<50){log('交易','你囊中羞涩。');return;}S.lingShi-=50;const q=rollQuality();if(q.q==='大失败'){log('交易','那人收了灵石，递来一张白纸，上面画着一只大王八。');return;}if(d100()<=40){S.wudao['剑道']=(S.wudao['剑道']||0)+1;log('交易',`${q.txt} 那人竟指点了你一式剑法，剑道+1。`);}else if(d100()<=60){S.lingShi+=120;log('交易',`${q.txt} 那人告诉你一处藏金之地，你循迹挖出120灵石。`);}else{log('交易',`${q.txt} 你换来一个传闻：「东荒有一卷天阶功法残页。」`);S.flags.功法线索=true;}}};},
+      ];
+      const keys=['A','B','C'];
+      const used=[];
+      const opts=keys.map((k,i)=>{
+        const a=arr&&arr[i]?arr[i]:null;
+        let oi=-1;
+        if(a&&kindMap[a.kind]!==undefined&&!used.includes(kindMap[a.kind]))oi=kindMap[a.kind];
+        else{const avail=[0,1,2,3].filter(x=>!used.includes(x));oi=avail[Math.floor(Math.random()*avail.length)];}
+        used.push(oi);
+        const o=optPool[oi](k);
+        if(a){o.tx=a.text||o.tx;o.hint=a.hint||o.hint;}
+        return o;
+      });
+      curEvent={kind:'天机演算',t:'天机·'+(pick(['命数','缘法','变数','因果','机缘','劫数'])),n:txt,opts};
+      renderPlay();
+      log('天机演算','天道落笔，一段从未有人写过的命数铺展开来。');
+    });
+  });
+}
+function aiGenEnding(type,localText){
+  const base=`玩家：${S.name}（${S.gender}），${S.age}岁，终${realmLabel()}。道途「${S.daoTu}」。击败天骄：${Object.keys(S.tianjiao||{}).map(i=>TIANJIAO[+i]&&TIANJIAO[+i].name).filter(Boolean).join('、')||'无'}。大机缘：${(S.fortunes||[]).join('、')||'无'}。道侣：${(S.daoban||[]).join('、')||'无'}。功德${S.merit}，业力${S.karma}，声望${S.reputation}。`;
+  const sys='你是仙侠小说终章作者。为这位修士的一生写一段120-200字的结局（结局类型：'+type+'），要呼应他这一生的经历（击败的天骄、机缘、道侣、善恶业），文笔有仙侠气韵，结尾一句点睛。直接输出正文，不要解释。';
+  askOracle(sys,base,800).then(txt=>{
+    if(!txt)return;
+    const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8',富可敌国:'#C9A45C',田园仙隐:'#6FA698',万妖之祖:'#8B6FA8',铁血元帅:'#C9A45C',文圣:'#7FA8C9'}[type]||'#6FA698';
+    const base2=`${S.name}（${S.gender}），${S.age}岁，终${realmLabel()}，道途「${S.daoTu}」。`;
+    $('panel').innerHTML=panel('warn',`结局 · ${type}（天道亲笔）`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${(txt+'').replace(/\n/g,'<br>')}</div><div class="row sm">${base2}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);
+  });
+}
+function showAISettings(){
+  const c=aiCfg();
+  const presets=Object.keys(AI_PRESETS).map(k=>`<a class="lnk" data-act="aiPreset" data-arg="${k}">${k}</a>`).join('　');
+  const body=`<div class="row em">AI 天道设置</div><div class="row sm">启用后，奇遇剧情与结局文本由真实大模型实时创作（选项效果仍由本地天机结算）。未配置或调用失败时自动回退本地引擎，不影响游戏。</div><div class="row">${presets}</div>
+  <div class="row">开关：<a class="lnk" data-act="aiToggle">${c.on?'已启用（点击停用）':'已停用（点击启用）'}</a></div>
+  <div class="row">API 地址：<input id="aiBase" class="txt" value="${c.base||AI_PRESETS['智谱Z.ai(国际·推荐)'].base}" placeholder="https://.../v1/chat/completions"></div>
+  <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'glm-4.7-flash'}" placeholder="model"></div>
+  <div class="row">文风提示：<input id="aiStyle" class="txt" value="${c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气'}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
+  <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Pollinations 免填；其他平台填 sk-...（仅存本机）"></div>
+  <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiTest">测试连接</a></div>
+  <div class="sm"><b>免费接入：</b>① <b>Pollinations</b>：免注册、免 Key，直接点击上方模板即可试用（公共服务可能有频率限制）。② <b>智谱 Z.ai 国际版</b>：GLM-4.7-Flash 免费额度，需自行申请 Key。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在你自己浏览器里，不会写入游戏存档。</div>`;
+  $('panel').innerHTML=panel('mystic',`AI 天道 · 接入设置`,body)+statusCard();
+}
+function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'），填 Key 后保存即可。');}
+function aiToggle(){const c=aiCfg();c.on=!c.on;aiSave(c);showAISettings();log('AI 天道',c.on?'AI 天道已启用——剧情将由真实大模型创作。':'AI 天道已停用——恢复本地天机演算。');}
+function aiSaveCfg(){
+  const c=aiCfg();
+  c.base=($('aiBase')&&$('aiBase').value)||c.base;
+  c.model=($('aiModel')&&$('aiModel').value)||c.model;
+  c.style=($('aiStyle')&&$('aiStyle').value)||c.style;
+  c.key=($('aiKey')&&$('aiKey').value)||c.key;
+  c.on=true;aiSave(c);showAISettings();log('AI 天道','配置已保存并启用。');
+}
+function aiTestCfg(){
+  const c=aiCfg();
+  const base=($('aiBase')&&$('aiBase').value)||c.base;
+  const model=($('aiModel')&&$('aiModel').value)||c.model;
+  const key=($('aiKey')&&$('aiKey').value)||c.key;
+  if(!base||(!key&&!/pollinations\.ai/i.test(base))){log('AI 天道','请先填写 API 地址与 Key（Pollinations 免填 Key）。');return;}
+  c.base=base;c.model=model;c.key=key;aiSave(c);
+  log('AI 天道','正在叩问天道之门（测试连接）……');
+  askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
+    if(t){log('AI 天道','连接成功！天道回应：「'+t.slice(0,20)+'」');}
+    else{log('AI 天道','连接失败。请检查 Key/地址/网络，或该模型的 CORS 限制。');}
+  });
+}
+function genDynamicEvent(){
+  const p=pick(ORACLE.places),v=pick(ORACLE.persons),d=pick(ORACLE.details),vb=pick(ORACLE.verbs);
+  const n=genScene(v,p,d,vb);
+  const title='天机·'+pick(['命数','缘法','变数','因果','机缘','劫数']);
+  /* 动态选项池：每次随机挑 3 个不重复的行为 */
+  const optPool=[
+   (k)=>{const rw=pick(ORACLE.rewards);return {k,tag:'机缘',c:'#A98FD9',tx:'上前一探，或得'+rw.tx,hint:'影响：视天机而定（约六成获益，两成有变）',f:()=>{const q=rollQuality();const r=rw.run();log(q.q,`${q.txt} 你${vb}后抽身而退——${r}。`+(q.q==='大失败'?' 临走时你隐隐觉得，有什么东西正盯着你的背影。':''));}};},
+   (k)=>{return {k,tag:'豪赌',c:'#C4675C',tx:'孤注一掷，深探究竟',hint:'胜算：约五五开，成则大获，败则入战/重伤',f:()=>{const q=rollQuality();if(q.q==='大失败'){const e=mkRandomEnemy(0);log('大失败','你踏入了精心布下的杀局！'+q.txt);startCombat(e,'dynFight');return;}if(q.q==='受挫'){const rk=pick(ORACLE.risks);const r=rk.run();log('受挫',q.txt+' '+r);return;}const rw=pick(ORACLE.rewards);const r=rw.run();S.six.仙缘=clamp(S.six.仙缘+0.5,1,20);log('豪赌',`${q.txt} 你赌赢了——${r}，仙缘微涨。`);}};},
+   (k)=>{return {k,tag:'平和',c:'#6FA698',tx:'不为所动，转身离开',hint:'影响：道心微涨，可能错失机缘',f:()=>{const q=rollQuality();if(q.q==='大失败'){S.six.道心=clamp(S.six.道心-0.5,1,20);log('大失败','你转身的瞬间，身后传来一声叹息——那声音直入识海，道心微损。');return;}S.six.道心=clamp(S.six.道心+1,1,20);log('平和',`${q.txt} 你按下好奇，转身离去。心湖不波，道心+1。`+(q.q==='大成功'?' 走出数里，你忽然悟透一桩旧事，灵台清明。':''));}};},
+   (k)=>{return {k,tag:'交易',c:'#A98FD9',tx:'以50灵石换取对方所知',hint:'影响：花50灵石，或得线索/功法残页，或被坑',f:()=>{if(S.lingShi<50){log('交易','你囊中羞涩，对方意味深长地笑了。');return;}S.lingShi-=50;const q=rollQuality();if(q.q==='大失败'){log('交易','那人收了灵石，递来一张白纸。你低头一看，纸上画着一只大王八。');return;}if(d100()<=40){S.wudao['剑道']=(S.wudao['剑道']||0)+1;log('交易',`${q.txt} 那人竟指点了你一式剑法，剑道+1。这50灵石花得值。`);}else if(d100()<=60){S.lingShi+=120;log('交易',`${q.txt} 那人告诉你一处藏金之地，你循迹挖出120灵石。`);}else{log('交易',`${q.txt} 你换来一个模糊的传闻：「东荒有一卷天阶功法残页，得之可窥上界。」线索记入心间。`);S.flags.功法线索=true;}}};},
+  ];
+  /* 洗牌取 3 个不重复 */
+  const idx=[0,1,2,3].sort(()=>Math.random()-0.5).slice(0,3);
+  const keys=['A','B','C'];
+  const opts=idx.map((oi,i)=>optPool[oi](keys[i]));
+  curEvent={kind:'天机演算',t:title,n,opts};
+  renderPlay();
+}
+/* 动态结局：同一结局类型，每次文本皆由命数与人生经历重铸 */
+function lifeSummary(){
+  const parts=[];
+  const tj=Object.keys(S.tianjiao||{}).map(i=>TIANJIAO[+i]&&TIANJIAO[+i].name).filter(Boolean);
+  if(tj.length)parts.push(`曾败尽天骄「${tj.slice(0,2).join('」「')}」`);
+  if((S.fortunes||[]).length)parts.push(`身负「${S.fortunes[0]}」`);
+  if((S.daoban||[]).length)parts.push(`与道侣${S.daoban[0]}携手同行`);
+  if(S.merit>=10)parts.push('功德无量');
+  if(S.karma>=10)parts.push('业力缠身');
+  if(S.jianghu&&S.jianghu.xia>=10)parts.push('侠名满九州');
+  if(S.origin&&S.origin.lv>=5&&ORIGINS[S.origin.key])parts.push(`${S.origin.key}家业登峰，号「${ORIGINS[S.origin.key].levels[4]}」`);
+  const t=[
+   `那一世，${parts.length?parts.join('，')+'。':'并无惊天动地的大事迹，可每一步都是你自己走出来的。'}`,
+   `那一世，后世修士谈起你，总会说起${parts.length?parts.slice(0,2).join('与'):'你那一句问心无愧的「道」'}。`,
+   `那一世，你在${S.loc}住了很久，久到山下的孩子都以为你是山的一部分。${parts.length?'偶尔有人问起你的往事，你只笑着摇摇头。':''}`,
+  ];
+  return pick(t);
+}
+function genEndingText(type){
+  const base=`${S.name}（${S.gender}），${S.age}岁，终${realmLabel()}，道途「${S.daoTu}」。`;
+  const sum=lifeSummary();
+  const m={
+   '飞升':[`你于天道雷劫中勘破最后一关，白日飞升。雷海之上，你回头望了一眼人间——${sum}此后九州少一人，天上多一仙。`,`天门洞开那一瞬，你听见众生心跳如鼓。你没有急着迈步，而是在门槛上坐了三天三夜，把这一生的悲欢都回忆了一遍，才含笑入界。${sum}`],
+   '人皇':[`你以剑重定山河，登临人皇之位。龙椅只是责任，真正值得的，是每次转身都能看见有人与你并肩。${sum}史书工笔，记你为「问道人皇」。`,`你在金銮殿上废除仙凡之别，诸臣哗然，你只淡淡道：「若连人间都护不住，要这皇位何用。」${sum}`],
+   '剑神':[`你以人间一剑劈开上界天门，剑光余势扫过九天，诸天噤声。你没有借机飞升，而是留在人间，立剑碑于青云之巅。${sum}从此世间多了一句传言：天外有天，而人间有剑。`,`最后一剑落下时，你听见了万剑齐鸣——那是整座天下，都在为这一剑送行。${sum}`],
+   '医仙':[`你悬壶九州，与药香为伴，救治的病患从凡尘排到仙门。有人问医仙之名，你只笑说：「医一人是术，医一城是道。」${sum}`,`药王谷的春雨下了许多年，你的名字被写进无数病愈者家中的长生牌位。${sum}`],
+   '魔帝':[`你以业力铺路，统一魔道，登临魔帝之位。魔渊之下万魔俯首，可每逢月圆，你总会独自站在最高的魔峰上，望向人间。${sum}`,`你从血河中走出，魔道因你而盛。有人说你疯了，只有你知道，那条路上每一步都是清醒的选择。${sum}`],
+   '仙尊':[`你开宗立派，威震九州，一代仙尊之号流传千古。门人遍布天下，香火不绝。${sum}`,`你坐于云海之巅，看门下一代代人成长。有人问你可曾后悔没有飞升，你笑着摇头。${sum}`],
+   '逍遥':[`你与所爱归隐洞天，携手渡过悠悠岁月。不争不抢，逍遥长生。${sum}`,`这一世你刻意放慢了脚步，把每一朵云都看得很仔细。旁人求的长生，你早已握在手里。${sum}`],
+   '守护':[`你护住了这一生最想护的人。纵仙途有憾，此心无怨。${sum}`,`你没有成为天下最强，却成了某个人心里最可靠的存在。守护之约，终得圆满。${sum}`],
+   '魔道':[`你以业力铺路，坠入魔道，威加四海，却也永失飞升之机。${sum}`,`魔渊接纳了你。你坐在深渊之底，忽然想起许多年前，自己也曾是个想替天行道的少年。${sum}`],
+   '入魔':[`心魔终是压过了本心。你堕入魔道，神智渐失，终成一方魔物。${sum}最后一缕清明里，你只来得及想起一个名字。`],
+   '坐化':[`寿元耗尽，你于${S.loc}安然坐化。回首一生，仙途如逆旅，唯道心长存。${sum}`,`最后一缕气息散尽时，你嘴角含笑——这一生，无憾。${sum}`],
+   '陨落':[`你倒在了求道之路上，再也无缘长生。修仙界从不缺一具枯骨，可认得你的人，都会记得你的名字。${sum}`],
+   '富可敌国':[`你以商道问鼎九州，富可敌国。天下的灵石流经你的手，再以这笔财富买下仙路的每一道门。${sum}史官写你，一半是传奇，一半是不可思议。`,`你不修仙，却让仙人为你办事；你不打仗，却让诸国为你让路。${sum}`],
+   '田园仙隐':[`你守着灵田与所爱，春种秋收，看云卷云舒。人间百年，仙路虽缓，你却比谁都知足。${sum}原来长生不在天上，在每一次丰收时的心安。`,`你给田里的灵稻起了名字，给门口的老狗讲道。这一生过得慢，却过得满。${sum}`],
+   '万妖之祖':[`你血脉返祖，君临万妖。古妖山为你俯首，人间为你侧目。${sum}可只有你自己记得，那个月夜血脉初醒时，你第一眼看见的人。`,`你坐在万妖王座之上，指尖摩挲着一枚旧符——那是你还未返祖时，某个人系在你腕上的。${sum}`],
+   '铁血元帅':[`你从一名私兵打成了九州铁壁，万军听你号令，边关因你而宁。${sum}马革裹尸是你祖辈的宿命，却是你亲手改写成的凯旋。`,`你在帅帐里挂了七十年的旧战旗，士兵们都说，只要元帅还站着，边关就不会破。${sum}`],
+   '文圣':[`你立言立教，文章照彻千古。修仙界有你的传说，凡间更有你的祠堂。${sum}笔虽无锋，却能改天换地。后世书生，皆以你为道。`,`你晚年闭门著书，把一生所见写成一部《问道录》。三百年后，有人靠它修成了大能。${sum}`],
+  };
+  const arr=m[type];
+  return (arr?pick(arr):endingText(type))+'\n'+base+'\n'+sum;
+}
 function triggerRandomEvent(){
+  if(aiEnabled()){aiGenEvent();return;}
+  if(d100()<=70){genDynamicEvent();return;}
   const evs=[
     {t:'神秘老者',n:'山门外跛足老者含笑递来丹药：「小友有缘。」',opts:[
       {k:'A',tag:'机缘',c:'#A98FD9',tx:'收下丹药（气血+20，仙缘+1）',hint:'影响：气血+20、仙缘+1，无风险',f:()=>{S.hp=clamp(S.hp+20,0,S.hpMax);S.six.仙缘++;log('机缘','暖流涌动，气血充盈。');}},
@@ -972,24 +1223,24 @@ function showFate(){
 }
 /* 结局计算：由道途、业力/功德与主线分支共同决定 */
 function computeEnding(){
-  const c=S.choices||[];
+  const c=S.choices||[],hits=[];
   if((S.origin||{}).lv>=5){
     const k=S.origin.key;
-    if(k==='商贾之家')return '富可敌国';
-    if(k==='农家子')return '田园仙隐';
-    if(k==='妖族后裔')return '万妖之祖';
-    if(k==='将门之后')return '铁血元帅';
-    if(k==='书香门第')return '文圣';
+    const om={'商贾之家':'富可敌国','农家子':'田园仙隐','妖族后裔':'万妖之祖','将门之后':'铁血元帅','书香门第':'文圣'};
+    if(om[k])hits.push(om[k]);
   }
-  if(S.karma>=15&&(S.daoban||[]).includes('谢无咎'))return '魔帝';
-  if((S.daoban||[]).includes('温若曦')&&S.merit>=15)return '医仙';
-  if((S.wudao['剑道']||0)>=12&&c.includes('humanitySword'))return '剑神';
-  if(c.includes('dynasty')&&(S.daoban||[]).includes('萧景行')&&S.reputation>=60)return '人皇';
-  if(S.karma>=12)return '魔道';
-  if(S.daoTu==='逍遥长生')return '逍遥';
-  if(S.daoTu==='问鼎天下')return '仙尊';
-  if(S.daoTu==='守护所爱')return '守护';
-  return '飞升';
+  if(S.karma>=15&&(S.daoban||[]).includes('谢无咎'))hits.push('魔帝');
+  if((S.daoban||[]).includes('温若曦')&&S.merit>=15)hits.push('医仙');
+  if((S.wudao['剑道']||0)>=12&&c.includes('humanitySword'))hits.push('剑神');
+  if(c.includes('dynasty')&&(S.daoban||[]).includes('萧景行')&&S.reputation>=60)hits.push('人皇');
+  if(S.karma>=12)hits.push('魔道');
+  if(S.daoTu==='逍遥长生')hits.push('逍遥');
+  if(S.daoTu==='问鼎天下')hits.push('仙尊');
+  if(S.daoTu==='守护所爱')hits.push('守护');
+  if(!hits.length)hits.push('飞升');
+  /* 天机不定：命数不在写死的优先级里——同一境遇，也可能走向不同的终局 */
+  if(hits.length>1&&d100()<=30)hits.splice(Math.floor(Math.random()*hits.length),1);
+  return hits[Math.floor(Math.random()*hits.length)];
 }
 function endingText(type){
   const base=`${S.name}（${S.gender}），${S.age}岁，终${realmLabel()}，道途「${S.daoTu}」。`;
@@ -1465,6 +1716,7 @@ function finishStoryBattle(tag){ensureGameState();const j=S.jianghu;
   else if(tag==='chapter7heaven'){j.chapter=8;j.clue=0;j.storyWins++;S.reputation+=50;S.wudao['剑道']=(S.wudao['剑道']||0)+5;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('一剑断天门'))S.fortunes.push('一剑断天门');giveItem('仙使本源',1);S.mainLine='第八章·人间至尊：天门已碎，诸天因你而震动';log('第七章终','你以人间一剑斩开仙使法相，剑光余势直上九天，将高悬万年的天门从中央劈成两半。上界沉默，九州沸腾。你没有借机独自飞升，而是转身走回那些等待你的人身边。声望+50、剑道+5，获得仙使本源。自此以后，上界提起人间，只会先想起你的名字。');}
   else if(tag==='sectEscort'){S.contribution+=8;S.lingShi+=40;log('宗门','你击退狼群，商队平安过岭。贡献+8、灵石+40。');}
   else if(tag==='sectBeast'){giveItem('妖丹',1);S.contribution+=8;S.lingShi+=30;log('宗门','妖兽伏诛，村镇重归安宁。贡献+8、灵石+30、得妖丹。');}
+  else if(tag==='dynFight'){S.reputation+=5;S.lingShi+=40;log('天机','你踏平了那处杀局。传闻四散，你的名字又被多提起一次。声望+5、灵石+40。');}
   else if(tag==='saveMaiden'){S.merit+=2;S.lingShi+=80;S.jianghu.xia+=2;log('救美','劫修尽数伏诛。少女盈盈下拜：「恩公大恩，无以为报。」她将玉匣中一枚温养多年的灵珠赠你。功德+2、灵石+80、侠义+2，那枚灵珠暖意融融，似有灵性。');}
   else if(tag==='guardMerchant'){S.lingShi+=100;S.jianghu.xia+=2;log('护镖','匪众溃散，商队管事千恩万谢，奉上百枚灵石。侠义+2、灵石+100。');}
   else if(tag&&tag.startsWith('tianjiao')){
@@ -1538,6 +1790,7 @@ const MAP_EVENTS={
  ],
 };
 function explore(){
+  if(d100()<=45){genDynamicEvent();return;}
   const evs=MAP_EVENTS[S.loc]||MAP_EVENTS['东洲·青岳'];
   const e=evs[Math.floor(Math.random()*evs.length)];
   curEvent={kind:'探索 · '+S.loc,t:e.t,n:e.n,opts:e.opts};
@@ -1937,6 +2190,8 @@ function showHelp(){  const body=`
   <div class="row em" style="color:var(--cyan)">游历·探索</div><div class="row sm">地图(危险等级) | 秘境(通灵/上古/心魔/虚空) | 坊市(买卖) | 图鉴(妖兽录)</div>
   <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
   <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
+  <div class="row em" style="color:var(--gold)">AI 天道（可选）</div><div class="row sm">输入「天道」打开设置：填入任一 OpenAI 兼容大模型 API（智谱 GLM-4-Flash 免费 / DeepSeek / 腾讯混元 / 通义千问 / Kimi）的地址+Key，奇遇剧情与结局即由真实 AI 实时创作（推荐智谱 GLM-4.7-Flash：完全免费、无需绑卡）；不配置则用本地天机引擎，体验一致。</div>
+  <div class="row em" style="color:var(--gold)">天机演算 · 肉鸽之魂</div><div class="row sm">本作由「天机引擎」驱动：每次奇遇的地点、人物、冲突、奖励与风险皆由命数随机拼装，同一选项每次的结果都不尽相同（大成功/成功/受挫/大失败，一成惊喜一成劫）。结局亦由天机重铸——同样的修为与选择，也可能走向不同的终局，文本每次重写。</div>
   <div class="row em" style="color:var(--gold)">天骄榜·爽文打脸</div><div class="row sm">输入「天骄」查看九州十大天骄，越阶挑战、胜者扬名：专属功法与巨额声望。随机事件里还会遇到当街嘲讽的龙套——打脸一时爽，一直打脸一直爽。</div>
   <div class="row em" style="color:var(--cyan)">功法·精通</div><div class="row sm">输入「功法」查看全部功法/法术的获取路线图（30+ 部，覆盖天骄榜/秘境/主线/探索/家业）。修炼与战斗积累熟练度，满 100「功法大成」系数+20%。</div>
   <div class="row em" style="color:var(--cyan)">家业·产业</div><div class="row sm">出身决定家业路线（「家业」经营，五级称号+专属结局）；洞府可建灵田/丹房/器坊/兽栏四类产业，投灵石经营产出。</div>
@@ -2219,7 +2474,8 @@ function importSave(){
 }
 
 /* ============ 结局 ============ */
-function endGame(type,detail){phase='ended';if(!detail)detail=endingText(type);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8',富可敌国:'#C9A45C',田园仙隐:'#6FA698',万妖之祖:'#8B6FA8',铁血元帅:'#C9A45C',文圣:'#7FA8C9'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
+function endGame(type,detail){phase='ended';if(!detail)detail=genEndingText(type);
+  if(aiEnabled())aiGenEnding(type,detail);const color={坐化:'#5C8C6E',陨落:'#C4675C',飞升:'#C9A45C',逍遥:'#6FA698',仙尊:'#C9A45C',守护:'#D88FA5',魔道:'#8B6FA8',入魔:'#8B6FA8',人皇:'#C9A45C',剑神:'#A98FD9',医仙:'#6FA698',魔帝:'#8B6FA8',富可敌国:'#C9A45C',田园仙隐:'#6FA698',万妖之祖:'#8B6FA8',铁血元帅:'#C9A45C',文圣:'#7FA8C9'}[type]||'#6FA698';$('panel').innerHTML=panel('warn',`结局 · ${type}`,`<div class="row em" style="color:${color}">${type}</div><div class="row">${detail.replace(/\n/g,'<br>')}</div><div class="row sm">此世已终。可保留手动备份，重新创角开启下一世。</div><div class="row"><a class="lnk" data-act="restart">重开一世（轮回）</a></div>`);log('结局',`${type} —— ${detail}`);}
 
 /* ============ 指令分发 ============ */
 function doCommand(c){
@@ -2227,7 +2483,8 @@ function doCommand(c){
   if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
   if(phase==='create1'||phase==='create2pending'){log('天道','尚未创角完成，请先按格式回复落笔。');return;}
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
+  if(aiEnabled()&&(/探索|获取功法|掉落功法|遭遇奇遇|触发奇遇|与.+对话|对话.+/.test(c))){aiGenAction(c);return;}
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,天道:showAISettings,AI:showAISettings,ai:showAISettings,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
@@ -2251,6 +2508,7 @@ function doCommand(c){
 }
 function freeAction(text){
   ensureGameState();log(timeLine(),`你决定：「${text}」。江湖依你的能力、名声与因果回应。`);
+  if(aiEnabled()&&(/探索|功法|奇遇|秘境|对话|遭遇/.test(text))){aiGenAction(text);return;}
   if(/查|调查|追踪|线索|夜探/.test(text)){investigateJianghu('main');return;}
   if(/行侠|护送|缉凶|悬赏|委托/.test(text)){openContracts();return;}
   if(/休息|疗伤|睡|养伤/.test(text)){S.hp=clamp(S.hp+Math.round(S.hpMax*.35),0,S.hpMax);S.mp=clamp(S.mp+Math.round(S.mpMax*.35),0,S.mpMax);S.status='无';log('休整','你调息养伤，气血与灵力恢复三成。');advanceTime(1);renderPlay();return;}
@@ -2329,6 +2587,10 @@ document.addEventListener('click',e=>{
     case 'originAct':originAct(arg);break;
     case 'estateBuild':estateBuild(arg);break;
     case 'estateRun':estateRun();break;
+    case 'aiPreset':aiPreset(arg);break;
+    case 'aiToggle':aiToggle();break;
+    case 'aiSave':aiSaveCfg();break;
+    case 'aiTest':aiTestCfg();break;
     case 'tianjiao':tianjiaoFight(+arg);break;
     case 'rest':rest();break;
     case 'restFull':restFull();break;
