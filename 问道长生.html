@@ -364,7 +364,7 @@ function showBestiary(){
 }
 
 /* ============ 全局状态 ============ */
-let S=null, turn=0, year=387, monthIdx=0, phase='create1', curEvent=null, CB=null, SEC=null, CST=null;
+let S=null, turn=0, year=387, monthIdx=0, phase='create1', curEvent=null, CB=null, SEC=null, CST=null, AI_BUSY=false;
 /* ============ 云端账号 / 跨设备同步 ============ */
 let ACCT=null;            // {token,user} 或 null（未登录则用本机存档）
 let API_BASE='';          // 同源部署时为 ''；file:// 打开时填服务器地址
@@ -434,6 +434,7 @@ function ensureGameState(){
   S.flags=S.flags||{};S.qstep=S.qstep||{};S.codex=S.codex||{};S.aff=S.aff||{};S.wudao=S.wudao||{};S.daoban=S.daoban||[];
   S.bonds=S.bonds||{};S.fortunes=S.fortunes||[];S.choices=S.choices||[];
   S.estate=S.estate||[];S.tianjiao=S.tianjiao||{};S.gongfaMaster=S.gongfaMaster||{};
+  S.aiHistory=Array.isArray(S.aiHistory)?S.aiHistory.slice(-5):[];S.aiPendingQuestion=S.aiPendingQuestion||'';S.aiScene=S.aiScene&&typeof S.aiScene==='object'?S.aiScene:null;
   if(typeof S.origin==='string'&&typeof ORIGINS!=='undefined'&&ORIGINS[S.origin])S.origin={key:S.origin,lv:1,exp:0};
   Object.keys(NPCS).forEach(n=>{const oldAff=S.aff[n]||0;S.bonds[n]=S.bonds[n]||{met:oldAff>0,chapter:oldAff>=80?3:oldAff>=60?2:oldAff>=40?1:0,rescues:0};if(S.daoban.includes(n))S.bonds[n].met=true;});
   S.jianghu=S.jianghu||{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''};
@@ -642,7 +643,7 @@ function statusCard(){
 }
 
 /* ============ 主界面 ============ */
-function renderPlay(){ensureGameState();const h=curEvent?renderEvent():(CB?renderCombat():(SEC?renderSecret():mainPanel()));$('panel').innerHTML=h+statusCard();}
+function renderPlay(){ensureGameState();restoreAIEvent();const h=curEvent?renderEvent():(CB?renderCombat():(SEC?renderSecret():mainPanel()));$('panel').innerHTML=h+statusCard();}
 function mainPanel(){
   ensureGameState();
   const qi=S.dongfu.qi;
@@ -822,30 +823,28 @@ function askOracle(sys,usr,maxTok){
   });
 }
 function stripCodeBlock(t){if(!t)return t;let x=t.replace(/```json/g,'').replace(/```/g,'').trim();const a=x.indexOf('{'),b=x.lastIndexOf('}');if(a>=0&&b>a)x=x.slice(a,b+1);return x;}
-function aiPlayerState(){ensureGameState();return {name:S.name,realm:S.realm,sub:S.sub,hp:Math.round(S.hp),hpMax:S.hpMax,mp:Math.round(S.mp),mpMax:S.mpMax,xiu:Math.round(S.xiu),lingen:S.lingen,daoTu:S.daoTu,daolu:S.daoban||[],merit:S.merit,karma:S.karma,loc:S.loc,bag:(S.bag||[]).map(x=>({name:x.n,qty:x.num})),gongfa:(S.gongfa||[]).map(x=>x.n)};}
+function aiPlain(v,n){return String(v||'').replace(/[<>]/g,'').trim().slice(0,n);}
+function aiPlayerState(){ensureGameState();return {name:S.name,gender:S.gender,age:S.age,realm:S.realm,sub:S.sub,hp:Math.round(S.hp),hpMax:S.hpMax,mp:Math.round(S.mp),mpMax:S.mpMax,xiu:Math.round(S.xiu),lingShi:S.lingShi,merit:S.merit,karma:S.karma,lingen:S.lingen,tizhi:S.tizhi,daoTu:S.daoTu,daolu:S.daoban||[],loc:S.loc,mainLine:S.mainLine,bag:(S.bag||[]).map(x=>({name:x.n,qty:x.num})),gongfa:(S.gongfa||[]).map(x=>x.n),fashu:(S.fashu||[]).map(x=>x.n)};}
+function aiHistoryText(){ensureGameState();return S.aiHistory.length?S.aiHistory.map((x,i)=>`${i+1}. ${x}`).join('\n'):'无（首次调用）';}
+function aiOutcomeSummary(g){const p=[];['hp','mp','xiu','lingShi','merit','karma'].forEach(k=>{if(g[k])p.push(`${k}${g[k]>0?'+':''}${g[k]}`);});if(g.new_items.length)p.push('获得'+g.new_items.map(x=>x.name+'×'+x.qty).join('、'));if(g.new_skills.length)p.push('悟得'+g.new_skills.map(x=>x.name).join('、'));return p.join('，')||'状态无直接变化';}
+function rememberAI(action,j){ensureGameState();const line=`指令「${String(action).slice(0,40)}」：${String(j.narrative).replace(/\s+/g,' ').slice(0,100)}；${aiOutcomeSummary(j.gameplay_outcome)}`;S.aiHistory.push(line);S.aiHistory=S.aiHistory.slice(-5);}
 function normalizeAIResult(raw){
   let j;try{j=JSON.parse(stripCodeBlock(raw));}catch(e){return null;}
-  if(!j||typeof j!=='object'||typeof j.narrative!=='string'||!j.gameplay_outcome)return null;
-  const g=j.gameplay_outcome,t=['combat','loot','skill','event','dialogue'];if(!t.includes(g.type))g.type='event';
-  g.loot=Array.isArray(g.loot)?g.loot.filter(x=>x&&typeof x.name==='string').slice(0,5).map(x=>({name:x.name.slice(0,40),qty:clamp(Math.round(Number(x.qty)||1),1,9),effect:String(x.effect||'无').slice(0,100)})):[];
-  if(g.skill&&typeof g.skill.name==='string')g.skill={name:g.skill.name.slice(0,40),grade:['黄阶','玄阶','地阶','天阶','仙阶'].includes(g.skill.grade)?g.skill.grade:'玄阶',type:g.skill.type==='法术'?'法术':'功法',power:clamp(Math.round(Number(g.skill.power)||10),1,80),description:String(g.skill.description||'').slice(0,160)};else g.skill=null;
-  if(g.enemy&&typeof g.enemy.name==='string')g.enemy={name:g.enemy.name.slice(0,40),realm:String(g.enemy.realm||S.realm),hp:clamp(Math.round(Number(g.enemy.hp)||120),40,1200),atk:clamp(Math.round(Number(g.enemy.atk)||15),5,100),elem:['金','木','水','火','土','雷','冰'].includes(g.enemy.elem)?g.enemy.elem:'土'};else g.enemy=null;
-  const a=g.attribute_changes||{};g.attribute_changes={hp:clamp(Math.round(Number(a.hp)||0),-120,120),mp:clamp(Math.round(Number(a.mp)||0),-120,120),xiu:clamp(Math.round(Number(a.xiu)||0),-30,40),merit:clamp(Math.round(Number(a.merit)||0),-10,10),karma:clamp(Math.round(Number(a.karma)||0),-10,10)};
-  g.next_choices=Array.isArray(g.next_choices)?g.next_choices.filter(x=>x&&typeof x.text==='string').slice(0,3).map(x=>({text:x.text.slice(0,70),hint:String(x.hint||'天机未明').slice(0,100)})):[];
-  j.world_changes=j.world_changes&&typeof j.world_changes==='object'?j.world_changes:{};return j;
+  if(!j||typeof j!=='object'||typeof j.narrative!=='string')return null;const old=j.gameplay_outcome||{};const a=old.attribute_changes||old;
+  const skills=Array.isArray(old.new_skills)?old.new_skills:(old.skill?[old.skill]:[]),items=Array.isArray(old.new_items)?old.new_items:(Array.isArray(old.loot)?old.loot:[]);
+  j.gameplay_outcome={hp:clamp(Math.round(Number(a.hp)||0),-120,120),mp:clamp(Math.round(Number(a.mp)||0),-120,120),xiu:clamp(Math.round(Number(a.xiu)||0),-30,40),lingShi:clamp(Math.round(Number(a.lingShi)||0),-500,500),merit:clamp(Math.round(Number(a.merit)||0),-10,10),karma:clamp(Math.round(Number(a.karma)||0),-10,10),new_items:items.filter(x=>x&&typeof x.name==='string').slice(0,5).map(x=>({name:aiPlain(x.name,40),qty:clamp(Math.round(Number(x.qty)||1),1,9),effect:aiPlain(x.effect||'无',100)})),new_skills:skills.filter(x=>x&&typeof x.name==='string').slice(0,3).map(x=>({name:aiPlain(x.name,40),grade:['黄阶','玄阶','地阶','天阶','仙阶'].includes(x.grade)?x.grade:'玄阶',type:x.type==='法术'?'法术':'功法',power:clamp(Math.round(Number(x.power)||0),0,80)}))};
+  j.narrative=aiPlain(j.narrative,600);j.next_actions=Array.isArray(j.next_actions)?j.next_actions:(Array.isArray(old.next_choices)?old.next_choices:[]);j.next_actions=j.next_actions.filter(x=>x&&typeof x.text==='string').slice(0,3).map(x=>({text:aiPlain(x.text,36),hint:aiPlain(x.hint||'天机未明',100)}));j.ask_player=typeof j.ask_player==='string'&&j.ask_player.trim()?aiPlain(j.ask_player,160):null;if(!j.ask_player&&!j.next_actions.length)j.ask_player='你准备如何继续？';return j;
 }
 function applyAIOutcome(g){
-  const a=g.attribute_changes||{};S.hp=clamp(S.hp+(a.hp||0),1,S.hpMax);S.mp=clamp(S.mp+(a.mp||0),0,S.mpMax);S.xiu=clamp(S.xiu+(a.xiu||0),0,100);S.merit+=a.merit||0;S.karma=Math.max(0,S.karma+(a.karma||0));
-  (g.loot||[]).forEach(x=>{giveItem(x.name,x.qty);});
-  if(g.skill){if(g.skill.type==='法术')S.fashu.push({n:g.skill.name,elem:'灵',power:g.skill.power,mp:Math.max(5,Math.round(g.skill.power*.55)),系:'天机'});else S.gongfa.push({n:g.skill.name,grade:g.skill.grade});}
-  if(g.enemy){const e=mkEnemy(g.enemy.name,g.enemy.realm,'中期',g.enemy.elem,g.enemy.atk,g.enemy.hp,60,g.enemy.name);startCombat(e,'aiDynamic');return true;}return false;
+  S.hp=clamp(S.hp+g.hp,1,S.hpMax);S.mp=clamp(S.mp+g.mp,0,S.mpMax);S.xiu=clamp(S.xiu+g.xiu,0,100);S.lingShi=Math.max(0,S.lingShi+g.lingShi);S.merit+=g.merit;S.karma=Math.max(0,S.karma+g.karma);g.new_items.forEach(x=>giveItem(x.name,x.qty));g.new_skills.forEach(x=>{if(x.type==='法术'){if(!S.fashu.find(f=>f.n===x.name))S.fashu.push({n:x.name,elem:'灵',power:x.power||12,mp:Math.max(5,Math.round((x.power||12)*.55)),系:'天机'});}else if(!S.gongfa.find(f=>f.n===x.name))S.gongfa.push({n:x.name,grade:x.grade});});
 }
-function aiChoice(g,x,i){return {k:['A','B','C'][i],tag:i===0?'机缘':i===1?'谨慎':'变数',c:i===0?'#A98FD9':i===1?'#6FA698':'#C4675C',tx:x.text,hint:x.hint,f:function(){curEvent=null;const inCombat=applyAIOutcome(g);if(!inCombat){let msg='命数落定：'+g.type+'。';if(g.loot.length)msg+='获得：'+g.loot.map(x=>x.name+'×'+x.qty).join('、')+'。';if(g.skill)msg+='悟得：'+g.skill.name+'。';log('天机结算',msg);advanceTime(1);maybeEvent();renderPlay();}}};}
+function aiChoice(x,i){return {k:['A','B','C'][i],tag:i===0?'机缘':i===1?'谨慎':'变数',c:i===0?'#A98FD9':i===1?'#6FA698':'#C4675C',tx:x.text,hint:x.hint,f:function(){S.aiScene=null;S.aiPendingQuestion='';aiGenAction(x.text);}};}
+function restoreAIEvent(){if(!S||curEvent||CB||SEC||!S.aiScene)return;const sc=S.aiScene,q=sc.ask_player||'';const n=sc.narrative+(q?`<div class="row em" style="margin-top:10px">天道问你：${q}</div><div class="sm">请在下方输入你的回答，剧情将从这里继续。</div>`:'');curEvent={kind:'天道长卷',t:'连续剧情',n,opts:q?[]:(sc.next_actions||[]).map((x,i)=>aiChoice(x,i))};}
 function aiGenAction(action){
-  const c=aiCfg(),style=c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气';log('天机演算','正在根据你的指令重写这一方天地……');
-  const sys=`你是“天道演算器”，负责仙侠 HTML 游戏的动态内容。必须只返回合法 JSON，不要 Markdown，不要解释。文风：${style}。严格输出：{"narrative":"100-200字场景","world_changes":{"new_location":"可选","environment":"可选"},"gameplay_outcome":{"type":"combat|loot|skill|event|dialogue","enemy":{"name":"","realm":"","hp":0,"atk":0,"elem":"金木水火土雷冰"},"loot":[{"name":"","qty":1,"effect":""}],"skill":{"name":"","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":10,"description":""},"attribute_changes":{"hp":0,"mp":0,"xiu":0,"merit":0,"karma":0},"next_choices":[{"text":"","hint":""}]}}。不适用字段填空对象、空数组或0。敌人境界必须与玩家当前境界上下浮动一个小境界；掉落须符合敌人属性；天阶/仙阶技能必须有独特机制。`;
-  const usr=`player_state=${JSON.stringify(aiPlayerState())}\naction=${action}\n请生成一次可直接结算的动态结果。`;
-  askOracle(sys,usr,900).then(raw=>{const j=normalizeAIResult(raw);if(!j){log('天机','大模型返回格式异常，已回退本地天机。');genDynamicEvent();return;}const g=j.gameplay_outcome;const wc=j.world_changes||{};if(wc.new_location)S.loc=String(wc.new_location).slice(0,30);const choices=g.next_choices.length?g.next_choices:[{text:'顺势而为',hint:'按天机结果结算'},{text:'谨慎观察',hint:'可能错失机缘，也可能避开风险'}];curEvent={kind:'天机演算',t:wc.new_location||'动态命数',n:String(j.narrative).replace(/</g,'&lt;'),opts:choices.map((x,i)=>aiChoice(g,x,i))};renderPlay();log('天机演算','天道已生成新场景，选择你的下一步。');});
+  if(AI_BUSY){log('天机演算','天道仍在落笔，请稍候片刻。');return;}AI_BUSY=true;const c=aiCfg(),style=c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气';log('天机演算','正在根据你的指令重写这一方天地……');
+  const sys=`你是深谙东方仙侠气韵的“天道叙事引擎”，负责驱动连贯、长时序的修仙世界。文风要求：${style}。必须延续历史摘要，不得凭空跳跃；数值修改必须克制且符合当前境界，炼气期不得直接获得仙阶功法。玩家表达“我想发生某事”时应尽量融入，但不得违背世界逻辑。重大分支或意图不明时可设置 ask_player。只返回合法 JSON，不要 Markdown：{"narrative":"80-150字连续叙事","gameplay_outcome":{"hp":0,"mp":0,"xiu":0,"lingShi":0,"merit":0,"karma":0,"new_items":[{"name":"物品名","qty":1,"effect":"作用"}],"new_skills":[{"name":"功法名","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":0}]},"next_actions":[{"text":"12字以内","hint":"可能后果"}],"ask_player":null}。next_actions 最多3个。`;
+  const p=aiPlayerState();const usr=`【当前游戏状态】\n- 玩家：${p.name}，${p.gender}，${p.age}岁\n- 境界：${p.realm}·${p.sub}\n- 气血：${p.hp}/${p.hpMax}\n- 灵力：${p.mp}/${p.mpMax}\n- 修为：${p.xiu}/100\n- 灵石：${p.lingShi}\n- 功德：${p.merit}，业力：${p.karma}\n- 灵根：${p.lingen.join('、')}，体质：${p.tizhi}\n- 道侣/知己：${p.daolu.join('、')||'无'}\n- 所在地：${p.loc}\n- 主线进度：${p.mainLine}\n- 背包摘要：${p.bag.map(i=>i.name+'×'+i.qty).join('、')||'空'}\n- 功法：${p.gongfa.join('、')||'无'}\n- 法术：${p.fashu.join('、')||'无'}\n【历史摘要】（最近5次关键事件）\n${aiHistoryText()}\n【玩家最新指令】\n${action}\n请生成下一段剧情；若指令模糊或剧情需选择，请在 ask_player 中提问。`;
+  S.aiPendingQuestion='';S.aiScene=null;askOracle(sys,usr,900).then(raw=>{AI_BUSY=false;const j=normalizeAIResult(raw);if(!j){log('天机','大模型返回格式异常，已回退本地天机。');genDynamicEvent();return;}applyAIOutcome(j.gameplay_outcome);rememberAI(action,j);advanceTime(1);const q=j.ask_player;S.aiPendingQuestion=q||'';S.aiScene={narrative:j.narrative,next_actions:j.next_actions,ask_player:q||''};curEvent=null;renderPlay();log('天机结算',aiOutcomeSummary(j.gameplay_outcome)+(q?'；正在等待你的回答。':'；命数已写入历史。'));saveLocalAuto();scheduleCloudAutosave();});
 }
 function aiGenEvent(){
   const c=aiCfg();
@@ -896,13 +895,13 @@ function aiGenEnding(type,localText){
 function showAISettings(){
   const c=aiCfg();
   const presets=Object.keys(AI_PRESETS).map(k=>`<a class="lnk" data-act="aiPreset" data-arg="${k}">${k}</a>`).join('　');
-  const body=`<div class="row em">AI 天道设置</div><div class="row sm">启用后，奇遇剧情与结局文本由真实大模型实时创作（选项效果仍由本地天机结算）。未配置或调用失败时自动回退本地引擎，不影响游戏。</div><div class="row">${presets}</div>
+  ensureGameState();const body=`<div class="row em">AI 天道设置</div><div class="row sm">启用后，自由指令、叙事结果和后续选项会组成连续剧情；最近5段历史随账号存档自动同步。未配置或调用失败时自动回退本地引擎。</div><div class="row">${presets}</div>
   <div class="row">开关：<a class="lnk" data-act="aiToggle">${c.on?'已启用（点击停用）':'已停用（点击启用）'}</a></div>
   <div class="row">API 地址：<input id="aiBase" class="txt" value="${c.base||AI_PRESETS['Puter（免API Key·推荐）'].base}" placeholder="puter://ai 或 https://.../chat/completions"></div>
   <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'gpt-5-nano'}" placeholder="model"></div>
   <div class="row">文风提示：<input id="aiStyle" class="txt" value="${c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气'}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
   <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Puter 免填；其他平台填 sk-...（仅存本机）"></div>
-  <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiPuterLogin">Puter 登录授权</a>　<a class="lnk" data-act="aiTest">测试连接</a></div>
+  <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiPuterLogin">Puter 登录授权</a>　<a class="lnk" data-act="aiTest">测试连接</a>　<a class="lnk" data-act="aiClearHistory">清空剧情记忆（${S.aiHistory.length}/5）</a></div>
   <div class="sm"><b>免费接入：</b>① <b>Puter</b>：不需要 API Key，首次调用可能弹出 Puter 登录/授权，使用其用户侧免费额度。② <b>智谱 Z.ai</b>：有免费额度，需自行申请 Key。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在本机浏览器里，不会写入游戏存档或上传 Supabase。</div>`;
   $('panel').innerHTML=panel('mystic',`AI 天道 · 接入设置`,body)+statusCard();
 }
@@ -917,6 +916,7 @@ function aiSaveCfg(){
   c.on=true;aiSave(c);showAISettings();log('AI 天道','配置已保存并启用。');
 }
 function aiPuterLogin(){log('AI 天道','正在打开 Puter 登录授权……');loadPuter().then(()=>puter.auth.signIn()).then(u=>{log('AI 天道','Puter 授权成功！现在可直接测试连接或输入“探索南疆”。');showAISettings();}).catch(()=>log('AI 天道','Puter 授权未完成。请允许登录窗口弹出并完成登录。'));}
+function aiClearHistory(){ensureGameState();S.aiHistory=[];S.aiPendingQuestion='';S.aiScene=null;curEvent=null;log('AI 天道','连续剧情记忆已清空，下一次生成将视为新的篇章。');showAISettings();scheduleCloudAutosave();}
 function aiTestCfg(){
   const c=aiCfg();
   const base=($('aiBase')&&$('aiBase').value)||c.base;
@@ -1156,7 +1156,7 @@ function triggerRandomEvent(){
   curEvent=pool[Math.floor(Math.random()*pool.length)];
   log('奇遇 · '+curEvent.t,curEvent.n);
 }
-function renderEvent(){const o=curEvent.opts.map(x=>typeof x==='string'?x:opt(x.k,x.tag,x.c,x.tx,'evt',x.k,x.hint)).join('');return panel('mystic',`${curEvent.kind||'奇遇'} · ${curEvent.t}`,`<div class="row">${curEvent.n}</div><div class="opts">${o}</div><div class="sm" style="margin-top:6px">注：提示中的概率为推演估算，实际结果仍受天机影响。</div>`);}
+function renderEvent(){const o=curEvent.opts.map(x=>typeof x==='string'?x:opt(x.k,x.tag,x.c,x.tx,'evt',x.k,x.hint)).join('');const note=curEvent.kind==='天道长卷'?'连续剧情会记住最近5次关键行动；你也可以直接在下方输入任何自由回答。':'注：提示中的概率为推演估算，实际结果仍受天机影响。';return panel('mystic',`${curEvent.kind||'奇遇'} · ${curEvent.t}`,`<div class="row">${curEvent.n}</div><div class="opts">${o}</div><div class="sm" style="margin-top:6px">${note}</div>`);}
 function chooseEvent(key){const o=curEvent.opts.find(x=>x.k===key);curEvent=null;if(o)o.f();advanceTime(0);renderPlay();}
 
 /* ============ 突破 ============ */
@@ -2208,7 +2208,7 @@ const SAVE_KEY='wenda_changsheng_saves_v1';
 const AUTO_SAVE_KEY='wenda_changsheng_auto_v1';
 function getSaves(){try{const o=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');return (o&&typeof o==='object')?o:{};}catch(e){return {};}}
 function setSaves(o){try{localStorage.setItem(SAVE_KEY,JSON.stringify(o));return true;}catch(e){return false;}}
-function saveLocalAuto(){if(!S||CB||SEC||curEvent||phase!=='play')return false;try{localStorage.setItem(AUTO_SAVE_KEY,JSON.stringify(snapShot()));return true;}catch(e){return false;}}
+function saveLocalAuto(){if(!S||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷')||phase!=='play')return false;try{localStorage.setItem(AUTO_SAVE_KEY,JSON.stringify(snapShot()));return true;}catch(e){return false;}}
 function loadLocalAuto(){try{const p=JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)||'null');return p&&p.S?p:null;}catch(e){return null;}}
 function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:3};}
 function applySnapshot(p){
@@ -2223,7 +2223,7 @@ function scheduleCloudAutosave(){
   cloudSaveTimer=setTimeout(()=>cloudSaveNow(true),1200);
 }
 async function cloudSaveNow(silent){
-  if(cloudSaveBusy||!S||!SB_USER||CB||SEC||curEvent||phase!=='play')return false;
+  if(cloudSaveBusy||!S||!SB_USER||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷')||phase!=='play')return false;
   if(!await ensureSbAuth()){CLOUD_SYNC_STATE='登录已过期';renderAcctBar();return false;}
   cloudSaveBusy=true;CLOUD_SYNC_STATE='同步中…';renderAcctBar();
   const payload={user_id:SB_USER.id,save_data:snapShot(),updated_at:new Date().toISOString()};
@@ -2487,6 +2487,7 @@ function doCommand(c){
   if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
   if(phase==='create1'||phase==='create2pending'){log('天道','尚未创角完成，请先按格式回复落笔。');return;}
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
+  if(aiEnabled()&&S.aiPendingQuestion){const q=S.aiPendingQuestion;S.aiPendingQuestion='';S.aiScene=null;curEvent=null;aiGenAction(`天道上次问：“${q}”\n玩家回答：“${c}”`);return;}
   if(aiEnabled()&&(/探索|获取功法|掉落功法|遭遇奇遇|触发奇遇|与.+对话|对话.+/.test(c))){aiGenAction(c);return;}
   const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,天道:showAISettings,AI:showAISettings,ai:showAISettings,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
@@ -2507,6 +2508,7 @@ function doCommand(c){
   if(/休整|恢复|疗伤|养伤/.test(c)){showRecovery();return;}
   if(/重开|重新开始|新游戏/.test(c)){showRestart();return;}
   if(/帮助|指令/.test(c)){showHelp();return;}
+  if(aiEnabled()){aiGenAction(c);return;}
   freeAction(c);
   setTimeout(focusResult,30);
 }
@@ -2595,6 +2597,7 @@ document.addEventListener('click',e=>{
     case 'aiToggle':aiToggle();break;
     case 'aiSave':aiSaveCfg();break;
     case 'aiPuterLogin':aiPuterLogin();break;
+    case 'aiClearHistory':aiClearHistory();break;
     case 'aiTest':aiTestCfg();break;
     case 'tianjiao':tianjiaoFight(+arg);break;
     case 'rest':rest();break;
