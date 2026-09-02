@@ -811,7 +811,7 @@ function loadPuter(){if(window.puter&&puter.ai)return Promise.resolve(window.put
 function askOracle(sys,usr,maxTok){
   const c=aiCfg();
   if(!c.base)return Promise.resolve(null);
-  if(c.base==='puter://ai')return loadPuter().then(()=>puter.ai.chat([{role:'system',content:sys},{role:'user',content:usr}],{model:c.model||'gpt-5-nano'})).then(r=>{if(typeof r==='string')return r;return r&&r.message&&r.message.content||r&&r.text||null;}).catch(e=>{console.warn('Puter AI failed',e);return null;});
+  if(c.base==='puter://ai')return loadPuter().then(()=>Promise.race([puter.ai.chat([{role:'system',content:sys},{role:'user',content:usr}],{model:c.model||'gpt-5-nano'}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),25000))])).then(r=>{if(typeof r==='string')return r;return r&&r.message&&r.message.content||r&&r.text||null;}).catch(()=>null);
   if(!c.key)return Promise.resolve(null);
   return new Promise(res=>{
     const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),25000);
@@ -902,11 +902,11 @@ function showAISettings(){
   <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'gpt-5-nano'}" placeholder="model"></div>
   <div class="row">文风提示：<input id="aiStyle" class="txt" value="${c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气'}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
   <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Puter 免填；其他平台填 sk-...（仅存本机）"></div>
-  <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiTest">测试连接</a></div>
+  <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiPuterLogin">Puter 登录授权</a>　<a class="lnk" data-act="aiTest">测试连接</a></div>
   <div class="sm"><b>免费接入：</b>① <b>Puter</b>：不需要 API Key，首次调用可能弹出 Puter 登录/授权，使用其用户侧免费额度。② <b>智谱 Z.ai</b>：有免费额度，需自行申请 Key。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在本机浏览器里，不会写入游戏存档或上传 Supabase。</div>`;
   $('panel').innerHTML=panel('mystic',`AI 天道 · 接入设置`,body)+statusCard();
 }
-function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'），填 Key 后保存即可。');}
+function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;if(p.noKey)c.key='';aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'）。'+(p.noKey?'无需 API Key，保存后先点“Puter 登录授权”。':'填入 Key 后保存即可。'));}
 function aiToggle(){const c=aiCfg();c.on=!c.on;aiSave(c);showAISettings();log('AI 天道',c.on?'AI 天道已启用——剧情将由真实大模型创作。':'AI 天道已停用——恢复本地天机演算。');}
 function aiSaveCfg(){
   const c=aiCfg();
@@ -916,6 +916,7 @@ function aiSaveCfg(){
   c.key=($('aiKey')&&$('aiKey').value)||c.key;
   c.on=true;aiSave(c);showAISettings();log('AI 天道','配置已保存并启用。');
 }
+function aiPuterLogin(){log('AI 天道','正在打开 Puter 登录授权……');loadPuter().then(()=>puter.auth.signIn()).then(u=>{log('AI 天道','Puter 授权成功！现在可直接测试连接或输入“探索南疆”。');showAISettings();}).catch(()=>log('AI 天道','Puter 授权未完成。请允许登录窗口弹出并完成登录。'));}
 function aiTestCfg(){
   const c=aiCfg();
   const base=($('aiBase')&&$('aiBase').value)||c.base;
@@ -923,11 +924,11 @@ function aiTestCfg(){
   const key=($('aiKey')&&$('aiKey').value)||c.key;
   if(!base||(!key&&base!=='puter://ai')){log('AI 天道','请先填写 API 地址与 Key（Puter 免填 Key）。');return;}
   c.base=base;c.model=model;c.key=key;aiSave(c);
-  log('AI 天道','正在叩问天道之门（测试连接）……');
-  askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
+  const run=()=>{log('AI 天道','正在叩问天道之门（测试连接）……');askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
     if(t){log('AI 天道','连接成功！天道回应：「'+t.slice(0,20)+'」');}
-    else{log('AI 天道','连接失败。请检查 Key/地址/网络，或该模型的 CORS 限制。');}
-  });
+    else{log('AI 天道',base==='puter://ai'?'连接未完成。请先点“Puter 登录授权”，并允许登录窗口弹出。':'连接失败。请检查 Key、地址、网络或模型的 CORS 限制。');}
+  });};
+  if(base==='puter://ai'){loadPuter().then(()=>{if(puter.auth&&!puter.auth.isSignedIn()){log('AI 天道','尚未登录 Puter。请先点击“Puter 登录授权”，登录完成后再测试。');return;}run();}).catch(()=>log('AI 天道','Puter SDK 加载失败，请检查网络后重试。'));return;}run();
 }
 function genDynamicEvent(){
   const p=pick(ORACLE.places),v=pick(ORACLE.persons),d=pick(ORACLE.details),vb=pick(ORACLE.verbs);
@@ -2593,6 +2594,7 @@ document.addEventListener('click',e=>{
     case 'aiPreset':aiPreset(arg);break;
     case 'aiToggle':aiToggle();break;
     case 'aiSave':aiSaveCfg();break;
+    case 'aiPuterLogin':aiPuterLogin();break;
     case 'aiTest':aiTestCfg();break;
     case 'tianjiao':tianjiaoFight(+arg);break;
     case 'rest':rest();break;
