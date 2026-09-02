@@ -1,5 +1,5 @@
 /* 问道长生 · Service Worker（PWA 离线壳） */
-const CACHE = 'wenda-changsheng-v10';
+const CACHE = 'wenda-changsheng-v11';
 const APP_SHELL = [
   './',
   './index.html',
@@ -29,7 +29,7 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
-  // API（账号/存档/网络/健康检查）始终走网络，保证同步与一致性
+  // API（账号/存档/网络/健康检查）始终走网络，保证同步与一致性。
   if (url.pathname.includes('/api/')) return;
 
   e.respondWith(
@@ -42,7 +42,7 @@ self.addEventListener('fetch', e => {
           }
           return res;
         })
-        .catch(() => cached); // 离线时回退到缓存
+        .catch(() => cached); // 离线时回退到缓存。
       return cached || fetchPromise;
     })
   );
