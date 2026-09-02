@@ -832,13 +832,20 @@ function askOracle(sys,usr,maxTok){
       .catch(e=>{AI_LAST_ERROR=e&&e.message||'无法连接 Supabase 中转';return null;});
   }
   if(!c.key)return Promise.resolve(null);
-  return new Promise(res=>{
-    const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),25000);
-    const headers={'Content-Type':'application/json'};if(c.key)headers.Authorization='Bearer '+c.key;
-    fetch(c.base,{method:'POST',signal:ctrl.signal,headers,body:JSON.stringify({model:c.model||AI_PRESETS['DeepSeek'].model,messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:0.95,max_tokens:maxTok||600})})
-    .then(async r=>{let j=null;try{j=await r.json();}catch(e){}clearTimeout(t);if(!r.ok){AI_LAST_ERROR=(j&&((j.error&&j.error.message)||j.error||j.message))||('HTTP '+r.status);res(null);return;}const txt=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;res(txt||null);})
-    .catch(e=>{clearTimeout(t);AI_LAST_ERROR=e&&e.name==='AbortError'?'请求超时':(e&&e.message||'网络请求失败');res(null);});
-  });
+  return (async()=>{
+    const headers={'Content-Type':'application/json','Authorization':'Bearer '+c.key};
+    const payload=JSON.stringify({model:c.model||AI_PRESETS['DeepSeek'].model,messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600});
+    for(let attempt=0;attempt<2;attempt++){
+      const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),55000);
+      try{
+        const r=await fetch(c.base,{method:'POST',signal:ctrl.signal,headers,body:payload});clearTimeout(t);let j=null;try{j=await r.json();}catch(e){}
+        if(r.ok){const txt=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(txt)return txt;AI_LAST_ERROR='接口未返回有效文本';return null;}
+        AI_LAST_ERROR=(j&&((j.error&&j.error.message)||j.error||j.message))||('HTTP '+r.status);
+        if(attempt===0&&[429,500,502,503,504].includes(r.status)){await new Promise(x=>setTimeout(x,1200));continue;}return null;
+      }catch(e){clearTimeout(t);AI_LAST_ERROR=e&&e.name==='AbortError'?'剧情生成超过55秒，已自动重试':(e&&e.message||'网络请求失败');if(attempt===0){await new Promise(x=>setTimeout(x,900));continue;}return null;}
+    }
+    return null;
+  })();
 }
 function stripCodeBlock(t){t=aiResponseText(t);if(!t)return t;let x=t.replace(/^\uFEFF/,'').replace(/```(?:json)?/gi,'').replace(/```/g,'').trim();const a=x.indexOf('{'),b=x.lastIndexOf('}');if(a>=0&&b>a)x=x.slice(a,b+1);return x;}
 function parseAIJson(raw){
@@ -864,7 +871,7 @@ function localPersistentAI(action){
   return normalizeAIResult({narrative:`${last}你在${S.loc}收敛心神，将念头落在“${act}”上。山风掠过衣角，远处灵光一闪即逝，仿佛有什么存在已经听见你的愿望。道路并未立刻显明，但新的线索已悄然出现，只等你决定以何种方式追寻。`,gameplay_outcome:{hp:0,mp:0,xiu:0,lingShi:0,merit:0,karma:0,new_items:[],new_skills:[]},next_actions:[{text:'顺着线索深入',hint:'延续当前目标，可能遇到机缘'},{text:'谨慎观察四周',hint:'风险较低，更容易发现细节'},{text:'改变方法再试',hint:'可输入更具体的新行动'}],ask_player:null});
 }
 function finishAIAction(action,j,fallback){
-  applyAIOutcome(j.gameplay_outcome);rememberAI(action,j);advanceTime(1);const q=j.ask_player;S.aiPendingQuestion=q||'';S.aiScene={narrative:j.narrative,next_actions:j.next_actions,ask_player:q||''};curEvent=null;renderPlay();log('天机结算',aiOutcomeSummary(j.gameplay_outcome)+(q?'；正在等待你的回答。':fallback?'；云端回应不稳，本次仍已连续续写并保存。':'；命数已写入历史。'));saveLocalAuto();scheduleCloudAutosave();
+  applyAIOutcome(j.gameplay_outcome);rememberAI(action,j);advanceTime(1);const q=j.ask_player;S.aiPendingQuestion=q||'';S.aiScene={narrative:j.narrative,next_actions:j.next_actions,ask_player:q||''};curEvent=null;renderPlay();log('天机结算',aiOutcomeSummary(j.gameplay_outcome)+(q?'；正在等待你的回答。':fallback?'；云端未完成生成（'+(AI_LAST_ERROR||'输出格式未通过')+'），本次仍已连续续写并保存。':'；命数已写入历史。'));saveLocalAuto();scheduleCloudAutosave();
 }
 function applyAIOutcome(g){
   S.hp=clamp(S.hp+g.hp,1,S.hpMax);S.mp=clamp(S.mp+g.mp,0,S.mpMax);S.xiu=clamp(S.xiu+g.xiu,0,100);S.lingShi=Math.max(0,S.lingShi+g.lingShi);S.merit+=g.merit;S.karma=Math.max(0,S.karma+g.karma);g.new_items.forEach(x=>giveItem(x.name,x.qty));g.new_skills.forEach(x=>{if(x.type==='法术'){if(!S.fashu.find(f=>f.n===x.name))S.fashu.push({n:x.name,elem:'灵',power:x.power||12,mp:Math.max(5,Math.round((x.power||12)*.55)),系:'天机'});}else if(!S.gongfa.find(f=>f.n===x.name))S.gongfa.push({n:x.name,grade:x.grade});});
@@ -875,12 +882,12 @@ function aiGenAction(action){
   if(AI_BUSY){log('天机演算','天道仍在落笔，请稍候片刻。');return;}AI_BUSY=true;const c=aiCfg(),style=c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气';log('天机演算','正在根据你的指令重写这一方天地……');
   const sys=`你是深谙东方仙侠气韵的“天道叙事引擎”，负责驱动连贯、长时序的修仙世界。文风要求：${style}。必须延续历史摘要，不得凭空跳跃；数值修改必须克制且符合当前境界，炼气期不得直接获得仙阶功法。玩家表达“我想发生某事”时应尽量融入，但不得违背世界逻辑。重大分支或意图不明时可设置 ask_player。你的整个回复必须是一个可被 JSON.parse 直接解析的 JSON 对象：禁止 Markdown、代码块、注释、前后说明和尾随逗号；所有键名和字符串必须使用英文双引号。结构：{"narrative":"80-150字连续叙事","gameplay_outcome":{"hp":0,"mp":0,"xiu":0,"lingShi":0,"merit":0,"karma":0,"new_items":[{"name":"物品名","qty":1,"effect":"作用"}],"new_skills":[{"name":"功法名","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":0}]},"next_actions":[{"text":"12字以内","hint":"可能后果"}],"ask_player":null}。next_actions 最多3个。`;
   const p=aiPlayerState();const usr=`【当前游戏状态】\n- 玩家：${p.name}，${p.gender}，${p.age}岁\n- 境界：${p.realm}·${p.sub}\n- 气血：${p.hp}/${p.hpMax}\n- 灵力：${p.mp}/${p.mpMax}\n- 修为：${p.xiu}/100\n- 灵石：${p.lingShi}\n- 功德：${p.merit}，业力：${p.karma}\n- 灵根：${p.lingen.join('、')}，体质：${p.tizhi}\n- 道侣/知己：${p.daolu.join('、')||'无'}\n- 所在地：${p.loc}\n- 主线进度：${p.mainLine}\n- 背包摘要：${p.bag.map(i=>i.name+'×'+i.qty).join('、')||'空'}\n- 功法：${p.gongfa.join('、')||'无'}\n- 法术：${p.fashu.join('、')||'无'}\n【历史摘要】（最近5次关键事件）\n${aiHistoryText()}\n【玩家最新指令】\n${action}\n请生成下一段剧情；若指令模糊或剧情需选择，请在 ask_player 中提问。`;
-  S.aiPendingQuestion='';S.aiScene=null;askOracle(sys,usr,900).then(async raw=>{
+  S.aiPendingQuestion='';S.aiScene=null;askOracle(sys,usr,700).then(async raw=>{
     let j=normalizeAIResult(raw),fallback=false;
-    if(!j&&raw){const broken=aiResponseText(raw);const repairSys='你是 JSON 格式修复器。只返回合法 JSON 对象，不得输出 Markdown、解释或代码块。保留原文叙事与数据含义，并确保至少包含 narrative、gameplay_outcome、next_actions、ask_player。';const repaired=await askOracle(repairSys,'请修复以下内容为合法 JSON：\n'+String(broken).slice(0,7000),900);j=normalizeAIResult(repaired);}
-    if(!j){j=localPersistentAI(action);fallback=true;}
+    if(!j&&raw){const broken=aiResponseText(raw),firstError=AI_LAST_ERROR;const repairSys='你是 JSON 格式修复器。只返回合法 JSON 对象，不得输出 Markdown、解释或代码块。保留原文叙事与数据含义，并确保至少包含 narrative、gameplay_outcome、next_actions、ask_player。';const repaired=await askOracle(repairSys,'请修复以下内容为合法 JSON：\n'+String(broken).slice(0,5000),500);j=normalizeAIResult(repaired);if(!j&&!AI_LAST_ERROR)AI_LAST_ERROR=firstError||'模型连续两次未返回可解析 JSON';}
+    if(!j){if(!AI_LAST_ERROR)AI_LAST_ERROR='接口没有返回剧情内容';j=localPersistentAI(action);fallback=true;}
     AI_BUSY=false;finishAIAction(action,j,fallback);
-  }).catch(()=>{AI_BUSY=false;finishAIAction(action,localPersistentAI(action),true);});
+  }).catch(e=>{AI_BUSY=false;AI_LAST_ERROR=AI_LAST_ERROR||(e&&e.message)||'剧情请求发生异常';finishAIAction(action,localPersistentAI(action),true);});
 }
 function aiGenEvent(){
   const c=aiCfg();
