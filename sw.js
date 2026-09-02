@@ -1,5 +1,5 @@
 /* 问道长生 · Service Worker（PWA 离线壳） */
-const CACHE = 'wenda-changsheng-v8';
+const CACHE = 'wenda-changsheng-v9';
 const APP_SHELL = [
   './',
   './index.html',

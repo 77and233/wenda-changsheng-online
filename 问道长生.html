@@ -795,7 +795,7 @@ function genScene(v,p,d,vb){
 }
 /* ============ AI 天机：接入真实大模型 API（OpenAI 兼容），未配置时自动回退本地引擎 ============ */
 const AI_PRESETS={
- 'Pollinations（免Key·免费）':{base:'https://text.pollinations.ai/openai',model:'openai',noKey:true},
+ 'Puter（免API Key·推荐）':{base:'puter://ai',model:'gpt-5-nano',noKey:true},
  '智谱Z.ai(国际·推荐)':{base:'https://api.z.ai/api/paas/v4/chat/completions',model:'glm-4.7-flash'},
  '硅基流动(国内·推荐)':{base:'https://api.siliconflow.cn/v1/chat/completions',model:'THUDM/glm-4-9b-chat'},
  '智谱GLM(国内)':{base:'https://open.bigmodel.cn/api/paas/v4/chat/completions',model:'glm-4.7-flash'},
@@ -804,12 +804,15 @@ const AI_PRESETS={
  '通义千问':{base:'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',model:'qwen-plus'},
  'Kimi月之暗面':{base:'https://api.moonshot.cn/v1/chat/completions',model:'moonshot-v1-8k'},
 };
-function aiCfg(){try{return JSON.parse(localStorage.getItem('wd_ai')||'{}')}catch(e){return {}}}
-function aiEnabled(){const c=aiCfg();return !!(c.on&&c.base&&(c.key||/pollinations\.ai/i.test(c.base)));}
+function aiCfg(){try{const c=JSON.parse(localStorage.getItem('wd_ai')||'{}');if(/pollinations\.ai/i.test(c.base||'')){c.base='puter://ai';c.model='gpt-5-nano';c.key='';localStorage.setItem('wd_ai',JSON.stringify(c));}return c}catch(e){return {}}}
+function aiEnabled(){const c=aiCfg();return !!(c.on&&c.base&&(c.key||c.base==='puter://ai'));}
 function aiSave(c){localStorage.setItem('wd_ai',JSON.stringify(c));}
+function loadPuter(){if(window.puter&&puter.ai)return Promise.resolve(window.puter);return new Promise((res,rej)=>{const old=document.querySelector('script[data-puter]');if(old){old.addEventListener('load',()=>res(window.puter),{once:true});old.addEventListener('error',rej,{once:true});return;}const s=document.createElement('script');s.src='https://js.puter.com/v2/';s.dataset.puter='1';s.onload=()=>res(window.puter);s.onerror=rej;document.head.appendChild(s);});}
 function askOracle(sys,usr,maxTok){
   const c=aiCfg();
-  if(!c.key||!c.base)return Promise.resolve(null);
+  if(!c.base)return Promise.resolve(null);
+  if(c.base==='puter://ai')return loadPuter().then(()=>puter.ai.chat([{role:'system',content:sys},{role:'user',content:usr}],{model:c.model||'gpt-5-nano'})).then(r=>{if(typeof r==='string')return r;return r&&r.message&&r.message.content||r&&r.text||null;}).catch(e=>{console.warn('Puter AI failed',e);return null;});
+  if(!c.key)return Promise.resolve(null);
   return new Promise(res=>{
     const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),25000);
     const headers={'Content-Type':'application/json'};if(c.key)headers.Authorization='Bearer '+c.key;
@@ -895,12 +898,12 @@ function showAISettings(){
   const presets=Object.keys(AI_PRESETS).map(k=>`<a class="lnk" data-act="aiPreset" data-arg="${k}">${k}</a>`).join('　');
   const body=`<div class="row em">AI 天道设置</div><div class="row sm">启用后，奇遇剧情与结局文本由真实大模型实时创作（选项效果仍由本地天机结算）。未配置或调用失败时自动回退本地引擎，不影响游戏。</div><div class="row">${presets}</div>
   <div class="row">开关：<a class="lnk" data-act="aiToggle">${c.on?'已启用（点击停用）':'已停用（点击启用）'}</a></div>
-  <div class="row">API 地址：<input id="aiBase" class="txt" value="${c.base||AI_PRESETS['智谱Z.ai(国际·推荐)'].base}" placeholder="https://.../v1/chat/completions"></div>
-  <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'glm-4.7-flash'}" placeholder="model"></div>
+  <div class="row">API 地址：<input id="aiBase" class="txt" value="${c.base||AI_PRESETS['Puter（免API Key·推荐）'].base}" placeholder="puter://ai 或 https://.../chat/completions"></div>
+  <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'gpt-5-nano'}" placeholder="model"></div>
   <div class="row">文风提示：<input id="aiStyle" class="txt" value="${c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气'}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
-  <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Pollinations 免填；其他平台填 sk-...（仅存本机）"></div>
+  <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Puter 免填；其他平台填 sk-...（仅存本机）"></div>
   <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiTest">测试连接</a></div>
-  <div class="sm"><b>免费接入：</b>① <b>Pollinations</b>：免注册、免 Key，直接点击上方模板即可试用（公共服务可能有频率限制）。② <b>智谱 Z.ai 国际版</b>：GLM-4.7-Flash 免费额度，需自行申请 Key。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在你自己浏览器里，不会写入游戏存档。</div>`;
+  <div class="sm"><b>免费接入：</b>① <b>Puter</b>：不需要 API Key，首次调用可能弹出 Puter 登录/授权，使用其用户侧免费额度。② <b>智谱 Z.ai</b>：有免费额度，需自行申请 Key。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在本机浏览器里，不会写入游戏存档或上传 Supabase。</div>`;
   $('panel').innerHTML=panel('mystic',`AI 天道 · 接入设置`,body)+statusCard();
 }
 function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'），填 Key 后保存即可。');}
@@ -918,7 +921,7 @@ function aiTestCfg(){
   const base=($('aiBase')&&$('aiBase').value)||c.base;
   const model=($('aiModel')&&$('aiModel').value)||c.model;
   const key=($('aiKey')&&$('aiKey').value)||c.key;
-  if(!base||(!key&&!/pollinations\.ai/i.test(base))){log('AI 天道','请先填写 API 地址与 Key（Pollinations 免填 Key）。');return;}
+  if(!base||(!key&&base!=='puter://ai')){log('AI 天道','请先填写 API 地址与 Key（Puter 免填 Key）。');return;}
   c.base=base;c.model=model;c.key=key;aiSave(c);
   log('AI 天道','正在叩问天道之门（测试连接）……');
   askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
@@ -2190,7 +2193,7 @@ function showHelp(){  const body=`
   <div class="row em" style="color:var(--cyan)">游历·探索</div><div class="row sm">地图(危险等级) | 秘境(通灵/上古/心魔/虚空) | 坊市(买卖) | 图鉴(妖兽录)</div>
   <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
   <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
-  <div class="row em" style="color:var(--gold)">AI 天道（可选）</div><div class="row sm">输入「天道」打开设置：填入任一 OpenAI 兼容大模型 API（智谱 GLM-4-Flash 免费 / DeepSeek / 腾讯混元 / 通义千问 / Kimi）的地址+Key，奇遇剧情与结局即由真实 AI 实时创作（推荐智谱 GLM-4.7-Flash：完全免费、无需绑卡）；不配置则用本地天机引擎，体验一致。</div>
+  <div class="row em" style="color:var(--gold)">AI 天道（可选）</div><div class="row sm">输入「天道」打开设置：推荐选择「Puter（免API Key）」直接启用；首次使用可能需要登录 Puter。也可填写智谱、硅基流动、DeepSeek、通义或 Kimi 的兼容接口。AI 失败时自动回退本地天机，不会卡住存档。</div>
   <div class="row em" style="color:var(--gold)">天机演算 · 肉鸽之魂</div><div class="row sm">本作由「天机引擎」驱动：每次奇遇的地点、人物、冲突、奖励与风险皆由命数随机拼装，同一选项每次的结果都不尽相同（大成功/成功/受挫/大失败，一成惊喜一成劫）。结局亦由天机重铸——同样的修为与选择，也可能走向不同的终局，文本每次重写。</div>
   <div class="row em" style="color:var(--gold)">天骄榜·爽文打脸</div><div class="row sm">输入「天骄」查看九州十大天骄，越阶挑战、胜者扬名：专属功法与巨额声望。随机事件里还会遇到当街嘲讽的龙套——打脸一时爽，一直打脸一直爽。</div>
   <div class="row em" style="color:var(--cyan)">功法·精通</div><div class="row sm">输入「功法」查看全部功法/法术的获取路线图（30+ 部，覆盖天骄榜/秘境/主线/探索/家业）。修炼与战斗积累熟练度，满 100「功法大成」系数+20%。</div>
