@@ -376,6 +376,7 @@ let SB_USER=null;
 let CLOUD_SYNC_STATE='未登录';
 let cloudSaveTimer=null;
 let cloudSaveBusy=false;
+let CLOUD_REVISION=null;
 function sbConfig(){const c=window.WENDA_SUPABASE||{};return {url:String(c.url||'').replace(/\/$/,''),anonKey:String(c.anonKey||'')};}
 function supabaseReady(){const c=sbConfig();return /^https:\/\/.+\.supabase\.co$/.test(c.url)&&c.anonKey.length>40;}
 function loadSbSession(){try{SB_SESSION=JSON.parse(localStorage.getItem('wenda_supabase_session')||'null');SB_USER=SB_SESSION&&SB_SESSION.user||null;}catch(e){SB_SESSION=null;SB_USER=null;}}
@@ -424,9 +425,10 @@ function d100(){return Math.floor(Math.random()*100)+1;}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function idxOf(r){return REALMS.indexOf(r);}
 let toastTimer=null;
-function showFeedback(t,n){const el=$('feedbackToast');if(!el)return;el.innerHTML=`<b>${t}</b>${String(n).replace(/<[^>]*>/g,'').slice(0,110)}`;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3200);}
+function htmlEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function showFeedback(t,n){const el=$('feedbackToast');if(!el)return;el.innerHTML=`<b>${htmlEsc(t)}</b>${htmlEsc(String(n||'').slice(0,110))}`;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3200);}
 function focusResult(){if(window.innerWidth<=700){const p=$('panel');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});}}
-function log(t,n){const d=$('log');const p=document.createElement('div');p.innerHTML=`<span class="t">${t}</span><div class="n">${n}</div>`;d.appendChild(p);d.scrollTop=d.scrollHeight;showFeedback(t,n);if(!/^(云同步|云存档|账号)/.test(t))scheduleCloudAutosave();}
+function log(t,n){const d=$('log');if(!d)return;const p=document.createElement('div');p.innerHTML=`<span class="t">${htmlEsc(t)}</span><div class="n">${htmlEsc(n)}</div>`;d.appendChild(p);while(d.children.length>160)d.removeChild(d.firstElementChild);d.scrollTop=d.scrollHeight;showFeedback(t,n);if(!/^(云同步|云存档|账号)/.test(String(t)))scheduleCloudAutosave();}
 function timeLine(){return `天玄历 ${year} 年 · ${SEASONS[Math.floor(monthIdx/3)%4]}`;}
 function realmLabel(){return `${S.realm}·${S.sub}`;}
 function ensureGameState(){
@@ -819,8 +821,8 @@ const AI_PRESETS={
  'Kimi月之暗面':{base:'https://api.moonshot.cn/v1/chat/completions',model:'moonshot-v1-8k'},
 };
 function aiCfg(){try{const c=JSON.parse(localStorage.getItem('wd_ai')||'{}');let changed=false;if(/pollinations\.ai/i.test(c.base||'')){c.base='puter://ai';c.model='gpt-5-nano';c.key='';changed=true;}if(/^https:\/\/api\.z\.ai\/api\/paas\/v4\/chat\/completions\/?$/i.test(c.base||'')){c.base='supabase://zai-proxy';changed=true;}if(changed)localStorage.setItem('wd_ai',JSON.stringify(c));return c}catch(e){return {}}}
-function aiEnabled(){const c=aiCfg();return !!(c.on&&c.base&&(c.key||c.base==='puter://ai'));}
-function aiSave(c){localStorage.setItem('wd_ai',JSON.stringify(c));}
+function aiEnabled(){const c=aiCfg();return !!(c.on&&c.base&&(c.key||c.base==='puter://ai'||c.base==='supabase://zai-proxy'));}
+function aiSave(c){if(c.base==='supabase://zai-proxy'||c.base==='puter://ai')delete c.key;localStorage.setItem('wd_ai',JSON.stringify(c));}
 let AI_LAST_ERROR='';
 function loadPuter(){if(window.puter&&puter.ai)return Promise.resolve(window.puter);return new Promise((res,rej)=>{const old=document.querySelector('script[data-puter]');if(old){old.addEventListener('load',()=>res(window.puter),{once:true});old.addEventListener('error',rej,{once:true});return;}const s=document.createElement('script');s.src='https://js.puter.com/v2/';s.dataset.puter='1';s.onload=()=>res(window.puter);s.onerror=rej;document.head.appendChild(s);});}
 function aiResponseText(r){
@@ -838,9 +840,9 @@ function askOracle(sys,usr,maxTok){
   if(!c.base)return Promise.resolve(null);
   if(c.base==='puter://ai')return loadPuter().then(()=>Promise.race([puter.ai.chat([{role:'system',content:sys},{role:'user',content:usr}],{model:c.model||'gpt-5-nano',temperature:.65,max_tokens:maxTok||600}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),30000))])).then(aiResponseText).catch(()=>null);
   if(c.base==='supabase://zai-proxy'){
-    const sb=sbConfig();if(!supabaseReady()||!c.key){AI_LAST_ERROR=!c.key?'请填写新的 Z.ai API Key':'Supabase 中转配置缺失';return Promise.resolve(null);}
+    const sb=sbConfig();if(!supabaseReady()){AI_LAST_ERROR='Supabase 中转配置缺失';return Promise.resolve(null);}
     const headers={'Content-Type':'application/json','apikey':sb.anonKey,'Authorization':'Bearer '+((SB_SESSION&&SB_SESSION.access_token)||sb.anonKey)};
-    return fetch(sb.url+'/functions/v1/zai-proxy',{method:'POST',headers,body:JSON.stringify({apiKey:c.key,model:c.model||'glm-4.7-flash',messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600})})
+    return fetch(sb.url+'/functions/v1/zai-proxy',{method:'POST',headers,body:JSON.stringify({model:c.model||'glm-4.7-flash',messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600})})
       .then(async r=>{let j=null;try{j=await r.json();}catch(e){}if(!r.ok){AI_LAST_ERROR=(j&&((j.error&&j.error.message)||j.error||j.message))||('中转请求失败（HTTP '+r.status+'）');return null;}return aiResponseText(j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content);})
       .catch(e=>{AI_LAST_ERROR=e&&e.message||'无法连接 Supabase 中转';return null;});
   }
@@ -899,7 +901,7 @@ function applyAIOutcome(g){
   S.hp=clamp(S.hp+g.hp,1,S.hpMax);S.mp=clamp(S.mp+g.mp,0,S.mpMax);S.xiu=clamp(S.xiu+g.xiu,0,100);S.lingShi=Math.max(0,S.lingShi+g.lingShi);S.merit+=g.merit;S.karma=Math.max(0,S.karma+g.karma);g.new_items.forEach(x=>giveItem(x.name,x.qty));g.new_skills.forEach(x=>{if(x.type==='法术'){if(!S.fashu.find(f=>f.n===x.name))S.fashu.push({n:x.name,elem:'灵',power:x.power||12,mp:Math.max(5,Math.round((x.power||12)*.55)),系:'天机'});}else if(!S.gongfa.find(f=>f.n===x.name))S.gongfa.push({n:x.name,grade:x.grade});});
 }
 function aiChoice(x,i){return {k:['A','B','C'][i],tag:i===0?'机缘':i===1?'谨慎':'变数',c:i===0?'#A98FD9':i===1?'#6FA698':'#C4675C',tx:x.text,hint:x.hint,f:function(){S.aiScene=null;S.aiPendingQuestion='';aiGenAction(x.text);}};}
-function restoreAIEvent(){if(!S||curEvent||CB||SEC||!S.aiScene)return;const sc=S.aiScene,q=sc.ask_player||'';const n=sc.narrative+(q?`<div class="row em" style="margin-top:10px">天道问你：${q}</div><div class="sm">请在下方输入你的回答，剧情将从这里继续。</div>`:'');curEvent={kind:'天道长卷',t:'连续剧情',n,opts:q?[]:(sc.next_actions||[]).map((x,i)=>aiChoice(x,i))};}
+function restoreAIEvent(){if(!S||curEvent||CB||SEC||!S.aiScene)return;const sc=S.aiScene,q=aiPlain(sc.ask_player||'',160);const n=htmlEsc(sc.narrative||'')+(q?`<div class="row em" style="margin-top:10px">天道问你：${htmlEsc(q)}</div><div class="sm">请在下方输入你的回答，剧情将从这里继续。</div>`:'');curEvent={kind:'天道长卷',t:'连续剧情',n,opts:q?[]:(sc.next_actions||[]).map((x,i)=>aiChoice(x,i))};}
 function aiGenAction(action){
   if(AI_BUSY){log('天机演算','天道仍在落笔，请稍候片刻。');return;}AI_BUSY=true;const c=aiCfg(),style=c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气';log('天机演算','正在根据你的指令重写这一方天地……');
   const sys=`你是深谙东方仙侠气韵的“天道叙事引擎”，负责驱动连贯、长时序的修仙世界。文风要求：${style}。必须延续历史摘要，不得凭空跳跃；数值修改必须克制且符合当前境界，炼气期不得直接获得仙阶功法。玩家表达“我想发生某事”时应尽量融入，但不得违背世界逻辑。重大分支或意图不明时可设置 ask_player。你的整个回复必须是一个可被 JSON.parse 直接解析的 JSON 对象：禁止 Markdown、代码块、注释、前后说明和尾随逗号；所有键名和字符串必须使用英文双引号。结构：{"narrative":"80-150字连续叙事","gameplay_outcome":{"hp":0,"mp":0,"xiu":0,"lingShi":0,"merit":0,"karma":0,"new_items":[{"name":"物品名","qty":1,"effect":"作用"}],"new_skills":[{"name":"功法名","grade":"黄阶/玄阶/地阶/天阶/仙阶","type":"功法/法术","power":0}]},"next_actions":[{"text":"12字以内","hint":"可能后果"}],"ask_player":null}。next_actions 最多3个。`;
@@ -963,15 +965,15 @@ function showAISettings(){
   const presets=Object.keys(AI_PRESETS).map(k=>`<a class="lnk" data-act="aiPreset" data-arg="${k}">${k}</a>`).join('　');
   ensureGameState();const body=`<div class="row em">AI 天道设置</div><div class="row sm">启用后，自由指令、叙事结果和后续选项会组成连续剧情；最近5段历史随账号存档自动同步。未配置或调用失败时自动回退本地引擎。</div><div class="row">${presets}</div>
   <div class="row">开关：<a class="lnk" data-act="aiToggle">${c.on?'已启用（点击停用）':'已停用（点击启用）'}</a></div>
-  <div class="row">API 地址：<input id="aiBase" class="txt" value="${c.base||AI_PRESETS['Puter（免API Key·推荐）'].base}" placeholder="supabase://zai-proxy 或 puter://ai"></div>
-  <div class="row">模型名：<input id="aiModel" class="txt" value="${c.model||'gpt-5-nano'}" placeholder="model"></div>
-  <div class="row">文风提示：<input id="aiStyle" class="txt" value="${c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气'}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
-  <div class="row">API Key：<input id="aiKey" class="txt" value="${c.key||''}" placeholder="Puter 免填；其他平台填 sk-...（仅存本机）"></div>
+  <div class="row">API 地址：<input id="aiBase" class="txt" value="${htmlEsc(c.base||AI_PRESETS['Puter（免API Key·推荐）'].base)}" placeholder="supabase://zai-proxy 或 puter://ai"></div>
+  <div class="row">模型名：<input id="aiModel" class="txt" value="${htmlEsc(c.model||'gpt-5-nano')}" placeholder="model"></div>
+  <div class="row">文风提示：<input id="aiStyle" class="txt" value="${htmlEsc(c.style||'温情与冒险并重，细腻留白，带一点江湖烟火气')}" placeholder="如：像凡人修仙传，冷峻谨慎"></div>
+  <div class="row">API Key：<input id="aiKey" class="txt" value="${htmlEsc(c.key||'')}" placeholder="直连平台填写；Supabase 中转由服务端保存 Key"></div>
   <div class="row"><a class="lnk" data-act="aiSave">保存</a>　<a class="lnk" data-act="aiPuterLogin">Puter 登录授权</a>　<a class="lnk" data-act="aiTest">测试连接</a>　<a class="lnk" data-act="aiClearHistory">清空剧情记忆（${S.aiHistory.length}/5）</a></div>
-  <div class="sm"><b>免费接入：</b>① <b>Z.ai Supabase 中转</b>：填写 Z.ai Key 后由问道长生专属 Edge Function 转发，已避开手机浏览器 CORS。② <b>Puter</b>：免 Key，但可能要求手机验证。③ <b>硅基流动</b>：部分模型有免费额度。Key 只保存在本机浏览器，不写入游戏存档或数据库；调用时通过 HTTPS 中转发送给 Z.ai。</div>`;
+  <div class="sm"><b>免费接入：</b>① <b>Z.ai Supabase 中转</b>：Key 应配置在 Edge Function 的 Secret 中，浏览器无需保存。② <b>Puter</b>：免 Key，但可能要求手机验证。③ <b>硅基流动</b>：部分模型有免费额度。直连 Key 只保存在本机浏览器，不写入游戏存档或数据库。</div>`;
   $('panel').innerHTML=panel('mystic',`AI 天道 · 接入设置`,body)+statusCard();
 }
-function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;if(p.noKey)c.key='';aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'）。'+(p.noKey?'无需 API Key，保存后先点“Puter 登录授权”。':'填入 Key 后保存即可。'));}
+function aiPreset(k){const p=AI_PRESETS[k];if(!p)return;const c=aiCfg();c.base=p.base;c.model=p.model;if(p.noKey||p.base==='supabase://zai-proxy')c.key='';aiSave(c);showAISettings();log('AI 天道','已填入 '+k+' 模板：'+p.base+'（模型 '+p.model+'）。'+(p.base==='supabase://zai-proxy'?'登录游戏账号后即可使用服务端中转。':p.noKey?'无需 API Key，保存后先点“Puter 登录授权”。':'填入 Key 后保存即可。'));}
 function aiToggle(){const c=aiCfg();c.on=!c.on;aiSave(c);showAISettings();log('AI 天道',c.on?'AI 天道已启用——剧情将由真实大模型创作。':'AI 天道已停用——恢复本地天机演算。');}
 function aiSaveCfg(){
   const c=aiCfg();
@@ -988,7 +990,7 @@ function aiTestCfg(){
   const base=($('aiBase')&&$('aiBase').value)||c.base;
   const model=($('aiModel')&&$('aiModel').value)||c.model;
   const key=($('aiKey')&&$('aiKey').value)||c.key;
-  if(!base||(!key&&base!=='puter://ai')){log('AI 天道','请先填写 API 地址与 Key（Puter 免填 Key）。');return;}
+  if(!base||(!key&&base!=='puter://ai'&&base!=='supabase://zai-proxy')){log('AI 天道','请先填写 API 地址与 Key（Puter、Supabase 中转免填 Key）。');return;}
   c.base=base;c.model=model;c.key=key;aiSave(c);
   const run=()=>{log('AI 天道','正在叩问天道之门（测试连接）……');askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
     if(t){log('AI 天道','连接成功！天道回应：「'+t.slice(0,20)+'」');}
@@ -2966,7 +2968,7 @@ async function restartGameNow(){
   if(SB_USER&&supabaseReady()){
     if(!await ensureSbAuth()){log('轮回','账号登录已过期，暂未重开。请重新登录后再试，以免旧云存档被重新读回。');showRestart();return;}
     CLOUD_SYNC_STATE='清理旧周目…';renderAcctBar();
-    const payload={user_id:SB_USER.id,save_data:{reset:true,t:Date.now(),v:4},updated_at:new Date().toISOString()};
+    const nextRevision=(Number(CLOUD_REVISION)||0)+1;const payload={user_id:SB_USER.id,save_data:{reset:true,t:Date.now(),v:4,schema_version:1,revision:nextRevision,device_id:deviceId()},revision:nextRevision,device_id:deviceId(),schema_version:1,updated_at:new Date().toISOString()};
     let r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
     if(r.status===401&&await refreshSbSession())r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
     if(r.err){CLOUD_SYNC_STATE='重开失败';renderAcctBar();log('轮回','云端旧周目未能清理：'+r.err+'。为保护存档，本次没有重开。');showRestart();return;}
@@ -2997,13 +2999,15 @@ function showHelp(){  const body=`
 /* ============ 存档 / 读档 ============ */
 const SAVE_KEY='wenda_changsheng_saves_v1';
 const AUTO_SAVE_KEY='wenda_changsheng_auto_v1';
-function getSaves(){try{const o=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');return (o&&typeof o==='object')?o:{};}catch(e){return {};}}
+function getSaves(){try{const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');if(!raw||typeof raw!=='object'||Array.isArray(raw))return {};const out={};Object.keys(raw).slice(0,3).forEach(k=>{const p=sanitizeSaveData(raw[k]);if(p)out[k]=p;});return out;}catch(e){return {};}}
 function setSaves(o){try{localStorage.setItem(SAVE_KEY,JSON.stringify(o));return true;}catch(e){return false;}}
 function saveLocalAuto(){if(!S||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷')||phase!=='play')return false;try{localStorage.setItem(AUTO_SAVE_KEY,JSON.stringify(snapShot()));return true;}catch(e){return false;}}
 function loadLocalAuto(){try{const p=JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)||'null');return p&&p.S?p:null;}catch(e){return null;}}
-function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:3};}
+function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:4,schema_version:1,revision:(S&&S._saveRevision)||0,device_id:deviceId()};}
+function deviceId(){let id='';try{id=localStorage.getItem('wenda_device_id')||'';if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random());localStorage.setItem('wenda_device_id',id);}}catch(e){id='unknown-device';}return id;}
+function sanitizeSaveData(p){if(!p||typeof p!=='object'||!p.S||typeof p.S!=='object')return null;const q=JSON.parse(JSON.stringify(p));q.S.name=String(q.S.name||'无名').slice(0,40);['hp','hpMax','mp','mpMax','xiu','lingShi','merit','karma','age'].forEach(k=>{if(!Number.isFinite(Number(q.S[k])))q.S[k]=0;q.S[k]=clamp(Number(q.S[k]),-100000,100000);});if(!Array.isArray(q.S.bag))q.S.bag=[];q.S.bag=q.S.bag.slice(0,120).filter(x=>x&&typeof x==='object').map(x=>({n:String(x.n||'未知物品').slice(0,60),num:clamp(Math.round(Number(x.num)||1),0,999),effect:String(x.effect||'').slice(0,160)}));if(!Array.isArray(q.S.gongfa))q.S.gongfa=[];if(!Array.isArray(q.S.fashu))q.S.fashu=[];q.S.aiHistory=Array.isArray(q.S.aiHistory)?q.S.aiHistory.slice(-5).map(x=>String(x).slice(0,500)):[];if(q.S.aiScene&&typeof q.S.aiScene==='object'){q.S.aiScene.narrative=String(q.S.aiScene.narrative||'').slice(0,700);q.S.aiScene.ask_player=String(q.S.aiScene.ask_player||'').slice(0,180);q.S.aiScene.next_actions=Array.isArray(q.S.aiScene.next_actions)?q.S.aiScene.next_actions.slice(0,3):[];}return q;}
 function applySnapshot(p){
-  if(!p||!p.S)return false;
+  p=sanitizeSaveData(p);if(!p)return false;
   S=p.S;turn=p.turn||0;year=p.year||387;monthIdx=p.monthIdx||0;phase='play';ensureGameState();CB=null;SEC=null;curEvent=null;CST=null;return true;
 }
 function scheduleCloudAutosave(){
@@ -3017,22 +3021,26 @@ async function cloudSaveNow(silent){
   if(cloudSaveBusy||!S||!SB_USER||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷')||phase!=='play')return false;
   if(!await ensureSbAuth()){CLOUD_SYNC_STATE='登录已过期';renderAcctBar();return false;}
   cloudSaveBusy=true;CLOUD_SYNC_STATE='同步中…';renderAcctBar();
-  const payload={user_id:SB_USER.id,save_data:snapShot(),updated_at:new Date().toISOString()};
-  let r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
-  if(r.status===401&&await refreshSbSession())r=await sbFetch('/rest/v1/game_saves?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
+  const nextRevision=(Number(CLOUD_REVISION)||0)+1;S._saveRevision=nextRevision;const snap=snapShot();const payload={user_id:SB_USER.id,save_data:snap,revision:nextRevision,device_id:deviceId(),schema_version:1,updated_at:new Date().toISOString()};
+  let path='/rest/v1/game_saves',method='POST',headers={Prefer:'return=representation'};
+  if(CLOUD_REVISION!==null){path+='?user_id=eq.'+encodeURIComponent(SB_USER.id)+'&revision=eq.'+encodeURIComponent(CLOUD_REVISION);method='PATCH';}
+  let r=await sbFetch(path,{method,headers,body:JSON.stringify(payload)});
+  if(r.status===401&&await refreshSbSession())r=await sbFetch(path,{method,headers,body:JSON.stringify(payload)});
   cloudSaveBusy=false;
   if(r.err){CLOUD_SYNC_STATE='同步失败';renderAcctBar();if(!silent)log('云存档',r.err);return false;}
+  if(CLOUD_REVISION!==null&&(!Array.isArray(r.data)||!r.data.length)){CLOUD_SYNC_STATE='发现其他设备的新进度';renderAcctBar();log('云同步','云端存档已被另一台设备更新。为避免覆盖，本机自动同步已暂停；请重新登录或刷新页面读取云端进度。');return false;}
+  CLOUD_REVISION=nextRevision;
   CLOUD_SYNC_STATE='已同步 '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});renderAcctBar();
   if(!silent)log('云存档','当前进度已安全保存到账号。');return true;
 }
 async function loadSupabaseSave(){
   if(!SB_USER||!await ensureSbAuth())return false;
   CLOUD_SYNC_STATE='读取中…';renderAcctBar();
-  const r=await sbFetch('/rest/v1/game_saves?select=save_data,updated_at&user_id=eq.'+encodeURIComponent(SB_USER.id)+'&limit=1');
+  const r=await sbFetch('/rest/v1/game_saves?select=save_data,updated_at,revision,device_id,schema_version&user_id=eq.'+encodeURIComponent(SB_USER.id)+'&limit=1');
   if(r.err){CLOUD_SYNC_STATE='读取失败';renderAcctBar();log('云同步',r.err);return false;}
   const row=Array.isArray(r.data)&&r.data[0];
   if(row&&row.save_data&&row.save_data.reset){CLOUD_SYNC_STATE='等待新周目';renderAcctBar();return false;}
-  if(row&&applySnapshot(row.save_data)){
+  if(row&&applySnapshot(row.save_data)){CLOUD_REVISION=Number(row.revision)||0;
     CLOUD_SYNC_STATE='已读取云进度';renderAcctBar();log('云同步',`欢迎回来，已自动继续 ${S.name} 的${realmLabel()}进度。`);renderPlay();return true;
   }
   let migrated=null;
@@ -3213,7 +3221,7 @@ async function doSbReg(){
 }
 async function doSbLogout(){
   if(SB_SESSION)await sbFetch('/auth/v1/logout',{method:'POST'});
-  SB_SESSION=null;SB_USER=null;saveSbSession();CLOUD_SYNC_STATE='未登录';renderAcctBar();log('账号','已退出账号。本机当前画面仍保留，但后续不会上传到刚才的账号。');showAccount();
+  SB_SESSION=null;SB_USER=null;CLOUD_REVISION=null;saveSbSession();CLOUD_SYNC_STATE='未登录';renderAcctBar();log('账号','已退出账号。本机当前画面仍保留，但后续不会上传到刚才的账号。');showAccount();
 }
 async function applyApiInput(){
   const isHttp=location.protocol.indexOf('http')===0;
@@ -3262,7 +3270,7 @@ function importSave(){
   if(!inp){log('天道','当前页面不支持文件导入，请直接用浏览器打开本文件。');renderPlay();return;}
   inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;
     const rd=new FileReader();
-    rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o||typeof o!=='object')throw new Error('格式不符');setSaves(o);log('存档',`已导入 ${Object.keys(o).length} 个槽位存档。`);showSave();}
+    rd.onload=()=>{try{const raw=JSON.parse(rd.result);if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('格式不符');const o={};Object.keys(raw).slice(0,3).forEach(k=>{const p=sanitizeSaveData(raw[k]);if(p)o[k]=p;});if(!Object.keys(o).length)throw new Error('没有可用存档');setSaves(o);log('存档',`已导入 ${Object.keys(o).length} 个有效槽位存档。`);showSave();}
       catch(err){log('天道','导入失败：文件非有效存档（'+err.message+'）。');}};
     rd.readAsText(f);};
   inp.click();
@@ -3471,7 +3479,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   loadAcct();detectApi();loadSbSession();renderAcctBar();
   // PWA：注册 service worker（仅 http(s) 下有效，file:// 自动跳过）
   if(location.protocol==='http:'||location.protocol==='https:'){
-    if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').then(reg=>{reg.update();reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller){const el=$('feedbackToast');if(el){el.innerHTML='<b>发现新版本</b>　<a class="lnk" data-act="reload">立即更新</a>';el.classList.add('show');}}});});}).catch(()=>{}); }
   }
   log('天玄历 387 年 · 春','灵气自地脉翻涌，千年灵气潮汐已在暗中酝酿。你立于凡尘与仙途的门槛，前路未卜，唯道心可问。');
   phase='create1';showCreate1();
