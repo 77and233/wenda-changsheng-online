@@ -404,6 +404,13 @@ async function ensureSbAuth(){
   if(expires&&Date.now()>expires-60000)return refreshSbSession();
   return true;
 }
+async function verifySbAuth(){
+  if(!await ensureSbAuth())return false;
+  let r=await sbFetch('/auth/v1/user',{method:'GET'});
+  if(!r.err)return true;
+  if(r.status===401&&await refreshSbSession()){r=await sbFetch('/auth/v1/user',{method:'GET'});if(!r.err)return true;}
+  SB_SESSION=null;SB_USER=null;CLOUD_REVISION=null;saveSbSession();CLOUD_SYNC_STATE='请重新登录';renderAcctBar();return false;
+}
 function detectApi(){ if(location.protocol.indexOf('http')===0){API_BASE='';} else {API_BASE=(localStorage.getItem('wenda_apibase')||'').trim();} }
 function loadAcct(){try{ACCT=JSON.parse(localStorage.getItem('wenda_account')||'null');}catch(e){ACCT=null;}}
 function saveAcct(){try{localStorage.setItem('wenda_account',ACCT?JSON.stringify(ACCT):'');}catch(e){}}
@@ -840,11 +847,10 @@ function askOracle(sys,usr,maxTok){
   if(!c.base)return Promise.resolve(null);
   if(c.base==='puter://ai')return loadPuter().then(()=>Promise.race([puter.ai.chat([{role:'system',content:sys},{role:'user',content:usr}],{model:c.model||'gpt-5-nano',temperature:.65,max_tokens:maxTok||600}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),30000))])).then(aiResponseText).catch(()=>null);
   if(c.base==='supabase://zai-proxy'){
-    const sb=sbConfig();if(!supabaseReady()){AI_LAST_ERROR='Supabase 中转配置缺失';return Promise.resolve(null);}
-    const headers={'Content-Type':'application/json','apikey':sb.anonKey,'Authorization':'Bearer '+((SB_SESSION&&SB_SESSION.access_token)||sb.anonKey)};
-    return fetch(sb.url+'/functions/v1/zai-proxy',{method:'POST',headers,body:JSON.stringify({model:c.model||'glm-4.7-flash',messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600})})
-      .then(async r=>{let j=null;try{j=await r.json();}catch(e){}if(!r.ok){AI_LAST_ERROR=(j&&((j.error&&j.error.message)||j.error||j.message))||('中转请求失败（HTTP '+r.status+'）');return null;}return aiResponseText(j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content);})
-      .catch(e=>{AI_LAST_ERROR=e&&e.message||'无法连接 Supabase 中转';return null;});
+    return (async()=>{const sb=sbConfig();if(!supabaseReady()){AI_LAST_ERROR='Supabase 中转配置缺失';return null;}if(!await verifySbAuth()){AI_LAST_ERROR='请先在“账号”中重新登录，再使用 AI 天道';return null;}
+      const call=()=>fetch(sb.url+'/functions/v1/zai-proxy',{method:'POST',headers:{'Content-Type':'application/json','apikey':sb.anonKey,'Authorization':'Bearer '+SB_SESSION.access_token},body:JSON.stringify({model:c.model||'glm-4.7-flash',messages:[{role:'system',content:sys},{role:'user',content:usr}],temperature:.65,max_tokens:maxTok||600})});
+      try{let r=await call();if(r.status===401&&await refreshSbSession())r=await call();let j=null;try{j=await r.json();}catch(e){}if(!r.ok){AI_LAST_ERROR=(j&&((j.error&&j.error.message)||j.error||j.message))||('中转请求失败（HTTP '+r.status+'）');return null;}return aiResponseText(j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content);}catch(e){AI_LAST_ERROR=e&&e.message||'无法连接 Supabase 中转';return null;}
+    })();
   }
   if(!c.key)return Promise.resolve(null);
   return (async()=>{
@@ -3485,8 +3491,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
   phase='create1';showCreate1();
   $('cmd').addEventListener('keydown',e=>{if(e.key==='Enter')sendInput();});
   if(supabaseReady()&&SB_SESSION){
-    if(await ensureSbAuth()){SB_USER=SB_SESSION.user;CLOUD_SYNC_STATE='已登录';renderAcctBar();await loadSupabaseSave();}
-    else{CLOUD_SYNC_STATE='登录已过期';renderAcctBar();}
+    if(await verifySbAuth()){SB_USER=SB_SESSION.user;CLOUD_SYNC_STATE='已登录';renderAcctBar();await loadSupabaseSave();}
+    else{CLOUD_SYNC_STATE='请重新登录';renderAcctBar();const localAuto=loadLocalAuto();if(localAuto&&applySnapshot(localAuto)){log('自动读档',`云账号登录已失效，已安全继续本机进度：${S.name} · ${realmLabel()}。请在“账号”中重新登录。`);renderPlay();}}
   }else{
     const localAuto=loadLocalAuto();
     if(localAuto&&applySnapshot(localAuto)){log('自动读档',`已继续本机最近进度：${S.name} · ${realmLabel()}。`);renderPlay();}
