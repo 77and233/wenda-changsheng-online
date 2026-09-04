@@ -998,9 +998,9 @@ function aiTestCfg(){
   const key=($('aiKey')&&$('aiKey').value)||c.key;
   if(!base||(!key&&base!=='puter://ai'&&base!=='supabase://zai-proxy')){log('AI 天道','请先填写 API 地址与 Key（Puter、Supabase 中转免填 Key）。');return;}
   c.base=base;c.model=model;c.key=key;aiSave(c);
-  const run=()=>{if(base==='supabase://zai-proxy'&&!SB_USER){log('AI 天道','Supabase 中转需要先登录游戏账号。请点击底部“账号”，登录后再测试连接。');return;}log('AI 天道','正在叩问天道之门（测试连接）……');askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
+  const run=async()=>{if(base==='supabase://zai-proxy'&&!await verifySbAuth()){log('AI 天道','Supabase 登录状态已失效，请点击底部“账号”重新登录后再测试。');return;}log('AI 天道','正在叩问天道之门（测试连接）……');askOracle('你是连接测试助手。请只回复两个字：连通。','测试连接',20).then(t=>{
     if(t){log('AI 天道','连接成功！天道回应：「'+t.slice(0,20)+'」');}
-    else{log('AI 天道',base==='puter://ai'?'连接未完成。请先点“Puter 登录授权”，并允许登录窗口弹出。':'连接失败：'+(AI_LAST_ERROR||'请检查 Key、地址或模型名。'));}
+    else{log('AI 天道',base==='puter://ai'?'连接未完成。请先点“Puter 登录授权”，并允许登录窗口弹出。':'连接失败：'+(AI_LAST_ERROR||'请检查登录状态、地址或模型名。'));}
   });};
   if(base==='puter://ai'){loadPuter().then(()=>{if(puter.auth&&!puter.auth.isSignedIn()){log('AI 天道','尚未登录 Puter。请先点击“Puter 登录授权”，登录完成后再测试。');return;}run();}).catch(()=>log('AI 天道','Puter SDK 加载失败，请检查网络后重试。'));return;}run();
 }
