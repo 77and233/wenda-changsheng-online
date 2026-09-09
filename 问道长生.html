@@ -751,8 +751,8 @@ const ROGUE_RELICS=[
   {n:'孤灯道心',d:'道心+2，功德+1'},
   {n:'妖王内丹',d:'资质+1，战斗威力提升'}
 ];
-function rogueStart(){ensureGameState();if(S.rogue.active){rogueNext();return;}S.rogue={active:true,depth:0,maxDepth:7,gold:0,relics:[],boons:[],pending:null,best:Math.max(0,S.rogue.best||0)};log('天命轮回','你踏入无主秘境。七层随机试炼，败则本轮结束，胜则带着遗物归来。');rogueNext();}
-function rogueFinish(win){const r=S.rogue;if(win){const bonus=120+r.depth*80;r.gold+=bonus;S.lingShi+=r.gold;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('天命轮回·通关'))S.fortunes.push('天命轮回·通关');r.best=Math.max(r.best,r.depth);log('肉鸽通关',`你走完七层天命轮回，带回${r.gold}灵石与${r.relics.join('、')||'一身战痕'}。`);}else{r.best=Math.max(r.best,r.depth);log('肉鸽结束',`本轮止步第${r.depth}层，遗物保留为战绩，获得灵石${Math.floor(r.gold*.35)}。`);S.lingShi+=Math.floor(r.gold*.35);}r.active=false;r.depth=0;r.pending=null;renderPlay();}
+function rogueStart(){ensureGameState();if(S.rogue.active){curEvent=null;rogueNext();return;}curEvent=null;S.rogue={active:true,depth:0,maxDepth:7,gold:0,relics:[],boons:[],pending:null,best:Math.max(0,S.rogue.best||0)};log('天命轮回','你踏入无主秘境。七层随机试炼，败则本轮结束，胜则带着遗物归来。');rogueNext();}
+function rogueFinish(win){const r=S.rogue;curEvent=null;CB=null;if(win){const bonus=120+r.depth*80;r.gold+=bonus;S.lingShi+=r.gold;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('天命轮回·通关'))S.fortunes.push('天命轮回·通关');r.best=Math.max(r.best,r.depth);log('肉鸽通关',`你走完七层天命轮回，带回${r.gold}灵石与${r.relics.join('、')||'一身战痕'}。`);}else{r.best=Math.max(r.best,r.depth);log('肉鸽结束',`本轮止步第${r.depth}层，遗物保留为战绩，获得灵石${Math.floor(r.gold*.35)}。`);S.lingShi+=Math.floor(r.gold*.35);}r.active=false;r.depth=0;r.pending=null;renderPlay();}
 function rogueTakeRelic(){
   const r=S.rogue;
   const available=ROGUE_RELICS.filter(x=>!r.relics.includes(x.n));
