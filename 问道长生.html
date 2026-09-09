@@ -444,6 +444,8 @@ function ensureGameState(){
   S.bonds=S.bonds||{};S.fortunes=S.fortunes||[];S.choices=S.choices||[];
   S.estate=S.estate||[];S.tianjiao=S.tianjiao||{};S.gongfaMaster=S.gongfaMaster||{};
   S.aiHistory=Array.isArray(S.aiHistory)?S.aiHistory.slice(-5):[];S.aiPendingQuestion=S.aiPendingQuestion||'';S.aiScene=S.aiScene&&typeof S.aiScene==='object'?S.aiScene:null;
+  S.rogue=S.rogue&&typeof S.rogue==='object'?S.rogue:{active:false,depth:0,maxDepth:7,gold:0,relics:[],boons:[],pending:null,best:0};
+  S.rogue.relics=Array.isArray(S.rogue.relics)?S.rogue.relics.slice(0,12):[];S.rogue.boons=Array.isArray(S.rogue.boons)?S.rogue.boons.slice(0,12):[];
   if(typeof S.origin==='string'&&typeof ORIGINS!=='undefined'&&ORIGINS[S.origin])S.origin={key:S.origin,lv:1,exp:0};
   Object.keys(NPCS).forEach(n=>{const oldAff=S.aff[n]||0;S.bonds[n]=S.bonds[n]||{met:oldAff>0,chapter:oldAff>=80?3:oldAff>=60?2:oldAff>=40?1:0,rescues:0};if(S.daoban.includes(n))S.bonds[n].met=true;});
   S.jianghu=S.jianghu||{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''};
@@ -678,6 +680,7 @@ function mainPanel(){
     ${opt('修','成长','#6FA698','打坐一月，提升当前修为','cmd','修炼')}
     ${opt('游','探索','#7FA8C9','查看九州地图与危险区域','cmd','地图')}
     ${opt('秘','机缘','#A98FD9','进入秘境，寻传承与珍宝','cmd','秘境')}
+    ${opt('肉','肉鸽','#C4675C',S.rogue.active?'继续天命轮回（第'+S.rogue.depth+'层）':'开启天命轮回·随机挑战','cmd','肉鸽')}
   </div><hr class="sep">
   <div class="row sm">建议先推进“江湖”章节。每次点击后页面会自动定位到新内容，结果也会在底部即时显示。</div>`;
   return panel('',`洞府主界面 · ${S.name}`,body);
@@ -740,6 +743,33 @@ function maybeEvent(){
   if(d100()<=fortuneChance&&triggerFortuneEvent())return;
   if(d100()<=24)triggerRandomEvent();
 }
+/* ============ 肉鸽·天命轮回 ============ */
+const ROGUE_RELICS=[
+  {n:'残阳战骨',d:'气血上限+35，当前气血恢复'},
+  {n:'青冥灵匣',d:'灵力上限+30，当前灵力恢复'},
+  {n:'因果铜钱',d:'获得灵石+180，仙缘+1'},
+  {n:'孤灯道心',d:'道心+2，功德+1'},
+  {n:'妖王内丹',d:'资质+1，战斗威力提升'}
+];
+function rogueStart(){ensureGameState();if(S.rogue.active){rogueNext();return;}S.rogue={active:true,depth:0,maxDepth:7,gold:0,relics:[],boons:[],pending:null,best:Math.max(0,S.rogue.best||0)};log('天命轮回','你踏入无主秘境。七层随机试炼，败则本轮结束，胜则带着遗物归来。');rogueNext();}
+function rogueFinish(win){const r=S.rogue;if(win){const bonus=120+r.depth*80;r.gold+=bonus;S.lingShi+=r.gold;S.fortunes=S.fortunes||[];if(!S.fortunes.includes('天命轮回·通关'))S.fortunes.push('天命轮回·通关');r.best=Math.max(r.best,r.depth);log('肉鸽通关',`你走完七层天命轮回，带回${r.gold}灵石与${r.relics.join('、')||'一身战痕'}。`);}else{r.best=Math.max(r.best,r.depth);log('肉鸽结束',`本轮止步第${r.depth}层，遗物保留为战绩，获得灵石${Math.floor(r.gold*.35)}。`);S.lingShi+=Math.floor(r.gold*.35);}r.active=false;r.depth=0;r.pending=null;renderPlay();}
+function rogueTakeRelic(){
+  const r=S.rogue;
+  const available=ROGUE_RELICS.filter(x=>!r.relics.includes(x.n));
+  if(!available.length){
+    const n=60+Math.floor(Math.random()*81);r.gold+=n;
+    log('肉鸽遗物',`遗物已尽，你将这份命数炼化为本轮灵石+${n}。`);return;
+  }
+  const x=pick(available);r.relics.push(x.n);
+  if(x.n==='残阳战骨'){S.hpMax+=35;S.hp=S.hpMax;}
+  if(x.n==='青冥灵匣'){S.mpMax+=30;S.mp=S.mpMax;}
+  if(x.n==='因果铜钱'){S.lingShi+=180;S.six.仙缘=clamp((S.six.仙缘||0)+1,1,20);}
+  if(x.n==='孤灯道心'){S.six.道心=clamp(S.six.道心+2,1,20);S.merit++;}
+  if(x.n==='妖王内丹'){S.six.资质=clamp(S.six.资质+1,1,20);}
+  log('肉鸽遗物',`你获得「${x.n}」：${x.d}。`);
+}
+function rogueNext(){ensureGameState();const r=S.rogue;if(!r.active)return; r.depth++;if(r.depth>r.maxDepth){rogueFinish(true);return;}const roll=d100();const label=r.depth===r.maxDepth?'终局首领':roll<=28?'随机事件':roll<=55?'休整篝火':roll<=82?'精英战':'宝藏房';if(label==='终局首领'){const e=mkEnemy('天命守门人',REALMS[clamp(idxOf(S.realm)+1,0,REALMS.length-1)],'圆满','雷',Math.round(28+idxOf(S.realm)*5),Math.round(220+idxOf(S.realm)*70),95,'天命守门人');e.outlaw=true;startCombat(e,'rogueBoss');return;}if(label==='精英战'){const e=mkEnemy('逆命妖将',S.realm,'后期',pick(['金','木','水','火','土','雷','冰']),Math.round(20+idxOf(S.realm)*4),Math.round(180+idxOf(S.realm)*55),90,'逆命妖将');e.outlaw=true;startCombat(e,'rogueElite');return;}if(label==='休整篝火'){setJianghuEvent('肉鸽·篝火','你在断壁下点燃篝火，火星里映出三条不同的命数。',[{k:'A',tag:'疗愈',c:'#6FA698',tx:'静坐调息',hint:'恢复气血与灵力，并获得少量修为',f:()=>{S.hp=S.hpMax;S.mp=S.mpMax;S.xiu=clamp(S.xiu+8,0,100);log('肉鸽篝火','你听着风声入定，伤势尽复，修为+8。');rogueNext();}},{k:'B',tag:'遗物',c:'#A98FD9',tx:'翻找灰烬',hint:'获得一件随机遗物',f:()=>{rogueTakeRelic();rogueNext();}},{k:'C',tag:'豪赌',c:'#C4675C',tx:'吞下火中丹丸',hint:'气血上限提升或受到灼伤',f:()=>{if(d100()<=65){S.hpMax+=25;S.hp=S.hpMax;log('肉鸽豪赌','丹火淬体成功，气血上限+25。');}else{S.hp=clamp(S.hp-35,1,S.hpMax);log('肉鸽豪赌','丹火反噬，气血-35。');}rogueNext();}}]);return;}if(label==='宝藏房'){setJianghuEvent('肉鸽·宝藏','石门后堆着三件只存在于本轮的战利品。',[{k:'A',tag:'遗物',c:'#A98FD9',tx:'取走遗物',hint:'获得随机遗物',f:()=>{rogueTakeRelic();rogueNext();}},{k:'B',tag:'灵石',c:'#C9A45C',tx:'搜刮灵石',hint:'灵石+120~260，但错过遗物',f:()=>{const n=120+Math.floor(Math.random()*141);S.rogue.gold+=n;log('肉鸽宝藏',`你收起灵石${n}。`);rogueNext();}},{k:'C',tag:'贪取',c:'#C4675C',tx:'两者都要',hint:'高风险，可能惊动守卫',f:()=>{if(d100()<=45){rogueTakeRelic();S.rogue.gold+=180;log('肉鸽宝藏','你以身法卷走遗物与灵石。');rogueNext();}else{const e=mkEnemy('宝藏守卫',S.realm,'中期','土',18,160,80,'宝藏守卫');startCombat(e,'rogueElite');}}}]);return;}setJianghuEvent('肉鸽·随机事件','雾中浮出一座无名石碑，碑文只写着：“你愿用什么换下一层路？”',[{k:'A',tag:'献祭',c:'#8B6FA8',tx:'献出灵石换取祝福',hint:'消耗60灵石，随机获得遗物',f:()=>{if(S.lingShi<60){log('肉鸽','灵石不足，献祭失败。');}else{S.lingShi-=60;rogueTakeRelic();}rogueNext();}},{k:'B',tag:'悟道',c:'#6FA698',tx:'以道心回答石碑',hint:'道心+1，可能直接获得遗物',f:()=>{S.six.道心=clamp(S.six.道心+1,1,20);if(d100()<=35)rogueTakeRelic();log('肉鸽悟道','你没有求取捷径，只回答自己的本心。道心+1。');rogueNext();}},{k:'C',tag:'强夺',c:'#C4675C',tx:'击碎石碑夺取命火',hint:'获得大量灵石，但会立刻迎战',f:()=>{S.rogue.gold+=260;const e=mkEnemy('碑灵',S.realm,'后期','雷',22,190,85,'碑灵');startCombat(e,'rogueElite');}}]);}
+function showRogue(){ensureGameState();const r=S.rogue;if(!r.active){const body=`<div class="questbox"><div class="chapter">天命轮回 · 肉鸽试炼</div><div>七层随机路线：事件、篝火、宝藏、精英战与终局首领。每次进入都会重置路线，遗物组合和风险完全不同。</div><div class="sm">本轮战利品在通关后结算；战败会保留最佳层数记录。</div></div><div class="opts"><button class="opt" data-act="rogueStart"><span class="optkey">启</span><span class="opttext">开启新一轮</span><span class="opthint">随机生成七层命运路线</span></button></div>`;$('panel').innerHTML=panel('mystic','肉鸽 · 天命轮回',body)+statusCard();return;}const relics=r.relics.length?r.relics.map(x=>`<span class="wb">${htmlEsc(x)}</span>`).join(' '):'无';const body=`<div class="questbox"><div class="chapter">第${r.depth}/${r.maxDepth}层 · 本轮灵石 ${r.gold}</div><div>遗物：${relics}</div><div class="sm">最佳记录：第${r.best||0}层。战斗中可使用情缘援助，但本轮会持续消耗气血与资源。</div></div><div class="opts"><button class="opt" data-act="rogueNext"><span class="optkey">行</span><span class="opttext">继续下一层</span></button><button class="opt" data-act="rogueQuit"><span class="optkey">退</span><span class="opttext">结束本轮并带走部分战利品</span></button></div>`;$('panel').innerHTML=panel('mystic','肉鸽 · 天命轮回',body)+statusCard();}
 function triggerFortuneEvent(){
   S.fortunes=S.fortunes||[];
   const fs=[];
@@ -1535,6 +1565,16 @@ function winCombat(){
 }
 function combatLose(){
   const e=CB.enemy;
+  if(S.rogue&&S.rogue.active){
+    const r=S.rogue;
+    r.best=Math.max(Number(r.best)||0,Number(r.depth)||0);
+    const carried=Math.floor(Math.max(0,Number(r.gold)||0)*0.35);
+    S.lingShi=Math.max(0,Number(S.lingShi)||0)+carried;
+    S.hp=Math.max(1,Math.round((Number(S.hpMax)||100)*0.25));
+    S.status='重伤';
+    log('肉鸽结束',`你在天命轮回中止步第${r.depth}层，带回${carried}灵石。`);
+    r.active=false;r.depth=0;r.pending=null;r.gold=0;CB=null;renderPlay();return;
+  }
   log('战斗',`你气血耗尽，眼前一黑……`);
   if(d100()<=40){ // 被救/被俘
     S.hp=Math.round(S.hpMax*0.3);S.status='重伤';S.lingShi=Math.max(0,S.lingShi-50);
@@ -2519,6 +2559,8 @@ function finishStoryBattle(tag){ensureGameState();const j=S.jianghu;
   else if(tag==='rdBossMing'){rdEnding('护道斩邪');}
   else if(tag==='rdBossQing'){rdEnding('从龙功成');}
   else if(tag==='dynFight'){S.reputation+=5;S.lingShi+=40;log('天机','你踏平了那处杀局。传闻四散，你的名字又被多提起一次。声望+5、灵石+40。');}
+  else if(tag==='rogueElite'){S.rogue.gold+=80+Math.floor(Math.random()*80);log('肉鸽精英','精英敌人倒下，获得本轮灵石与下一层资格。');rogueNext();}
+  else if(tag==='rogueBoss'){S.rogue.gold+=260;rogueFinish(true);}
   else if(tag==='saveMaiden'){S.merit+=2;S.lingShi+=80;S.jianghu.xia+=2;log('救美','劫修尽数伏诛。少女盈盈下拜：「恩公大恩，无以为报。」她将玉匣中一枚温养多年的灵珠赠你。功德+2、灵石+80、侠义+2，那枚灵珠暖意融融，似有灵性。');}
   else if(tag==='guardMerchant'){S.lingShi+=100;S.jianghu.xia+=2;log('护镖','匪众溃散，商队管事千恩万谢，奉上百枚灵石。侠义+2、灵石+100。');}
   else if(tag&&tag.startsWith('tianjiao')){
@@ -3011,7 +3053,7 @@ function saveLocalAuto(){if(!S||CB||SEC||(curEvent&&curEvent.kind!=='天道长�
 function loadLocalAuto(){try{const p=JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)||'null');return p&&p.S?p:null;}catch(e){return null;}}
 function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:4,schema_version:1,revision:(S&&S._saveRevision)||0,device_id:deviceId()};}
 function deviceId(){let id='';try{id=localStorage.getItem('wenda_device_id')||'';if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random());localStorage.setItem('wenda_device_id',id);}}catch(e){id='unknown-device';}return id;}
-function sanitizeSaveData(p){if(!p||typeof p!=='object'||!p.S||typeof p.S!=='object')return null;const q=JSON.parse(JSON.stringify(p));q.S.name=String(q.S.name||'无名').slice(0,40);['hp','hpMax','mp','mpMax','xiu','lingShi','merit','karma','age'].forEach(k=>{if(!Number.isFinite(Number(q.S[k])))q.S[k]=0;q.S[k]=clamp(Number(q.S[k]),-100000,100000);});if(!Array.isArray(q.S.bag))q.S.bag=[];q.S.bag=q.S.bag.slice(0,120).filter(x=>x&&typeof x==='object').map(x=>({n:String(x.n||'未知物品').slice(0,60),num:clamp(Math.round(Number(x.num)||1),0,999),effect:String(x.effect||'').slice(0,160)}));if(!Array.isArray(q.S.gongfa))q.S.gongfa=[];if(!Array.isArray(q.S.fashu))q.S.fashu=[];q.S.aiHistory=Array.isArray(q.S.aiHistory)?q.S.aiHistory.slice(-5).map(x=>String(x).slice(0,500)):[];if(q.S.aiScene&&typeof q.S.aiScene==='object'){q.S.aiScene.narrative=String(q.S.aiScene.narrative||'').slice(0,700);q.S.aiScene.ask_player=String(q.S.aiScene.ask_player||'').slice(0,180);q.S.aiScene.next_actions=Array.isArray(q.S.aiScene.next_actions)?q.S.aiScene.next_actions.slice(0,3):[];}return q;}
+function sanitizeSaveData(p){if(!p||typeof p!=='object'||!p.S||typeof p.S!=='object')return null;const q=JSON.parse(JSON.stringify(p));q.schema_version=1;q.S.name=String(q.S.name||'无名').slice(0,40);['hp','hpMax','mp','mpMax','xiu','lingShi','merit','karma','age'].forEach(k=>{if(!Number.isFinite(Number(q.S[k])))q.S[k]=0;q.S[k]=clamp(Number(q.S[k]),-100000,100000);});if(!Array.isArray(q.S.bag))q.S.bag=[];q.S.bag=q.S.bag.slice(0,120).filter(x=>x&&typeof x==='object').map(x=>({n:String(x.n||'未知物品').slice(0,60),num:clamp(Math.round(Number(x.num)||1),0,999),effect:String(x.effect||'').slice(0,160)}));if(!Array.isArray(q.S.gongfa))q.S.gongfa=[];if(!Array.isArray(q.S.fashu))q.S.fashu=[];q.S.aiHistory=Array.isArray(q.S.aiHistory)?q.S.aiHistory.slice(-5).map(x=>String(x).slice(0,500)):[];if(q.S.aiScene&&typeof q.S.aiScene==='object'){q.S.aiScene.narrative=String(q.S.aiScene.narrative||'').slice(0,700);q.S.aiScene.ask_player=String(q.S.aiScene.ask_player||'').slice(0,180);q.S.aiScene.next_actions=Array.isArray(q.S.aiScene.next_actions)?q.S.aiScene.next_actions.slice(0,3):[];}const r=q.S.rogue&&typeof q.S.rogue==='object'?q.S.rogue:{};q.S.rogue={active:!!r.active,depth:clamp(Math.round(Number(r.depth)||0),0,7),maxDepth:7,gold:clamp(Math.round(Number(r.gold)||0),0,100000),relics:Array.isArray(r.relics)?r.relics.slice(0,12).map(x=>String(x).slice(0,40)):[],boons:Array.isArray(r.boons)?r.boons.slice(0,12).map(x=>String(x).slice(0,40)):[],pending:null,best:clamp(Math.round(Number(r.best)||0),0,7)};return q;}
 function applySnapshot(p){
   p=sanitizeSaveData(p);if(!p)return false;
   S=p.S;turn=p.turn||0;year=p.year||387;monthIdx=p.monthIdx||0;phase='play';ensureGameState();CB=null;SEC=null;curEvent=null;CST=null;return true;
@@ -3294,10 +3336,11 @@ function doCommand(c){
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
   if(aiEnabled()&&S.aiPendingQuestion){const q=S.aiPendingQuestion;S.aiPendingQuestion='';S.aiScene=null;curEvent=null;aiGenAction(`天道上次问：“${q}”\n玩家回答：“${c}”`);return;}
   if(aiEnabled()&&(/探索|获取功法|掉落功法|遭遇奇遇|触发奇遇|与.+对话|对话.+/.test(c))){aiGenAction(c);return;}
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,肉鸽:showRogue,天命轮回:showRogue,轮回:showRogue,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
+  if(/肉鸽|天命轮回|轮回挑战/.test(c)){showRogue();return;}
   if(/修炼|打坐|吐纳/.test(c)){doCultivate(false);return;}
   if(/突破|破境/.test(c)){doBreakthrough();return;}
   if(/地图|去|前往|游历|出发/.test(c)){showMap();return;}
@@ -3474,6 +3517,9 @@ document.addEventListener('click',e=>{
     case 'restart':showRestart();break;
     case 'restartConfirm':restartGameNow();break;
     case 'restartCancel':S?renderPlay():showCreate1();break;
+    case 'rogueStart':rogueStart();break;
+    case 'rogueNext':rogueNext();break;
+    case 'rogueQuit':rogueFinish(false);break;
     case 'cmd':doCommand(arg);break;
     case 'reload':location.reload();break;
   }
