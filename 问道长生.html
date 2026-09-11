@@ -1591,7 +1591,12 @@ function winCombat(){
   else{log('战利品',`夺得灵石${loot.length?('、'+loot.join('、')):''}。无名杀伐有损心性，业力+2。`);S.karma+=2;S.jianghu.evil+=1;}
   if(S.flags.血魔仇&&/血魔/.test(e.name)){S.flags.血魔仇=false;S.merit++;log('因果','你斩却昔日之仇，了却一桩因果，功德+1。');}
   masteryTick(1);
-  CB=null;if(afterWin)finishStoryBattle(afterWin);advanceTime(0);maybeEvent();renderPlay();
+  CB=null;
+  if(afterWin)finishStoryBattle(afterWin);
+  advanceTime(0);
+  // 史诗篇与肉鸽篇的战斗回调会自行渲染下一幕，不能再被通用主界面刷新覆盖。
+  if(afterWin&&/^(epic|rogue)/.test(afterWin))return;
+  maybeEvent();renderPlay();
 }
 function combatLose(){
   const e=CB.enemy;
