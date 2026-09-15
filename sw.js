@@ -1,10 +1,11 @@
 /* 问道长生 · Service Worker（PWA 离线壳） */
-const CACHE = 'wenda-changsheng-v20';
+const CACHE = 'wenda-changsheng-v22';
 const APP_SHELL = [
   './',
   './index.html',
   './问道长生.html',
   './supabase-config.js',
+  './qingming.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png'

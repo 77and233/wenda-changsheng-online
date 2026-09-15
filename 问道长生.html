@@ -137,6 +137,7 @@
   <button onclick="doCommand('江湖')">江湖</button>
   <button onclick="doCommand('坊市')">坊市</button>
   <button onclick="doCommand('情缘')">情缘</button>
+  <button onclick="doCommand('青冥')">青冥</button>
   <button onclick="showBestiary()">图鉴</button>
   <button onclick="showSave()">存档</button>
   <button onclick="showSave()">读档</button>
@@ -666,7 +667,7 @@ function statusCard(){
   <div class="row sm">悟道：${wd}　好感：${aff}${(S.daoban&&S.daoban.length)?'　道侣：'+S.daoban.join('、'):''}</div>
   <div class="row sm">大机缘：${fate}</div>
   <div class="row" style="color:#e8c55f">✦ 红尘剧情推演中（${rdActiveHint()||'即将启程'}）——输「红尘」续演，境界随剧情自动精进，暂不引导旧主线。</div>
-  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 功法 天骄 红尘 结局 天道 帮助</div>`;
+  <hr class="sep"><div class="sm">指令：面板 江湖 修炼 突破 悟道 洞府 地图 背包 坊市 宗门 技艺 情缘 秘境 对话 存档 读档 功法 天骄 红尘 青冥 结局 天道 帮助</div>`;
   return panel('',`状态卡 · ${S.name}`,body);
 }
 
@@ -687,6 +688,7 @@ function mainPanel(){
     ${opt('肉','肉鸽','#C4675C',S.rogue.active?'继续天命轮回（第'+S.rogue.depth+'层）':'开启天命轮回·随机挑战','cmd','肉鸽')}
     ${opt('逆','史诗','#C9A45C',S.epic.stage>=6?'远古战场·反复挑战':'逆命诸天篇·热血成长主线','cmd','逆命')}
     ${opt('悬','悬赏','#D88FA5','领取今日天机悬赏与连胜奖励','cmd','悬赏')}
+    ${opt('青','长卷','#7FA8C9',(S.qingming&&S.qingming.cleared)?'青冥长卷·重温因果':'青冥长卷·线性修仙主线','cmd','青冥')}
   </div><hr class="sep">
   <div class="row sm">建议先推进“江湖”章节。每次点击后页面会自动定位到新内容，结果也会在底部即时显示。</div>`;
   return panel('',`洞府主界面 · ${S.name}`,body);
@@ -1610,7 +1612,7 @@ function winCombat(){
   if(afterWin)finishStoryBattle(afterWin);
   advanceTime(0);
   // 史诗篇与肉鸽篇的战斗回调会自行渲染下一幕，不能再被通用主界面刷新覆盖。
-  if(afterWin&&/^(epic|rogue)/.test(afterWin))return;
+  if(afterWin&&/^(epic|rogue|qm)/.test(afterWin))return;
   maybeEvent();renderPlay();
 }
 function combatLose(){
@@ -3087,6 +3089,7 @@ function showHelp(){  const body=`
   <div class="row em" style="color:var(--cyan)">情缘·生死相随</div><div class="row sm">每位人物都有明确相识地点、前置条件和四幕个人缘线。相识后可交谈、同游、送礼；好感40可在战斗中点击“援”求助，高好感或道侣在濒死时可能破界救场。高阶人物能镇压远高于你的强敌。</div>
   <div class="row em" style="color:var(--cyan)">大机缘·爽文奇遇</div><div class="row sm">高仙缘游历时可能遇到悬崖古戒、祖龙道骨、岁月神塔、仙王道种等一次性大机缘，获得天阶功法、绝学、洞天与逆天改命奖励。</div>
   <div class="row em" style="color:var(--gold)">红尘卷 · 问道红尘（平行主线）</div><div class="row sm">输入「红尘」进入南离国篇：仙迹山、李青麟兄妹、明河、夜翎、国师东华子。九幕长线照应《问道红尘》原著，四结局后可在完结页点「续·裂谷妖城」开启<b>第二卷</b>（横断裂谷/血潭黑莲/妖城/程程/巫祝祭火/南离烽烟，三结局）。亦可用命令「红尘2」「裂谷」直达第二卷。第三卷「红尘3」「仙宫」「大乾」：万道仙宫（琴棋书画·居云岫）与大乾气运局（欢喜禅/孟轻影），终幕「援救离火」回归南离故人，三结局（仙宫留名/魔女之约/凡尘归人）。第四卷「红尘4」「妖庭」「圣龙」：夜翎求援入妖城——程程双身妖王、万妖之源鲲鹏血、裂谷真相（天上人圈养妖怪）、朱雀秘境、圣龙峰龙蛇演义，四结局（乘黄同心/妖庭新主/天上人间/幽冥寻材）。第五卷「红尘5」「幽冥」：东海蓬莱入幽冥界寻先天之材（狱主之灯）、七年后人间重逢李无仙人皇（天命在孤何惧仙神）、饕餮祭坛红门之局，四结局（人间太阿/棒灵成仙/南离新火/道魔并肩）。第六卷「红尘6」「北冥」：寻木城羽人（羽裳/婚礼修罗场）、孟轻影斩悲愿成轮回之主、吾即混沌、天枢神阙、流苏之道，四结局（北冥归心/万象归流/天枢共道/开天问道）。终卷「红尘7」「天界」：诸界决战天外之影、众妙之门补天、昆仑万界盟约、相见欢，四大结局（道我合一/万界同盟/相见欢/万世师）——七卷红尘，至此《问道红尘》全卷融入，终章大成。剧情演算：进入红尘卷后默认开启「剧情演算」——境界、气血上限、修为、主题功法随剧情自动按大纲发放，你只需做选择推进剧情，无需另行闭关修炼；输入「红尘模式」可随时切换为手动。幕间若想经营/修仙，仍可先回面板，再回来剧情自动续上。</div>
+  <div class="row em" style="color:var(--gold)">青冥长卷 · 线性修仙</div><div class="row sm">输入「青冥」或点洞府「青冥长卷」。九章一条因果：废祠名册、南疆阿霜、血月祭坛、东海灵焰、帝京仙胎、天外之税。查案有铺垫，选择有转折，前面救过或放过的人会在天门前回来。不是随机抽卡。</div>
   <div class="row em" style="color:var(--gold)">AI 天道（可选）</div><div class="row sm">输入「天道」打开设置：推荐选择「智谱Z.ai（Supabase中转）」并填写新 Key，手机端不会再受 CORS 限制；Puter 免 Key，但部分号码可能无法验证。AI 失败时仍会连续续写并保存记忆。</div>
   <div class="row em" style="color:var(--gold)">天机演算 · 肉鸽之魂</div><div class="row sm">本作由「天机引擎」驱动：每次奇遇的地点、人物、冲突、奖励与风险皆由命数随机拼装，同一选项每次的结果都不尽相同（大成功/成功/受挫/大失败，一成惊喜一成劫）。结局亦由天机重铸——同样的修为与选择，也可能走向不同的终局，文本每次重写。</div>
   <div class="row em" style="color:var(--gold)">天骄榜·爽文打脸</div><div class="row sm">输入「天骄」查看九州十大天骄，越阶挑战、胜者扬名：专属功法与巨额声望。随机事件里还会遇到当街嘲讽的龙套——打脸一时爽，一直打脸一直爽。</div>
@@ -3101,7 +3104,7 @@ const SAVE_KEY='wenda_changsheng_saves_v1';
 const AUTO_SAVE_KEY='wenda_changsheng_auto_v1';
 function getSaves(){try{const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');if(!raw||typeof raw!=='object'||Array.isArray(raw))return {};const out={};Object.keys(raw).slice(0,3).forEach(k=>{const p=sanitizeSaveData(raw[k]);if(p)out[k]=p;});return out;}catch(e){return {};}}
 function setSaves(o){try{localStorage.setItem(SAVE_KEY,JSON.stringify(o));return true;}catch(e){return false;}}
-function saveLocalAuto(){if(!S||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷')||phase!=='play')return false;try{localStorage.setItem(AUTO_SAVE_KEY,JSON.stringify(snapShot()));return true;}catch(e){return false;}}
+function saveLocalAuto(){if(!S||CB||SEC||(curEvent&&curEvent.kind!=='天道长卷'&&curEvent.kind!=='青冥长卷')||phase!=='play')return false;try{localStorage.setItem(AUTO_SAVE_KEY,JSON.stringify(snapShot()));return true;}catch(e){return false;}}
 function loadLocalAuto(){try{const p=JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)||'null');return p&&p.S?p:null;}catch(e){return null;}}
 function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:4,schema_version:1,revision:(S&&S._saveRevision)||0,device_id:deviceId()};}
 function deviceId(){let id='';try{id=localStorage.getItem('wenda_device_id')||'';if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random());localStorage.setItem('wenda_device_id',id);}}catch(e){id='unknown-device';}return id;}
@@ -3390,13 +3393,14 @@ function doCommand(c){
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
   if(aiEnabled()&&S.aiPendingQuestion){const q=S.aiPendingQuestion;S.aiPendingQuestion='';S.aiScene=null;curEvent=null;aiGenAction(`天道上次问：“${q}”\n玩家回答：“${c}”`);return;}
   if(aiEnabled()&&(/探索|获取功法|掉落功法|遭遇奇遇|触发奇遇|与.+对话|对话.+/.test(c))){aiGenAction(c);return;}
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,肉鸽:showRogue,天命轮回:showRogue,轮回:showRogue,逆命:showEpic,诸天:showEpic,史诗:showEpic,悬赏:showBounty,天机悬赏:showBounty,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,肉鸽:showRogue,天命轮回:showRogue,轮回:showRogue,逆命:showEpic,诸天:showEpic,史诗:showEpic,悬赏:showBounty,天机悬赏:showBounty,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart,青冥:showQingming,长卷:showQingming,青冥长卷:showQingming};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
   if(/逆命|诸天|史诗篇|远古战场/.test(c)){showEpic();return;}
   if(/悬赏|天机任务|每日任务/.test(c)){showBounty();return;}
   if(/肉鸽|天命轮回|轮回挑战/.test(c)){showRogue();return;}
+  if(/青冥|长卷|青冥长卷/.test(c)){showQingming();return;}
   if(/修炼|打坐|吐纳/.test(c)){doCultivate(false);return;}
   if(/突破|破境/.test(c)){doBreakthrough();return;}
   if(/地图|去|前往|游历|出发/.test(c)){showMap();return;}
@@ -3582,6 +3586,11 @@ document.addEventListener('click',e=>{
     case 'bountyCultivate':bountyAct('cultivate');break;
     case 'bountyExplore':bountyAct('explore');break;
     case 'bountyCombat':bountyAct('combat');break;
+    case 'qmStory':showQingmingStory();break;
+    case 'qmInvestigate':qmInvestigate();break;
+    case 'qmRecall':qmRecall();break;
+    case 'qmReplay':qmReplay();break;
+    case 'qmOpt':qmChoose(arg);break;
     case 'cmd':doCommand(arg);break;
     case 'reload':location.reload();break;
   }
@@ -3609,5 +3618,6 @@ window.addEventListener('DOMContentLoaded',async()=>{
 window.addEventListener('online',()=>{if(SB_USER)scheduleCloudAutosave();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){saveLocalAuto();if(SB_USER)cloudSaveNow(true);}});
 </script>
+<script src="./qingming.js"></script>
 </body>
 </html>
