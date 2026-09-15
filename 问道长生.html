@@ -448,6 +448,8 @@ function ensureGameState(){
   S.rogue.relics=Array.isArray(S.rogue.relics)?S.rogue.relics.slice(0,12):[];S.rogue.boons=Array.isArray(S.rogue.boons)?S.rogue.boons.slice(0,12):[];
   S.epic=S.epic&&typeof S.epic==='object'?S.epic:{stage:0,flame:'',inheritance:'',trialWins:0,cleared:false};
   S.epic.stage=clamp(Math.round(Number(S.epic.stage)||0),0,6);S.epic.trialWins=Math.max(0,Math.round(Number(S.epic.trialWins)||0));
+  S.bounty=S.bounty&&typeof S.bounty==='object'?S.bounty:{key:'',tasks:[],streak:0};
+  S.bounty.tasks=Array.isArray(S.bounty.tasks)?S.bounty.tasks.slice(0,3):[];
   if(typeof S.origin==='string'&&typeof ORIGINS!=='undefined'&&ORIGINS[S.origin])S.origin={key:S.origin,lv:1,exp:0};
   Object.keys(NPCS).forEach(n=>{const oldAff=S.aff[n]||0;S.bonds[n]=S.bonds[n]||{met:oldAff>0,chapter:oldAff>=80?3:oldAff>=60?2:oldAff>=40?1:0,rescues:0};if(S.daoban.includes(n))S.bonds[n].met=true;});
   S.jianghu=S.jianghu||{chapter:1,clue:0,xia:0,evil:0,contracts:0,storyWins:0,last:''};
@@ -684,6 +686,7 @@ function mainPanel(){
     ${opt('秘','机缘','#A98FD9','进入秘境，寻传承与珍宝','cmd','秘境')}
     ${opt('肉','肉鸽','#C4675C',S.rogue.active?'继续天命轮回（第'+S.rogue.depth+'层）':'开启天命轮回·随机挑战','cmd','肉鸽')}
     ${opt('逆','史诗','#C9A45C',S.epic.stage>=6?'远古战场·反复挑战':'逆命诸天篇·热血成长主线','cmd','逆命')}
+    ${opt('悬','悬赏','#D88FA5','领取今日天机悬赏与连胜奖励','cmd','悬赏')}
   </div><hr class="sep">
   <div class="row sm">建议先推进“江湖”章节。每次点击后页面会自动定位到新内容，结果也会在底部即时显示。</div>`;
   return panel('',`洞府主界面 · ${S.name}`,body);
@@ -800,6 +803,18 @@ function finishEpicBattle(tag){if(tag==='epicTrial'){S.epic.stage=Math.max(1,S.e
 function showEpic(){ensureGameState();const e=S.epic;if(e.stage>=6){const body=`<div class="questbox"><div class="chapter">远古战场 · 反复挑战</div><div>你已将古域化为试炼场。每次挑战会随机遭遇天外战将、荒兽王或失控界灵，胜利可获得灵石、修为或随机属性奖励。</div><div class="sm">累计挑战 ${e.trialWins||0} 次。每次结果都会写入云存档。</div></div><div class="opts"><button class="opt" data-act="epicReplay"><span class="optkey">战</span><span class="opttext">进入随机远古战场</span><span class="opthint">高风险、高奖励，可重复游玩</span></button></div>`;$('panel').innerHTML=panel('warn','逆命诸天 · 远古战场',body)+statusCard();return;}const s=EPIC_STAGES[Math.min(e.stage,EPIC_STAGES.length-1)];const body=`<div class="questbox"><div class="chapter">第${e.stage+1}幕 · ${s.t}</div><div>${s.n}</div><div class="sm">传承：${e.inheritance||'尚未选择'}　灵焰：${e.flame||'未觉醒'}</div></div><div class="opts">${s.opts.map(o=>opt(o.k,o.tag,o.c,o.tx,'epicOpt',o.k,o.hint)).join('')}</div>`;$('panel').innerHTML=panel('mystic','逆命诸天 · 原创史诗篇',body)+statusCard();}
 function epicAct(k){ensureGameState();const e=S.epic,s=EPIC_STAGES[Math.min(e.stage,EPIC_STAGES.length-1)],o=s&&s.opts.find(x=>x.k===k);if(o){curEvent=null;o.f();}if(e.stage<6&&!CB&&!curEvent&&phase==='play')renderEpic();}
 function epicReplay(){ensureGameState();const foes=[['天外战将','金',34,Math.max(220,Math.round(S.hpMax*.65))],['荒兽王','土',31,Math.max(240,Math.round(S.hpMax*.72))],['失控界灵','雷',36,Math.max(200,Math.round(S.hpMax*.58))]];const f=foes[Math.floor(Math.random()*foes.length)];startCombat(mkEnemy(f[0],S.realm,'圆满',f[1],f[2],f[3],94,f[0]),'epicBoss');}
+/* ============ 天机悬赏 · 每日随机目标 ============ */
+function bountyRefresh(){ensureGameState();const key=year+'-'+monthIdx;if(S.bounty.key===key&&S.bounty.tasks.length)return;const pool=[
+  {type:'cultivate',name:'静修悟道',goal:2,desc:'完成两次修炼',reward:70},
+  {type:'explore',name:'游历九州',goal:2,desc:'完成两次探索',reward:85},
+  {type:'combat',name:'斩妖除恶',goal:1,desc:'赢得一场战斗',reward:120}
+];
+  S.bounty={key,tasks:pool.map(x=>({...x,progress:0,claimed:false})),streak:Number(S.bounty.streak)||0};
+}
+function bountyProgress(type,n){if(!S||!S.bounty)return;bountyRefresh();const t=S.bounty.tasks.find(x=>x.type===type&&!x.claimed);if(t)t.progress=clamp((t.progress||0)+n,0,t.goal);}
+function bountyClaim(i){bountyRefresh();const t=S.bounty.tasks[i];if(!t||t.claimed||t.progress<t.goal){log('天机悬赏','该悬赏尚未完成。');showBounty();return;}t.claimed=true;const bonus=t.reward+Math.min(120,(S.bounty.streak||0)*15);S.lingShi+=bonus;S.bounty.streak=(S.bounty.streak||0)+1;S.merit+=1;log('天机悬赏',`你完成「${t.name}」，领取${bonus}灵石与功德+1。连胜${S.bounty.streak}次。`);showBounty();}
+function bountyAct(type){bountyRefresh();if(type==='cultivate'){bountyProgress('cultivate',1);doCultivate(false);return;}if(type==='explore'){bountyProgress('explore',1);explore();return;}if(type==='combat'){const e=spawnBeast(pickBeast());e.beast=true;startCombat(e,'bountyCombat');return;}}
+function showBounty(){bountyRefresh();const rows=S.bounty.tasks.map((t,i)=>{const done=t.progress>=t.goal;const act=t.type==='cultivate'?'bountyCultivate':t.type==='explore'?'bountyExplore':'bountyCombat';return `<div class="questbox"><div class="chapter">${htmlEsc(t.name)}　<span class="sm">奖励 ${t.reward}灵石</span></div><div>${htmlEsc(t.desc)}：${t.progress}/${t.goal}</div><div class="opts">${done?`<button class="opt" data-act="bountyClaim" data-arg="${i}"><span class="optkey">领</span><span class="opttext">领取悬赏</span></button>`:`<button class="opt" data-act="${act}"><span class="optkey">行</span><span class="opttext">执行任务</span><span class="opthint">完成后可领取，连胜会提高额外奖励</span></button>`}</div></div>`;}).join('');$('panel').innerHTML=panel('mystic',`天机悬赏 · 连胜${S.bounty.streak||0}`,`<div class="row sm">悬赏会随天玄历月份轮换。完成任务获得灵石与功德，连续完成可叠加额外奖励。</div>${rows}`)+statusCard();}
 function triggerFortuneEvent(){
   S.fortunes=S.fortunes||[];
   const fs=[];
@@ -2597,6 +2612,7 @@ function finishStoryBattle(tag){ensureGameState();const j=S.jianghu;
   else if(tag==='rogueElite'){S.rogue.gold+=80+Math.floor(Math.random()*80);log('肉鸽精英','精英敌人倒下，获得本轮灵石与下一层资格。');rogueNext();}
   else if(tag==='rogueBoss'){S.rogue.gold+=260;rogueFinish(true);}
   else if(tag==='epicTrial'||tag==='epicBoss'){finishEpicBattle(tag);}
+  else if(tag==='bountyCombat'){bountyProgress('combat',1);S.lingShi+=60;log('天机悬赏','悬赏目标已伏诛，额外获得灵石+60。');}
   else if(tag==='saveMaiden'){S.merit+=2;S.lingShi+=80;S.jianghu.xia+=2;log('救美','劫修尽数伏诛。少女盈盈下拜：「恩公大恩，无以为报。」她将玉匣中一枚温养多年的灵珠赠你。功德+2、灵石+80、侠义+2，那枚灵珠暖意融融，似有灵性。');}
   else if(tag==='guardMerchant'){S.lingShi+=100;S.jianghu.xia+=2;log('护镖','匪众溃散，商队管事千恩万谢，奉上百枚灵石。侠义+2、灵石+100。');}
   else if(tag&&tag.startsWith('tianjiao')){
@@ -3090,6 +3106,8 @@ function loadLocalAuto(){try{const p=JSON.parse(localStorage.getItem(AUTO_SAVE_K
 function snapShot(){return {S,turn,year,monthIdx,phase,t:Date.now(),v:4,schema_version:1,revision:(S&&S._saveRevision)||0,device_id:deviceId()};}
 function deviceId(){let id='';try{id=localStorage.getItem('wenda_device_id')||'';if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random());localStorage.setItem('wenda_device_id',id);}}catch(e){id='unknown-device';}return id;}
 function sanitizeSaveData(p){if(!p||typeof p!=='object'||!p.S||typeof p.S!=='object')return null;const q=JSON.parse(JSON.stringify(p));q.schema_version=1;q.S.name=String(q.S.name||'无名').slice(0,40);['hp','hpMax','mp','mpMax','xiu','lingShi','merit','karma','age'].forEach(k=>{if(!Number.isFinite(Number(q.S[k])))q.S[k]=0;q.S[k]=clamp(Number(q.S[k]),-100000,100000);});if(!Array.isArray(q.S.bag))q.S.bag=[];q.S.bag=q.S.bag.slice(0,120).filter(x=>x&&typeof x==='object').map(x=>({n:String(x.n||'未知物品').slice(0,60),num:clamp(Math.round(Number(x.num)||1),0,999),effect:String(x.effect||'').slice(0,160)}));if(!Array.isArray(q.S.gongfa))q.S.gongfa=[];if(!Array.isArray(q.S.fashu))q.S.fashu=[];q.S.aiHistory=Array.isArray(q.S.aiHistory)?q.S.aiHistory.slice(-5).map(x=>String(x).slice(0,500)):[];if(q.S.aiScene&&typeof q.S.aiScene==='object'){q.S.aiScene.narrative=String(q.S.aiScene.narrative||'').slice(0,700);q.S.aiScene.ask_player=String(q.S.aiScene.ask_player||'').slice(0,180);q.S.aiScene.next_actions=Array.isArray(q.S.aiScene.next_actions)?q.S.aiScene.next_actions.slice(0,3):[];}const r=q.S.rogue&&typeof q.S.rogue==='object'?q.S.rogue:{};q.S.rogue={active:!!r.active,depth:clamp(Math.round(Number(r.depth)||0),0,7),maxDepth:7,gold:clamp(Math.round(Number(r.gold)||0),0,100000),relics:Array.isArray(r.relics)?r.relics.slice(0,12).map(x=>String(x).slice(0,40)):[],boons:Array.isArray(r.boons)?r.boons.slice(0,12).map(x=>String(x).slice(0,40)):[],pending:null,best:clamp(Math.round(Number(r.best)||0),0,7)};const ep=q.S.epic&&typeof q.S.epic==='object'?q.S.epic:{};q.S.epic={stage:clamp(Math.round(Number(ep.stage)||0),0,6),flame:String(ep.flame||'').slice(0,40),inheritance:String(ep.inheritance||'').slice(0,40),trialWins:clamp(Math.round(Number(ep.trialWins)||0),0,999),cleared:!!ep.cleared};return q;}
+const _sanitizeSaveData=sanitizeSaveData;
+sanitizeSaveData=function(p){const q=_sanitizeSaveData(p);if(!q)return null;const b=q.S.bounty&&typeof q.S.bounty==='object'?q.S.bounty:{};q.S.bounty={key:String(b.key||'').slice(0,20),tasks:Array.isArray(b.tasks)?b.tasks.slice(0,3).filter(x=>x&&typeof x==='object').map(x=>({type:String(x.type||'').slice(0,20),name:String(x.name||'').slice(0,40),goal:clamp(Math.round(Number(x.goal)||1),1,20),progress:clamp(Math.round(Number(x.progress)||0),0,20),reward:clamp(Math.round(Number(x.reward)||0),0,10000),desc:String(x.desc||'').slice(0,80),claimed:!!x.claimed})):[],streak:clamp(Math.round(Number(b.streak)||0),0,999)};return q;};
 function applySnapshot(p){
   p=sanitizeSaveData(p);if(!p)return false;
   S=p.S;turn=p.turn||0;year=p.year||387;monthIdx=p.monthIdx||0;phase='play';ensureGameState();CB=null;SEC=null;curEvent=null;CST=null;return true;
@@ -3372,11 +3390,12 @@ function doCommand(c){
   if(phase==='ended'){log('天道','此世已终，请点击底部“重开”或结局页的“重开一世”。');return;}
   if(aiEnabled()&&S.aiPendingQuestion){const q=S.aiPendingQuestion;S.aiPendingQuestion='';S.aiScene=null;curEvent=null;aiGenAction(`天道上次问：“${q}”\n玩家回答：“${c}”`);return;}
   if(aiEnabled()&&(/探索|获取功法|掉落功法|遭遇奇遇|触发奇遇|与.+对话|对话.+/.test(c))){aiGenAction(c);return;}
-  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,肉鸽:showRogue,天命轮回:showRogue,轮回:showRogue,逆命:showEpic,诸天:showEpic,史诗:showEpic,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
+  const map={面板:renderPlay,江湖:showJianghu,主线:showJianghu,结局:showFate,宿命:showFate,功法:showGongfa,家业:showOrigin,营生:showOrigin,天骄:showTianjiao,榜:showTianjiao,肉鸽:showRogue,天命轮回:showRogue,轮回:showRogue,逆命:showEpic,诸天:showEpic,史诗:showEpic,悬赏:showBounty,天机悬赏:showBounty,天道:showAISettings,AI:showAISettings,ai:showAISettings,红尘:showReddust,书卷:showReddust,红尘2:showReddust2,裂谷:showReddust2,妖城:showReddust2,红尘3:showReddust3,仙宫:showReddust3,大乾:showReddust3,红尘4:showReddust4,妖庭:showReddust4,圣龙:showReddust4,红尘5:showReddust5,幽冥:showReddust5,人间:showReddust5,红尘6:showReddust6,北冥:showReddust6,魔劫:showReddust6,红尘7:showReddust7,天界:showReddust7,创世:showReddust7,番外:showExtra,后日谈:showExtra,红颜:showExtra,红尘模式:rdStorySwitch,剧情:rdStorySwitch,修炼:()=>doCultivate(false),闭关:()=>doCultivate(true),突破:doBreakthrough,地图:showMap,坊市:showShop,情缘:showLove,洞府:showDongfu,背包:showBag,宗门:showSect,技艺:showSkill,悟道:showWudao,对话:showDialogue,帮助:showHelp,存档:showSave,读档:showSave,秘境:showSecretMenu,图鉴:showBestiary,账号:showAccount,休整:showRecovery,恢复:showRecovery,疗伤:showRecovery,重开:showRestart,重新开始:showRestart};
   if(map[c]){map[c]();setTimeout(focusResult,30);return;}
   if(/闭关\s*(\d+)\s*年/.test(c)){closeYears(parseInt(c.match(/(\d+)/)[0]));return;}
   if(/秘境|探秘/.test(c)){showSecretMenu();return;}
   if(/逆命|诸天|史诗篇|远古战场/.test(c)){showEpic();return;}
+  if(/悬赏|天机任务|每日任务/.test(c)){showBounty();return;}
   if(/肉鸽|天命轮回|轮回挑战/.test(c)){showRogue();return;}
   if(/修炼|打坐|吐纳/.test(c)){doCultivate(false);return;}
   if(/突破|破境/.test(c)){doBreakthrough();return;}
@@ -3559,6 +3578,10 @@ document.addEventListener('click',e=>{
     case 'rogueQuit':rogueFinish(false);break;
     case 'epicOpt':epicAct(arg);break;
     case 'epicReplay':epicReplay();break;
+    case 'bountyClaim':bountyClaim(+arg);break;
+    case 'bountyCultivate':bountyAct('cultivate');break;
+    case 'bountyExplore':bountyAct('explore');break;
+    case 'bountyCombat':bountyAct('combat');break;
     case 'cmd':doCommand(arg);break;
     case 'reload':location.reload();break;
   }
