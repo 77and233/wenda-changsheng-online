@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -25,9 +25,17 @@
   #wrap{max-width:780px;margin:0 auto;padding:14px 12px 96px;}
   h1{text-align:center;color:var(--cyan);letter-spacing:4px;font-size:22px;margin:6px 0 2px;}
   .sub{text-align:center;color:var(--grey);font-size:12px;margin-bottom:10px;letter-spacing:2px;}
-  #log{background:var(--paper);border:1px solid #E2DACC;border-radius:8px;padding:10px 14px;margin-bottom:10px;max-height:200px;overflow-y:auto;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  #log{background:var(--paper);border:1px solid #E2DACC;border-radius:8px;padding:10px 14px;margin-bottom:10px;max-height:280px;overflow-y:auto;box-shadow:0 1px 4px rgba(0,0,0,.05);}
   #log .t{color:var(--gold);font-weight:bold;letter-spacing:1px;}
   #log .n{color:var(--ink);margin:2px 0 8px;white-space:pre-wrap;}
+  .qm-story{line-height:2;font-size:16px;letter-spacing:.2px;}
+  .qm-story p{margin:0 0 .95em;text-indent:2em;}
+  .qm-story p:last-of-type{margin-bottom:.35em;}
+  .qm-story .sm{display:block;margin-top:10px;line-height:1.7;font-size:12.5px;text-indent:0;}
+  .qm-recap{margin:14px 0 6px;padding:10px 12px 8px;background:rgba(201,164,92,.12);border-left:3px solid #C9A45C;border-radius:0 8px 8px 0;}
+  .qm-recap-t{color:#A87E2E;font-weight:bold;letter-spacing:2px;margin:0 0 8px;text-indent:0;font-size:13.5px;}
+  .qm-recap p{text-indent:0;margin:0 0 .65em;line-height:1.85;font-size:14.5px;}
+  .qm-recap p:last-child{margin-bottom:0;}
   #feedbackToast{position:fixed;left:50%;bottom:82px;transform:translate(-50%,14px);width:min(720px,calc(100% - 24px));background:rgba(43,38,32,.96);color:#fff;border-left:4px solid var(--gold);border-radius:8px;padding:9px 12px;box-shadow:0 6px 24px rgba(0,0,0,.24);z-index:20;opacity:0;pointer-events:none;transition:.2s;line-height:1.45;font-size:13px;}
   #feedbackToast.show{opacity:1;transform:translate(-50%,0);}
   #feedbackToast b{color:#F2D28B;margin-right:6px;}
@@ -96,7 +104,10 @@
     #wrap{max-width:100%;padding:8px 8px 168px;}
     h1{font-size:18px;letter-spacing:3px;margin:4px 0 2px;}
     .sub{font-size:10.5px;letter-spacing:1px;margin-bottom:6px;}
-    #log{max-height:160px;padding:8px 10px;margin-bottom:8px;}
+    #log{max-height:220px;padding:8px 10px;margin-bottom:8px;}
+    .qm-story{font-size:15px;line-height:1.95;}
+    .qm-recap{padding:9px 10px 7px;}
+    .qm-recap p{font-size:13.5px;}
     .panel{border-width:2px;margin:8px 0;}
     .titlebar{font-size:15px;padding:7px 10px;}
     .body{padding:9px 11px 10px;}
@@ -3618,6 +3629,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 window.addEventListener('online',()=>{if(SB_USER)scheduleCloudAutosave();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){saveLocalAuto();if(SB_USER)cloudSaveNow(true);}});
 </script>
-<script src="./qingming.js"></script>
+<script src="./qingming.js?v=26"></script>
 </body>
 </html>
+

@@ -1,5 +1,5 @@
 /* 问道长生 · Service Worker（PWA 离线壳） */
-const CACHE = 'wenda-changsheng-v23';
+const CACHE = 'wenda-changsheng-v26';
 const APP_SHELL = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', e => {
   if (url.pathname.includes('/api/')) return;
   // 主页面网络优先，发布后立即获取最新逻辑；离线时再回退缓存。
   const pagePath = decodeURIComponent(url.pathname);
-  if (pagePath.endsWith('/问道长生.html') || pagePath.endsWith('/index.html')) {
+  if (pagePath.endsWith('/问道长生.html') || pagePath.endsWith('/index.html') || pagePath.endsWith('/qingming.js')) {
     e.respondWith(fetch(e.request).then(res => {
       if (res && res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone())).catch(() => 0);
       return res;
